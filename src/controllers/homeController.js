@@ -1,4 +1,6 @@
 const handleHi = (req, res) => {
-  return send.send("ho");
+  console.log("object");
+  return res.send("ho");
 };
+
 module.exports = { handleHi };
