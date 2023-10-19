@@ -1,11 +1,11 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("jwt", "root", null, {
+const sequelize = new Sequelize("cms-db", "root", null, {
   host: "localhost",
   dialect: "mysql",
 });
 
-const conner = async () => {
+const connection = async () => {
   try {
     await sequelize.authenticate();
     console.log("Connection has been established successfully.");
@@ -14,4 +14,4 @@ const conner = async () => {
   }
 };
 
-export default conner;
+export default connection;
