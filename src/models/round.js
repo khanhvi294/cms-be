@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Round extends Model {
     /**
@@ -11,19 +13,16 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Round.init(
-    {
-      competitionId: DataTypes.INTEGER,
-      exam: DataTypes.STRING,
-      time: DataTypes.INTEGER,
-      roundNumber: DataTypes.INTEGER,
-      floorPoint: DataTypes.FLOAT,
-      timeStart: DataTypes.DateOnly,
-    },
-    {
-      sequelize,
-      modelName: "Round",
-    }
-  );
+  Round.init({
+    competitionId: DataTypes.INTEGER,
+    exam: DataTypes.STRING,
+    time: DataTypes.INTEGER,
+    roundNumber: DataTypes.INTEGER,
+    floorPoint: DataTypes.FLOAT,
+    timeStart: DataTypes.DATEONLY
+  }, {
+    sequelize,
+    modelName: 'Round',
+  });
   return Round;
 };
