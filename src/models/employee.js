@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Employee.belongsTo(models.Account);
+      Employee.hasMany(models.Competition);
     }
   }
   Employee.init(
