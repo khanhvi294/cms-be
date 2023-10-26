@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Round.belongsTo(models.Competition);
+      Round.hasMany(models.StudentRound);
     }
   }
   Round.init(

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Students.hasMany(models.StudentClass);
       Students.hasMany(models.Register);
       Students.belongsTo(models.Account);
+      Students.hasMany(models.StudentRound);
     }
   }
   Students.init(
