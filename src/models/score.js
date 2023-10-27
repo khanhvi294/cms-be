@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Score.belongsTo(models.StudentRound);
+      Score.belongsTo(models.Judge);
     }
   }
   Score.init(
