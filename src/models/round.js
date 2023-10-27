@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Round.belongsTo(models.Competition);
       Round.hasMany(models.StudentRound);
+      Round.hasMany(models.Judge);
     }
   }
   Round.init(

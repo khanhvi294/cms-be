@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Employee.belongsTo(models.Account);
       Employee.hasMany(models.Competition);
+      Employee.hasMany(models.Judge);
     }
   }
   Employee.init(
