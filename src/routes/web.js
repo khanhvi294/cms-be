@@ -8,7 +8,7 @@ import homeController from "../controllers/homeController.js";
  */
 const initWebRoutes = (app) => {
   router.get("/", homeController.handleHi);
-  return app.use("/", router);
+  return app.use("/api", router);
 };
 
 export default initWebRoutes;

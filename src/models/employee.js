@@ -9,15 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Employee.belongsTo(models.Account);
+      Employee.belongsTo(models.Account, {
+        foreignKey: "accountId",
+        targetKey: "id",
+      });
     }
   }
   Employee.init(
     {
       id: DataTypes.INTEGER,
       fullName: DataTypes.STRING,
-      password: DataTypes.STRING,
-      email: DataTypes.STRING,
+      accountId: DataTypes.INTEGER,
       cccd: DataTypes.STRING,
     },
     {

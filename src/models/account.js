@@ -9,8 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Account.hasOne(Employee);
-      Account.hasOne(Student);
+      Account.hasOne(models.Student, {
+        foreignKey: "accountId",
+      });
+
+      Account.hasOne(models.Teacher, {
+        foreignKey: "accountId",
+      });
     }
   }
   Account.init(
