@@ -9,8 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Register.belongsTo(models.Students);
-      Register.belongsTo(models.Competition);
+      Register.belongsTo(models.Students, {
+        foreignKey: "studentId",
+        targetKey: "id",
+      });
+      Register.belongsTo(models.Competition, {
+        foreignKey: "competitionId",
+        targetKey: "id",
+      });
+      Register.hasMany(models.Score, {
+        foreignKey: "participantId",
+      });
+      Register.hasMany(models.Score, {
+        foreignKey: "participantId",
+      });
     }
   }
   Register.init(

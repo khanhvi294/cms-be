@@ -9,8 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      CompetitionClass.belongsTo(models.Class);
-      CompetitionClass.belongsTo(models.Competition);
+      CompetitionClass.belongsTo(models.Class, {
+        foreignKey: "classId",
+        targetKey: "id",
+      });
+      CompetitionClass.belongsTo(models.Competition, {
+        foreignKey: "competitionId",
+        targetKey: "id",
+      });
     }
   }
   CompetitionClass.init(

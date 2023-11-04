@@ -9,14 +9,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Round.belongsTo(models.Competition);
+      Round.belongsTo(models.Competition, {
+        foreignKey: "competitionId",
+        targetKey: "id",
+      });
+      Round.belongsTo(models.ExamForm, {
+        foreignKey: "examFormId",
+        targetKey: "id",
+      });
       Round.hasMany(models.StudentRound);
-      Round.hasMany(models.Judge);
+      Round.hasMany(models.Judge, {
+        foreignKey: "roundId",
+      });
     }
   }
   Round.init(
     {
       competitionId: DataTypes.INTEGER,
+      examFormId: DataTypes.INTEGER,
       exam: DataTypes.STRING,
       time: DataTypes.INTEGER,
       roundNumber: DataTypes.INTEGER,

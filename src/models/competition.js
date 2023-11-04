@@ -9,9 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Competition.hasMany(models.Register);
-      Competition.hasMany(models.Round);
-      Competition.belongsTo(models.Employee);
+      Competition.hasMany(models.Register, {
+        foreignKey: "competitionId",
+      });
+      Competition.hasMany(models.CompetitionClass, {
+        foreignKey: "competitionId",
+      });
+      Competition.hasMany(models.Round, {
+        foreignKey: "competitionId",
+      });
+      Competition.belongsTo(models.Employee, {
+        foreignKey: "employeeId",
+        targetKey: "id",
+      });
     }
   }
   Competition.init(
@@ -19,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       status: DataTypes.INTEGER,
       employeeId: DataTypes.INTEGER,
-      courseId: DataTypes.INTEGER,
+      // courseId: DataTypes.INTEGER,
       maximumQuantity: DataTypes.INTEGER,
       minimumQuantity: DataTypes.INTEGER,
       numOfPrizes: DataTypes.INTEGER,
