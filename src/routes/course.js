@@ -5,7 +5,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post("/", courseController.createCourse);
+router.post("/", verifyAdmin, courseController.createCourse);
 router.get("/", verifyAdmin, courseController.getAllCourses);
 
 export default router;

@@ -41,4 +41,16 @@ export const authAccount = async (id) => {
   return user;
 };
 
-export default { isAuthenticated };
+export const isAccessible = (permissions) => {
+  return async (req, res, next) => {
+    const role = req?.user?.role || "";
+    if (!permissions.includes(role)) {
+      res
+        .status(401)
+        .json({ message: "You don't have permission", status: 401 });
+    }
+    next();
+  };
+};
+
+export default { isAuthenticated, isAccessible };
