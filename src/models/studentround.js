@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       StudentRound.belongsTo(models.Round);
-      StudentRound.belongsTo(models.Student);
+      StudentRound.belongsTo(models.Students);
       StudentRound.hasMany(models.Score);
     }
   }
