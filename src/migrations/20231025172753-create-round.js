@@ -1,43 +1,60 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Rounds', {
+    await queryInterface.createTable("Rounds", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       competitionId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Competitions",
+          key: "id",
+        },
+        onUpdate: "cascade",
+        onDelete: "cascade",
+      },
+      examFormId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "ExamForms",
+          key: "id",
+        },
+        onUpdate: "cascade",
+        onDelete: "cascade",
       },
       exam: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       time: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       roundNumber: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       floorPoint: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       timeStart: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Rounds');
-  }
+    await queryInterface.dropTable("Rounds");
+  },
 };

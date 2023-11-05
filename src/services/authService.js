@@ -1,16 +1,39 @@
+import HttpException from "../errors/httpException";
 import db from "../models";
+import jwtUtil from "../utils/jwt";
+import passwordUtil from "../utils/password";
 
-const login = async (req, res) => {
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-  res.header("auth-token", token).send(token);
-
-  const user = await db.Account.findOne({
-    where: { email: req.email, password: req.password },
-  });
-  return {
-    data: user,
-    total: user.length,
-  };
+export const authAccount = async (email, password) => {
+  let account = await db.Account.findOne({ where: { email } });
+  if (!account) {
+    throw new HttpException(404, "Email hoặc mật khẩu không đúng !!!");
+  }
+  const isPasswordMatch = await passwordUtil.comparePassword(
+    account.password,
+    password
+  );
+  if (!isPasswordMatch) {
+    throw new HttpException(404, "Email hoặc mật khẩu không đúng !!!");
+  }
+  if (!account.isActive) {
+    throw new HttpException(
+      422,
+      "Tài khoản của bạn đang bị khóa, liên hệ quản trị viên để được hỗ trợ !!!"
+    );
+  }
+  return account;
 };
 
-export default { login };
+export const findAccount = async (id) => {
+  let account = await db.Account.findOne({ where: { id } });
+  return account;
+};
+
+const login = async (email, password) => {
+  const account = await authAccount(email, password);
+
+  const token = await jwtUtil.generateToken({ id: account.id });
+  return { token };
+};
+
+export default { login, findAccount };

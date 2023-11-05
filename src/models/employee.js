@@ -13,6 +13,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "accountId",
         targetKey: "id",
       });
+      Employee.hasMany(models.Class, {
+        foreignKey: "employeeId",
+      });
+      Employee.hasMany(models.Competition, {
+        foreignKey: "employeeId",
+      });
+      Employee.hasMany(models.Judge, {
+        foreignKey: "employeeId",
+      });
     }
   }
   Employee.init(

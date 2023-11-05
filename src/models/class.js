@@ -9,15 +9,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Class.belongsTo(models.Course);
-      Class.hasMany(models.StudentClass);
-      Class.hasMany(models.CompetitionClass);
+      Class.belongsTo(models.Course, {
+        foreignKey: "courseId",
+        targetKey: "id",
+      });
+
+      Class.belongsTo(models.Employee, {
+        foreignKey: "employeeId",
+        targetKey: "id",
+      });
+      Class.hasMany(models.StudentClass, {
+        foreignKey: "classId",
+      });
+      Class.hasMany(models.CompetitionClass, {
+        foreignKey: "classId",
+      });
     }
   }
   Class.init(
     {
       name: DataTypes.STRING,
       courseId: DataTypes.INTEGER,
+      employeeId: DataTypes.INTEGER,
       timeStart: DataTypes.DATEONLY,
       timeEnd: DataTypes.DATEONLY,
     },

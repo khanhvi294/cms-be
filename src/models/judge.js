@@ -9,9 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Judge.hasMany(models.Score);
-      Judge.belongsTo(models.Round);
-      Judge.belongsTo(models.Employee);
+      Judge.hasMany(models.Score, {
+        foreignKey: "judgeId",
+      });
+      Judge.belongsTo(models.Round, {
+        foreignKey: "roundId",
+        targetKey: "id",
+      });
+      Judge.belongsTo(models.Employee, {
+        foreignKey: "employeeId",
+        targetKey: "id",
+      });
     }
   }
   Judge.init(

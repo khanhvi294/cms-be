@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "accountId",
       });
 
-      Account.hasOne(models.Students, {
+      Account.hasOne(models.Employee, {
         foreignKey: "accountId",
       });
     }
@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       role: DataTypes.INTEGER,
+      isActive: DataTypes.BOOLEAN,
     },
     {
       sequelize,
