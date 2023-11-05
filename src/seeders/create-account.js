@@ -9,6 +9,7 @@ const importAccounts = async () => {
       email: "admin@gmail.com",
       password: hashPassword,
       role: ROLES.ADMIN,
+      isActive: true,
       Employee: {
         fullName: "Admin ",
         cccd: "123123123",
@@ -18,6 +19,7 @@ const importAccounts = async () => {
       email: "teacher@gmail.com",
       password: hashPassword,
       role: ROLES.EMPLOYEE,
+      isActive: true,
       Employee: {
         fullName: "Employee ",
         cccd: "123123123",
@@ -27,6 +29,7 @@ const importAccounts = async () => {
       email: "student@gmail.com",
       password: hashPassword,
       role: ROLES.STUDENT,
+      isActive: true,
       Student: {
         fullName: "student ",
       },

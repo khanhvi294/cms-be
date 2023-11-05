@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./auth";
+import courseRoutes from "./course";
 
 const router = express.Router();
 
@@ -8,6 +9,8 @@ const router = express.Router();
  */
 const initWebRoutes = (app) => {
   router.use("/auth", authRoutes);
+  router.use("/courses", courseRoutes);
+
   return app.use("/api", router);
 };
 

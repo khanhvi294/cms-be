@@ -2,7 +2,8 @@ import HttpException from "../errors/httpException";
 import { ENV_CONFIG } from "./const";
 import jwt from "jsonwebtoken";
 
-const tokenLife = ENV_CONFIG.TOKEN_LIFE_ACCESS_TOKEN || "24h";
+const tokenLife = ENV_CONFIG.TOKEN_LIFE_ACCESS_TOKEN || "1d";
+export const secret = ENV_CONFIG.TOKEN_SECRET || "TOKEN_SECRET";
 
 export const generateToken = async (data) => {
   if (!data) return null;
