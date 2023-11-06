@@ -1,19 +1,18 @@
 import courseService from "../services/courseService";
 import { successResponse, STATUS_CODE } from "./baseController";
 
-const getAllCourses = (req, res, next) => {
+const getAllCourses = async (req, res, next) => {
   try {
-    // call service
-    successResponse(STATUS_CODE.OK, { message: " ok" }, res);
+    const result = await courseService.getAllCourses();
+    successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
   }
 };
-
-const createCourse = (req, res, next) => {
+const createCourse = async (req, res, next) => {
   try {
-    courseService.createCourse(req.course);
-    successResponse(STATUS_CODE.OK, { message: " ok" }, res);
+    const result = await courseService.createCourse(req.body);
+    successResponse(STATUS_CODE.CREATED, result, res);
   } catch (error) {
     next(error);
   }

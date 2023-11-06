@@ -9,7 +9,13 @@ const checkCourseTime = (time) => {
   return false;
 };
 
-const getAllCourses = async (course) => {};
+const getAllCourses = async (course) => {
+  const data = await db.Course.findAll();
+  return {
+    data,
+    total: data.length,
+  };
+};
 const createCourse = async () => {
   const haveCourse = await findCourseByName(course.name);
   if (haveCourse) {
