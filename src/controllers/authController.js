@@ -1,12 +1,12 @@
 import authService from "../services/authService";
-import { successReponse, STATUS_CODE } from "./baseController";
+import { successResponse, STATUS_CODE } from "./baseController";
 
 const login = async (req, res, next) => {
   try {
     // await validateData(userValidate.login, req.body, res)
     const result = await authService.login(req.body.email, req.body.password);
 
-    successReponse(STATUS_CODE.OK, result, res);
+    successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
   }

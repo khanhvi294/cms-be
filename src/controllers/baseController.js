@@ -5,6 +5,6 @@ export const STATUS_CODE = {
   CREATED: 201,
 };
 
-export const successReponse = (status = 200, data = {}, res) => {
+export const successResponse = (status = 200, data = {}, res) => {
   return res.status(status).json({ data, status, message: STATUS.success });
 };

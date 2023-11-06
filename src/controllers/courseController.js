@@ -1,9 +1,10 @@
-import { successReponse, STATUS_CODE } from "./baseController";
+import courseService from "../services/courseService";
+import { successResponse, STATUS_CODE } from "./baseController";
 
 const getAllCourses = (req, res, next) => {
   try {
     // call service
-    successReponse(STATUS_CODE.OK, { message: " ok" }, res);
+    successResponse(STATUS_CODE.OK, { message: " ok" }, res);
   } catch (error) {
     next(error);
   }
@@ -11,8 +12,8 @@ const getAllCourses = (req, res, next) => {
 
 const createCourse = (req, res, next) => {
   try {
-    // call service
-    successReponse(STATUS_CODE.OK, { message: " ok" }, res);
+    courseService.createCourse(req.course);
+    successResponse(STATUS_CODE.OK, { message: " ok" }, res);
   } catch (error) {
     next(error);
   }
