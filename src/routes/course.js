@@ -7,5 +7,6 @@ const router = Router();
 
 router.post("/", verifyAdmin, courseController.createCourse);
 router.get("/", verifyAdmin, courseController.getAllCourses);
+router.patch("/", verifyAdmin, courseController.updateCourse);
 
 export default router;
