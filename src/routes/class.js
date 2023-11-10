@@ -1,12 +1,12 @@
-// import courseController from "../controllers/courseController";
-// import { verifyAdmin } from "./verify";
+import classController from "../controllers/classController";
+import { verifyAdmin } from "./verify";
 
-// import { Router } from "express";
+import { Router } from "express";
 
-// const router = Router();
+const router = Router();
 
-// router.post("/", verifyAdmin, courseController.createClass);
+router.post("/", verifyAdmin, classController.createClass);
 // router.get("/", verifyAdmin, courseController.getAllCourses);
 // router.patch("/", verifyAdmin, courseController.updateCourse);
 
-// export default router;
+export default router;
