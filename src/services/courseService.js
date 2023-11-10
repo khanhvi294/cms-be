@@ -38,8 +38,12 @@ const createCourse = async (course) => {
 
 const updateCourse = async (course) => {
   const result = findCourseById(course.id);
+
   if (!result) {
     throw new HttpException(400, "Course not exists");
+  }
+  if (!checkCourseTime(course.trainingTime)) {
+    throw new HttpException(400, "Time is not suitable");
   }
   const upCourse = await db.Course.update(course, {
     where: { id: course.id },
