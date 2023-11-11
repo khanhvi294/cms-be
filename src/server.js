@@ -8,7 +8,7 @@ import seedsData from "./seeders";
 require("dotenv").config(); // giup chayj dc dong process.env
 
 let app = express();
-app.use(cors({ origin: true }));
+app.use(cors({ origin: true, credentials: true })); // Enable All CORS Requests
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
