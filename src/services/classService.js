@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import HttpException from "../errors/httpException";
 import db from "../models";
+import { resFindAll } from "../utils/const";
 
 const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
@@ -60,7 +61,7 @@ const updateClass = async (classRoom) => {
     throw new HttpException(400, "TimeEnd is not suitable");
   }
   if (!checkName(classRoom)) {
-    throw new HttpException(400, "Name is exits");
+    throw new HttpException(400, "Name is not exists");
   }
   const upClass = await db.Class.update(classRoom, {
     where: { id: classRoom.id },
@@ -68,8 +69,13 @@ const updateClass = async (classRoom) => {
   return upClass;
 };
 
+const getAllClasses = async () => {
+  const data = await db.Class.findAll();
+  return resFindAll(data);
+};
+
 export default {
-  // getAllCourses,
+  getAllClasses,
   createClass,
   updateClass,
 };

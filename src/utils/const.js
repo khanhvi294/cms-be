@@ -20,3 +20,10 @@ export const ENV_CONFIG = {
   // TOKEN_LIFE_REFRESH_TOKEN: process.env.TOKEN_LIFE_REFRESH_TOKEN,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
 };
+
+export const resFindAll = (data) => {
+  return {
+    data,
+    total: data.length,
+  };
+};

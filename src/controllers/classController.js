@@ -1,14 +1,14 @@
 import classService from "../services/classService";
 import { successResponse, STATUS_CODE } from "./baseController";
 
-// const getAllCourses = async (req, res, next) => {
-//   try {
-//     const result = await courseService.getAllCourses();
-//     successResponse(STATUS_CODE.OK, result, res);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+const getAllClasses = async (req, res, next) => {
+  try {
+    const result = await classService.getAllClasses();
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 const createClass = async (req, res, next) => {
   try {
     const result = await classService.createClass(req.body);
@@ -27,7 +27,7 @@ const updateClass = async (req, res, next) => {
 };
 
 export default {
-  // getAllCourses,
+  getAllClasses,
   createClass,
   updateClass,
 };
