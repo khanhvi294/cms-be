@@ -12,14 +12,17 @@ module.exports = (sequelize, DataTypes) => {
       Round.belongsTo(models.Competition, {
         foreignKey: "competitionId",
         targetKey: "id",
+        as: "competitionRound",
       });
       Round.belongsTo(models.ExamForm, {
         foreignKey: "examFormId",
         targetKey: "id",
+        as: "examFormRound",
       });
       Round.hasMany(models.StudentRound);
       Round.hasMany(models.Judge, {
         foreignKey: "roundId",
+        as: "roundJudge",
       });
     }
   }

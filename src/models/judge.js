@@ -11,14 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Judge.hasMany(models.Score, {
         foreignKey: "judgeId",
+        as: "scoreJudge",
       });
       Judge.belongsTo(models.Round, {
         foreignKey: "roundId",
         targetKey: "id",
+        as: "roundJudge",
       });
       Judge.belongsTo(models.Employee, {
         foreignKey: "employeeId",
         targetKey: "id",
+        as: "employeeJudge",
       });
     }
   }

@@ -12,10 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       CompetitionClass.belongsTo(models.Class, {
         foreignKey: "classId",
         targetKey: "id",
+        as: "ClassCompetitionClass",
       });
       CompetitionClass.belongsTo(models.Competition, {
         foreignKey: "competitionId",
         targetKey: "id",
+        as: "competitionCompetitionClass",
       });
     }
   }

@@ -12,13 +12,16 @@ module.exports = (sequelize, DataTypes) => {
       Register.belongsTo(models.Students, {
         foreignKey: "studentId",
         targetKey: "id",
+        as: "studentRegister",
       });
       Register.belongsTo(models.Competition, {
         foreignKey: "competitionId",
         targetKey: "id",
+        as: "competitionRegister",
       });
       Register.hasMany(models.Score, {
         foreignKey: "participantId",
+        as: "registerScore",
       });
       Register.hasMany(models.Score, {
         foreignKey: "participantId",

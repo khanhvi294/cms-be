@@ -17,10 +17,12 @@ module.exports = (sequelize, DataTypes) => {
 
       Students.hasMany(models.StudentClass, {
         foreignKey: "studentId",
+        as: "ClassStudentStudent",
       });
 
       Students.hasMany(models.Register, {
         foreignKey: "studentId",
+        as: "studentRegister",
       });
     }
   }

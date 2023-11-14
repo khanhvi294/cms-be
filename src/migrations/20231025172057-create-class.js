@@ -22,17 +22,7 @@ module.exports = {
         onUpdate: "cascade",
         onDelete: "cascade",
       },
-      employeeId: {
-        type: Sequelize.INTEGER,
 
-        allowNull: false,
-        references: {
-          model: "Employees",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
       timeStart: {
         type: Sequelize.DATEONLY,
       },

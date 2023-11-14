@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       ExamForm.hasMany(models.Round, {
         foreignKey: "examFormId",
+        as: "examFormRound",
       });
     }
   }

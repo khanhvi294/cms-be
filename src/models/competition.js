@@ -11,16 +11,20 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Competition.hasMany(models.Register, {
         foreignKey: "competitionId",
+        as: "competitionRegister",
       });
       Competition.hasMany(models.CompetitionClass, {
         foreignKey: "competitionId",
+        as: "competitionCompetitionClass",
       });
       Competition.hasMany(models.Round, {
         foreignKey: "competitionId",
+        as: "competitionRound",
       });
       Competition.belongsTo(models.Employee, {
         foreignKey: "employeeId",
         targetKey: "id",
+        as: "employeeCompetition",
       });
     }
   }

@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       Score.belongsTo(models.Judge, {
         foreignKey: "judgeId",
         targetKey: "id",
+        as: "scoreJudge",
       });
       Score.belongsTo(models.Register, {
         foreignKey: "participantId",
         targetKey: "id",
+        as: "registerScore",
       });
     }
   }
