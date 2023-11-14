@@ -74,7 +74,10 @@ const getAllClasses = async () => {
   return resFindAll(data);
 };
 
+export const addStudent = async () => {};
+
 export default {
+  addStudent,
   getAllClasses,
   createClass,
   updateClass,

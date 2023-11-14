@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Employee.belongsTo(models.Account, {
         foreignKey: "accountId",
         targetKey: "id",
+        as: "accountEmployee",
       });
       Employee.hasMany(models.Class, {
         foreignKey: "employeeId",

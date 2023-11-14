@@ -10,7 +10,7 @@ const importAccounts = async () => {
       password: hashPassword,
       role: ROLES.ADMIN,
       isActive: true,
-      Employee: {
+      accountEmployee: {
         fullName: "Admin ",
         cccd: "123123123",
       },
@@ -20,7 +20,7 @@ const importAccounts = async () => {
       password: hashPassword,
       role: ROLES.EMPLOYEE,
       isActive: true,
-      Employee: {
+      accountEmployee: {
         fullName: "Employee ",
         cccd: "123123123",
       },
@@ -30,14 +30,23 @@ const importAccounts = async () => {
       password: hashPassword,
       role: ROLES.STUDENT,
       isActive: true,
-      Student: {
+      accountStudent: {
         fullName: "student ",
       },
     },
   ];
 
   await db.Account.bulkCreate(accounts, {
-    include: [db.Employee, db.Students],
+    include: [
+      {
+        model: db.Employee,
+        as: "accountEmployee",
+      },
+      {
+        model: db.Students,
+        as: "accountStudent",
+      },
+    ],
   });
 };
 

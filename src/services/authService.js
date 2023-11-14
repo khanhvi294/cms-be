@@ -29,6 +29,18 @@ export const findAccount = async (id) => {
   return account;
 };
 
+export const findAccountByEmail = async (email) => {
+  let account = await db.Account.findOne({ where: { email } });
+  return account;
+};
+
+export const getAccountByEmail = async (email) => {
+  const account = await findAccountByEmail(email);
+  if (!account) {
+    throw new HttpException(404, "Account not found");
+  }
+};
+
 const login = async (email, password) => {
   const account = await authAccount(email, password);
 
@@ -36,4 +48,4 @@ const login = async (email, password) => {
   return { token };
 };
 
-export default { login, findAccount };
+export default { login, findAccount, findAccountByEmail };
