@@ -10,6 +10,27 @@ const getAllStudents = async (req, res, next) => {
   }
 };
 
+const createStudent = async (req, res, next) => {
+  try {
+    // validate data sau
+
+    /*
+      data format
+      {
+        accountStudent: {
+          email: 
+        }
+        fullName
+      }
+    */ 
+
+    const result = await studentService.createStudent(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
-  getAllStudents,
+  getAllStudents,createStudent
 };

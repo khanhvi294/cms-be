@@ -9,6 +9,8 @@ export const STATUS = {
   failed: "failed",
 };
 
+export const DEFAULT_PASSWORD = "123123"
+
 export const ENV_CONFIG = {
   CLIENT_URL: process.env.CLIENT_URL,
   PORT: process.env.PORT,

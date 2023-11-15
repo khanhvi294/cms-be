@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    container_name: cms-db
+    ports:
+        - 33065:3306
+    expose:
+        - 3306
+    volumes:
+      - ./db/data:/var/lib/mysql
+        # - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+        - MYSQL_ROOT_PASSWORD=abc
+        - MYSQL_DATABASE=cms-db
