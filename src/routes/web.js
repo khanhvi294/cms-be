@@ -4,6 +4,7 @@ import courseRoutes from "./course";
 import classRoutes from "./class";
 import studentRoutes from "./student";
 import employeeRoutes from "./employee";
+import examFormRoutes from "./examForm";
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ const initWebRoutes = (app) => {
   router.use("/classes", classRoutes);
   router.use("/students", studentRoutes);
   router.use("/employees", employeeRoutes);
+  router.use("/examforms", examFormRoutes);
 
   return app.use("/api", router);
 };
