@@ -33,21 +33,10 @@ export const findExamFormByName = async (name) => {
   return examForm;
 };
 
-export const getAllStudents = async () => {
-  const data = await db.Students.findAll({
-    raw: true,
-    nest: true,
-    attributes: { exclude: ["accountId"] },
-    include: [
-      {
-        model: db.Account,
-        as: "accountStudent",
-        attributes: ["email", "isActive"],
-      },
-    ],
+export const getAllExamForms = async () => {
+  const data = await db.ExamForm.findAll({
     order: [["updatedAt", "DESC"]],
   });
-  console.log("serrrrrrrrrrrrrrrrr", data);
   return resFindAll(data);
 };
 
@@ -74,7 +63,7 @@ export default {
   findStudentById,
   getStudentById,
   // findStudentByEmail,
-  getAllStudents,
+  getAllExamForms,
   createExamForm,
   updateStudent,
 };

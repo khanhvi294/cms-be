@@ -5,7 +5,7 @@ import { Router } from "express";
 
 const router = Router();
 
-//router.get("/", verifyAdmin, examFormController.getAllEmployees);
+router.get("/", verifyAdmin, examFormController.getAllExamForms);
 router.post("/", verifyAdmin, examFormController.createExamForm);
 
 export default router;

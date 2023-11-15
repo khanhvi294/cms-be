@@ -1,15 +1,14 @@
 import { successResponse, STATUS_CODE } from "./baseController";
-import employeeService from "../services/employeeService";
 import examFormsService from "../services/examFormsService";
 
-// const getAllEmployees = async (req, res, next) => {
-//   try {
-//     const result = await employeeService.getAllEmployees();
-//     successResponse(STATUS_CODE.OK, result, res);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+const getAllExamForms = async (req, res, next) => {
+  try {
+    const result = await examFormsService.getAllExamForms();
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const createExamForm = async (req, res, next) => {
   try {
@@ -20,6 +19,6 @@ const createExamForm = async (req, res, next) => {
   }
 };
 export default {
-  //   getAllEmployees,
+  getAllExamForms,
   createExamForm,
 };

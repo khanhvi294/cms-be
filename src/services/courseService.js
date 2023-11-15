@@ -12,10 +12,10 @@ const findCourseById = async (id) => {
   });
   return course;
 };
-const checkCourseTime = (time) => {
-  if (time > 0) return true;
-  return false;
-};
+// const checkCourseTime = (time) => {
+//   if (time > 0) return true;
+//   return false;
+// };
 
 const getAllCourses = async () => {
   const data = await db.Course.findAll();
