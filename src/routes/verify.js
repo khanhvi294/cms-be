@@ -3,11 +3,11 @@ import { ROLES } from "../utils/const";
 
 export const verifyAdmin = [
   auth.isAuthenticated,
-  auth.isAccessible([ROLES.ADMIN]),
+  auth.isAccessible([ROLES.EMPLOYEE]),
 ];
 export const verifyEmployee = [
   auth.isAuthenticated,
-  auth.isAccessible([ROLES.EMPLOYEE]),
+  auth.isAccessible([ROLES.TEACHER]),
 ];
 export const verifyStudent = [
   auth.isAuthenticated,
@@ -16,5 +16,5 @@ export const verifyStudent = [
 
 export const verifyRole = [
   auth.isAuthenticated,
-  auth.isAccessible([ROLES.STUDENT, ROLES.ADMIN, ROLES.EMPLOYEE]),
+  auth.isAccessible([ROLES.STUDENT, ROLES.TEACHER, ROLES.EMPLOYEE]),
 ];

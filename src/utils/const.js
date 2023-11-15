@@ -1,5 +1,5 @@
 export const ROLES = {
-  ADMIN: 2,
+  TEACHER: 2,
   STUDENT: 0,
   EMPLOYEE: 1,
 };
@@ -9,7 +9,7 @@ export const STATUS = {
   failed: "failed",
 };
 
-export const DEFAULT_PASSWORD = "123123"
+export const DEFAULT_PASSWORD = "123123";
 
 export const ENV_CONFIG = {
   CLIENT_URL: process.env.CLIENT_URL,

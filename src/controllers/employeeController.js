@@ -10,6 +10,15 @@ const getAllEmployees = async (req, res, next) => {
   }
 };
 
+const createEmployee = async (req, res, next) => {
+  try {
+    const result = await employeeService.createEmployee(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   getAllEmployees,
+  createEmployee,
 };

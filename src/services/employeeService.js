@@ -1,6 +1,8 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { resFindAll } from "../utils/const";
+import authService from "./authService";
+import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
+import passwordUtil from "../utils/password";
 
 export const getAllEmployees = async () => {
   const data = await db.Employee.findAll({
@@ -18,7 +20,53 @@ export const getAllEmployees = async () => {
   });
   return resFindAll(data);
 };
+export const findEmployeeByEmail = async (email) => {
+  if (!email) {
+    throw new HttpException(400, "Missing parameter");
+  }
+
+  const account = await authService.findAccountByEmail(email);
+  return account;
+};
+
+export const createEmployee = async (data) => {
+  console.log(data);
+  // check mail ton tai chua
+  const account = await findEmployeeByEmail(data.accountEmployee.email);
+  if (account) {
+    throw new HttpException(404, "Email is existing");
+  }
+
+  // hash password
+  const hashPassword =
+    await passwordUtil.generateHashPassword(DEFAULT_PASSWORD);
+
+  // luu vao db
+  const newEmployee = {
+    fullName: data.fullName,
+    cccd: data.CCCD,
+    accountEmployee: {
+      email: data.accountEmployee.email,
+      password: hashPassword,
+      role: ROLES.TEACHER,
+      isActive: true,
+    },
+  };
+
+  // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
+  await db.Employee.create(newEmployee, {
+    include: [
+      {
+        model: db.Account,
+        as: "accountEmployee",
+      },
+    ],
+  });
+
+  return "Tao tai khoan thanh cong";
+};
 
 export default {
   getAllEmployees,
+  createEmployee,
 };

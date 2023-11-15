@@ -22,7 +22,7 @@ const createStudent = async (req, res, next) => {
         }
         fullName
       }
-    */ 
+    */
 
     const result = await studentService.createStudent(req.body);
     successResponse(STATUS_CODE.OK, result, res);
@@ -32,5 +32,6 @@ const createStudent = async (req, res, next) => {
 };
 
 export default {
-  getAllStudents,createStudent
+  getAllStudents,
+  createStudent,
 };

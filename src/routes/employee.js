@@ -6,5 +6,6 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/", verifyAdmin, employeeController.getAllEmployees);
+router.post("/", verifyAdmin, employeeController.createEmployee);
 
 export default router;

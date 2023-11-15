@@ -2,7 +2,7 @@ import HttpException from "../errors/httpException";
 import db from "../models";
 import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
 import authService from "./authService";
-import passwordUtil from '../utils/password'
+import passwordUtil from "../utils/password";
 
 export const findStudentById = async (id) => {
   if (!id) {
@@ -29,7 +29,7 @@ export const findStudentByEmail = async (email) => {
     throw new HttpException(400, "Missing parameter");
   }
 
-  const account = await authService.findAccountByEmail(emai)
+  const account = await authService.findAccountByEmail(email);
   return account;
 };
 
@@ -47,20 +47,20 @@ export const getAllStudents = async () => {
     ],
     order: [["updatedAt", "DESC"]],
   });
+  console.log("serrrrrrrrrrrrrrrrr", data);
   return resFindAll(data);
 };
 
-
 export const createStudent = async (data) => {
   // check mail ton tai chua
-  const account = await findStudentByEmail(data.accountStudent.email)
-  if(account){
+  const account = await findStudentByEmail(data.accountStudent.email);
+  if (account) {
     throw new HttpException(404, "Email is existing");
   }
 
   // hash password
-  const hashPassword = await passwordUtil.generateHashPassword(DEFAULT_PASSWORD);
-
+  const hashPassword =
+    await passwordUtil.generateHashPassword(DEFAULT_PASSWORD);
 
   // luu vao db
   const newStudent = {
@@ -69,9 +69,9 @@ export const createStudent = async (data) => {
       email: data.accountStudent.email,
       password: hashPassword,
       role: ROLES.STUDENT,
-      isActive: true
-    }
-  }
+      isActive: true,
+    },
+  };
 
   // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
   await db.Students.create(newStudent, {
@@ -81,9 +81,9 @@ export const createStudent = async (data) => {
         as: "accountStudent",
       },
     ],
-  }) 
+  });
 
-  return "Tao tai khoan thanh cong"
+  return "Tao tai khoan thanh cong";
 };
 export const updateStudent = async () => {};
 
