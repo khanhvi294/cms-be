@@ -12,6 +12,16 @@ const login = async (req, res, next) => {
   }
 };
 
+const getInfo = async (req, res, next) => {
+  try {
+    const user = await authService.getInfo(req.user.id);
+    successResponse(STATUS_CODE.OK, user, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   login,
+  getInfo,
 };

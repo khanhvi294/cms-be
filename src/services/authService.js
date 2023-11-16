@@ -1,5 +1,6 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
+import { ROLES } from "../utils/const";
 import jwtUtil from "../utils/jwt";
 import passwordUtil from "../utils/password";
 
@@ -28,6 +29,51 @@ export const findAccount = async (id) => {
   let account = await db.Account.findOne({ where: { id } });
   return account;
 };
+export const getStudentByAccount = async (id) => {
+  const student = await db.Account.findOne({
+    where: { id },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["accountId"] },
+    include: [
+      {
+        model: db.Student,
+        as: "accountStudent",
+      },
+    ],
+  });
+  return student;
+};
+
+export const getEmployeeByAccount = async (id) => {
+  const employee = await db.Account.findOne({
+    where: { id },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["accountId"] },
+    attributes: ["id", "email"],
+    include: [
+      {
+        model: db.Employee,
+        as: "accountEmployee",
+        attributes: ["id", "fullName", "cccd"],
+      },
+    ],
+  });
+
+  return employee;
+};
+
+export const getInfo = async (id) => {
+  const account = await findAccount(id);
+  if (!account) {
+    throw new HttpException(422, "Account is not exits");
+  }
+  if (account.role == ROLES.STUDENT) {
+    return getStudentByAccount(id);
+  }
+  return getEmployeeByAccount(id);
+};
 
 export const findAccountByEmail = async (email) => {
   let account = await db.Account.findOne({ where: { email } });
@@ -48,4 +94,4 @@ const login = async (email, password) => {
   return { token };
 };
 
-export default { login, findAccount, findAccountByEmail };
+export default { login, findAccount, findAccountByEmail, getInfo };
