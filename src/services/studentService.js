@@ -74,7 +74,7 @@ export const createStudent = async (data) => {
   };
 
   // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
-  await db.Students.create(newStudent, {
+  const studentNew = await db.Students.create(newStudent, {
     include: [
       {
         model: db.Account,
@@ -83,15 +83,13 @@ export const createStudent = async (data) => {
     ],
   });
 
-  return "Tao tai khoan thanh cong";
+  return studentNew;
+  //  const updateStudent = async () => {};
 };
-export const updateStudent = async () => {};
-
 export default {
   findStudentById,
   getStudentById,
   findStudentByEmail,
   getAllStudents,
   createStudent,
-  updateStudent,
 };

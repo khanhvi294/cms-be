@@ -20,6 +20,7 @@ export const getAllEmployees = async () => {
   });
   return resFindAll(data);
 };
+
 export const findEmployeeByEmail = async (email) => {
   if (!email) {
     throw new HttpException(400, "Missing parameter");
@@ -54,7 +55,7 @@ export const createEmployee = async (data) => {
   };
 
   // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
-  await db.Employee.create(newEmployee, {
+  const employeeNew = await db.Employee.create(newEmployee, {
     include: [
       {
         model: db.Account,
@@ -62,8 +63,8 @@ export const createEmployee = async (data) => {
       },
     ],
   });
-
-  return "Tao tai khoan thanh cong";
+  console.log("data re", employeeNew);
+  return employeeNew;
 };
 
 export default {

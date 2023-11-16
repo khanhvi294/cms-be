@@ -1,4 +1,5 @@
 import db from "../models";
+import { resFindAll } from "../utils/const";
 
 const findCourseByName = async (nameCourse) => {
   const course = await db.Course.findOne({ where: { name: nameCourse } });
@@ -12,18 +13,18 @@ const findCourseById = async (id) => {
   });
   return course;
 };
-// const checkCourseTime = (time) => {
-//   if (time > 0) return true;
-//   return false;
-// };
-
-const getAllCourses = async () => {
-  const data = await db.Course.findAll();
-  return {
-    data,
-    total: data.length,
-  };
+const checkCourseTime = (time) => {
+  if (time > 0) return true;
+  return false;
 };
+
+export const getAllCourses = async () => {
+  const data = await db.Course.findAll({
+    order: [["updatedAt", "DESC"]],
+  });
+  return resFindAll(data);
+};
+
 const createCourse = async (course) => {
   const haveCourse = await findCourseByName(course.name);
   if (haveCourse) {
