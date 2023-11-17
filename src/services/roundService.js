@@ -1,6 +1,8 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import examFormsService from "./examFormsService";
+import competitionService from "./competitionService";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
@@ -18,33 +20,42 @@ export const getAllRounds = async () => {
   return resFindAll(data);
 };
 
-export const createRound = async (data) => {
-  //   const round = await findExamFormByName(data.name);
-  //   if (round) {
-  //     throw new HttpException(404, "Name is existing");
-  //   }
+export const getRoundsByCompetition = async (competitionId) => {};
 
-  // luu vao db
+export const createRound = async (data) => {
+  // find competition
+  const competitionPromises = competitionService.getCompetitionById(
+    data.competitionId
+  );
+
+  // find examForm
+  const examFormPromises = examFormsService.getExamFormById(data.examFormId);
+
+  await Promise.all([competitionPromises, examFormPromises]);
+
+  // save to db
   const newRound = {
     time: data.time,
     exam: data.exam,
     examFormId: data.examFormId,
     competitionId: data.competitionId,
     roundNumber: data.roundNumber,
-    floorPoint: data.floorPoint,
+    numPoint: data.numPoint,
     timeStart: data.timeStart,
   };
 
-  // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
   const roundNew = await db.Round.create(newRound);
 
   return roundNew;
 };
 
-export const updateStudent = async () => {};
+export const updateRound = async () => {};
+export const deleteRound = async () => {};
 
 export default {
   getAllRounds,
   createRound,
-  updateStudent,
+  getRoundsByCompetition,
+  updateRound,
+  deleteRound,
 };

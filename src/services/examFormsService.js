@@ -11,6 +11,24 @@ export const findExamFormByName = async (name) => {
   return examForm;
 };
 
+export const getExamFormById = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.ExamForm.findOne({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("ExamForm"));
+  }
+
+  return data;
+};
+
 export const getAllExamForms = async () => {
   const data = await db.ExamForm.findAll({
     order: [["updatedAt", "DESC"]],
@@ -34,10 +52,9 @@ export const createExamForm = async (data) => {
 
   return examFormNew;
 };
-export const updateStudent = async () => {};
 
 export default {
   getAllExamForms,
   createExamForm,
-  updateStudent,
+  getExamFormById,
 };
