@@ -37,7 +37,27 @@ const createCompetition = async (req, res, next) => {
   }
 };
 
+const updateStatusCompetition = async (req, res, next) => {
+  try {
+    /*
+      FORMAT 
+        {
+         
+        }
+    */
+
+    const result = await competitionService.updateStatusCompetition(
+      req.params.id,
+      req.body.statusId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createCompetition,
   getAllCompetition,
+  updateStatusCompetition,
 };
