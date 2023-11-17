@@ -11,7 +11,6 @@ const findClassRoomByName = async (nameClass) => {
 };
 const findClassById = async (id) => {
   const classRoom = await db.Class.findOne({ where: { id: id } });
-  console.log("dddđ", classRoom);
   return classRoom;
 };
 const checkTimeStart = (timeStart) => {
@@ -50,9 +49,8 @@ const createClass = async (classRoom) => {
   if (!checkTimeStart(classRoom.timeStart)) {
     throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("TimeStart"));
   }
-  if (!checkTimeEnd(classRoom.timeEnd, classRoom.timeStart)) {
-    throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("TimeEnd"));
-  }
+  classRoom.timeEnd = new Date(timeStart);
+  classRoom.timeEnd.setMonth(timeEnd.getMonth() + 3);
 
   const newClassRoom = await db.Class.create(classRoom);
   return newClassRoom;
