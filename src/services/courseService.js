@@ -16,12 +16,12 @@ const findCourseById = async (id) => {
   return course;
 };
 
-const checkName = async (course) => {
-  const courseCheck = await db.Course.findOne({
-    where: { name: course.name, id: { [Op.ne]: course.id } },
-  });
-  return courseCheck;
-};
+// const checkName = async (course) => {
+//   const course = await db.Course.findOne({
+//     where: { name: course.name, id: { [Op.ne]: course.id } },
+//   });
+//   return course;
+// };
 
 const getCourseById = async (id) => {
   if (!id) {
@@ -74,9 +74,9 @@ const updateCourse = async (course) => {
   if (!checkCourseTime(course.trainingTime)) {
     throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("Time"));
   }
-  if (checkName(course)) {
-    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Name"));
-  }
+  // if (checkName(course)) {
+  //   throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Name"));
+  // }
   const upCourse = await db.Course.update(course, {
     where: { id: course.id },
   });
