@@ -78,4 +78,5 @@ export default {
   createCourse,
   updateCourse,
   getCourseById,
+  findCourseById,
 };
