@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.use(handleError);
 
-// seedsData();
+seedsData();
 
 let port = process.env.PORT || 5050; //Port === undefined => Port = 6060
 

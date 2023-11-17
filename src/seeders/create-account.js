@@ -2,6 +2,30 @@ import db from "../models";
 import passwordUtil from "../utils/password";
 import { ROLES } from "../utils/const";
 
+const createAccountSeed = async (data) => {
+  const accountFind = await db.Account.findOne({
+    where: { email: data.email },
+  });
+
+  if (accountFind) {
+    console.log("Account with email: " + accountFind.email + " is Existed");
+    return null;
+  }
+
+  return await db.Account.create(data, {
+    include: [
+      {
+        model: db.Employee,
+        as: "accountEmployee",
+      },
+      {
+        model: db.Students,
+        as: "accountStudent",
+      },
+    ],
+  });
+};
+
 const importAccounts = async () => {
   const hashPassword = await passwordUtil.generateHashPassword("123123");
   const accounts = [
@@ -36,18 +60,25 @@ const importAccounts = async () => {
     },
   ];
 
-  await db.Account.bulkCreate(accounts, {
-    include: [
-      {
-        model: db.Employee,
-        as: "accountEmployee",
-      },
-      {
-        model: db.Students,
-        as: "accountStudent",
-      },
-    ],
+  const dataPromise = [];
+  accounts.forEach((item) => {
+    dataPromise.push(createAccountSeed(item));
   });
+
+  await Promise.all(dataPromise);
+
+  // await db.Account.bulkCreate(accounts, {
+  //   include: [
+  //     {
+  //       model: db.Employee,
+  //       as: "accountEmployee",
+  //     },
+  //     {
+  //       model: db.Students,
+  //       as: "accountStudent",
+  //     },
+  //   ],
+  // });
 };
 
 export default importAccounts;
