@@ -3,6 +3,7 @@ import db from "../models";
 import { resFindAll } from "../utils/const";
 import examFormsService from "./examFormsService";
 import competitionService from "./competitionService";
+import ErrorMessage from "../common/errorMessage";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
@@ -20,7 +21,29 @@ export const getAllRounds = async () => {
   return resFindAll(data);
 };
 
-export const getRoundsByCompetition = async (competitionId) => {};
+export const getRoundsByCompetition = async (competitionId) => {
+  if (!competitionId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Competition.findOne({
+    where: { id: competitionId },
+    raw: true,
+    nest: true,
+    include: [
+      {
+        model: db.Round,
+        as: "competitionRound",
+      },
+    ],
+    order: [["updatedAt", "DESC"]],
+  });
+  if (data.competitionRound) {
+    return resFindAll(data.competitionRound);
+  }
+
+  return resFindAll([]);
+};
 
 export const createRound = async (data) => {
   // find competition
