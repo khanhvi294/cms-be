@@ -39,10 +39,10 @@ const checkTimeStart = (timeStart) => {
 };
 
 const checkName = async (classRoom) => {
-  const course = await db.Course.findOne({
+  const checkClassRoom = await db.Class.findOne({
     where: { name: classRoom.name, id: { [Op.ne]: classRoom.id } },
   });
-  return course;
+  return checkClassRoom;
 };
 const createClass = async (classRoom) => {
   const haveClassRoomPromise = findClassRoomByName(classRoom.name);
@@ -88,8 +88,8 @@ const updateClass = async (classRoom) => {
   if (!checkTimeStart(classRoom.timeStart)) {
     throw new HttpException(400, "TimeStart is not suitable");
   }
-  if (!checkName(classRoom)) {
-    throw new HttpException(400, "Name is not exists");
+  if (checkName(classRoom)) {
+    throw new HttpException(400, "Name is exists");
   }
   const course = await courseService.findCourseById(classRoom.courseId);
   const timeEnd = new Date(classRoom.timeStart);
