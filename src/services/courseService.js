@@ -26,6 +26,11 @@ const getCourseById = async (id) => {
       id: id,
     },
   });
+
+  if (!course) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Course"));
+  }
+
   return course;
 };
 
@@ -72,4 +77,5 @@ export default {
   getAllCourses,
   createCourse,
   updateCourse,
+  getCourseById,
 };

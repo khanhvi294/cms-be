@@ -2,6 +2,8 @@ import { Op } from "sequelize";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import courseService from "./courseService";
+import ErrorMessage from "../common/errorMessage";
 
 const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
@@ -29,15 +31,27 @@ const checkName = async (classRoom) => {
   return course;
 };
 const createClass = async (classRoom) => {
-  const haveClassRoom = await findClassRoomByName(classRoom.name);
+  const haveClassRoomPromise = findClassRoomByName(classRoom.name);
+  const findCoursePromise = findCourseByName(classRoom.courseId);
+
+  const [haveClassRoom, findCourse] = await Promise.all([
+    haveClassRoomPromise,
+    findCoursePromise,
+  ]);
+
   if (haveClassRoom) {
-    throw new HttpException(400, "classRoom already exists");
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Class"));
   }
+
+  if (!findCourse) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Course"));
+  }
+
   if (!checkTimeStart(classRoom.timeStart)) {
-    throw new HttpException(400, "TimeStart is not suitable");
+    throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("TimeStart"));
   }
   if (!checkTimeEnd(classRoom.timeEnd, classRoom.timeStart)) {
-    throw new HttpException(400, "TimeEnd is not suitable");
+    throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("TimeEnd"));
   }
 
   const newClassRoom = await db.Class.create(classRoom);

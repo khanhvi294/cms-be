@@ -1,11 +1,11 @@
 import auth from "../middlewares/auth";
 import { ROLES } from "../utils/const";
 
-export const verifyAdmin = [
+export const verifyEmployee = [
   auth.isAuthenticated,
   auth.isAccessible([ROLES.EMPLOYEE]),
 ];
-export const verifyEmployee = [
+export const verifyTeacher = [
   auth.isAuthenticated,
   auth.isAccessible([ROLES.TEACHER]),
 ];

@@ -1,12 +1,12 @@
 import classController from "../controllers/classController";
-import { verifyAdmin } from "./verify";
+import { verifyEmployee } from "./verify";
 
 import { Router } from "express";
 
 const router = Router();
 
-router.post("/", verifyAdmin, classController.createClass);
-router.get("/", verifyAdmin, classController.getAllClasses);
-router.patch("/", verifyAdmin, classController.updateClass);
+router.post("/", verifyEmployee, classController.createClass);
+router.get("/", verifyEmployee, classController.getAllClasses);
+router.patch("/", verifyEmployee, classController.updateClass);
 
 export default router;

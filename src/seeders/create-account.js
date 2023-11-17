@@ -32,7 +32,7 @@ const importAccounts = async () => {
     {
       email: "admin@gmail.com",
       password: hashPassword,
-      role: ROLES.ADMIN,
+      role: ROLES.EMPLOYEE,
       isActive: true,
       accountEmployee: {
         fullName: "Admin ",
@@ -42,7 +42,7 @@ const importAccounts = async () => {
     {
       email: "teacher@gmail.com",
       password: hashPassword,
-      role: ROLES.EMPLOYEE,
+      role: ROLES.TEACHER,
       isActive: true,
       accountEmployee: {
         fullName: "Employee ",

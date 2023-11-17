@@ -1,11 +1,11 @@
 import examFormController from "../controllers/examFormController";
-import { verifyAdmin } from "./verify";
+import { verifyEmployee } from "./verify";
 
 import { Router } from "express";
 
 const router = Router();
 
-router.get("/", verifyAdmin, examFormController.getAllExamForms);
-router.post("/", verifyAdmin, examFormController.createExamForm);
+router.get("/", verifyEmployee, examFormController.getAllExamForms);
+router.post("/", verifyEmployee, examFormController.createExamForm);
 
 export default router;

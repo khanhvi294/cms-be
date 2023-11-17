@@ -1,11 +1,11 @@
 import employeeController from "../controllers/employeeController";
-import { verifyAdmin } from "./verify";
+import { verifyEmployee } from "./verify";
 
 import { Router } from "express";
 
 const router = Router();
 
-router.get("/", verifyAdmin, employeeController.getAllEmployees);
-router.post("/", verifyAdmin, employeeController.createEmployee);
+router.get("/", verifyEmployee, employeeController.getAllEmployees);
+router.post("/", verifyEmployee, employeeController.createEmployee);
 
 export default router;
