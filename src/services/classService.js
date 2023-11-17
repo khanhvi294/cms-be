@@ -37,10 +37,6 @@ const checkTimeStart = (timeStart) => {
   const isRight = Date.parse(timeStart) > Date.parse(currentDate);
   return isRight;
 };
-const checkTimeEnd = (timeEnd, timeStart) => {
-  const isRight = Date.parse(timeEnd) >= Date.parse(timeStart);
-  return isRight;
-};
 
 const checkName = async (classRoom) => {
   const course = await db.Course.findOne({
@@ -68,8 +64,12 @@ const createClass = async (classRoom) => {
   if (!checkTimeStart(classRoom.timeStart)) {
     throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("TimeStart"));
   }
-  classRoom.timeEnd = new Date(timeStart);
-  classRoom.timeEnd.setMonth(timeEnd.getMonth() + 3);
+
+  const course = await courseService.findCourseById(classRoom.courseId);
+  const timeEnd = new Date(classRoom.timeStart);
+
+  timeEnd.setMonth(timeEnd.getMonth() + course.trainingTime);
+  classRoom.timeEnd = timeEnd;
 
   const newClassRoom = await db.Class.create(classRoom);
   return newClassRoom;
@@ -77,7 +77,7 @@ const createClass = async (classRoom) => {
 
 const updateClass = async (classRoom) => {
   const result = await findClassById(classRoom.id);
-  console.log("hhhhh", result);
+
   if (!result) {
     throw new HttpException(400, "Class not exists");
   }
@@ -88,12 +88,13 @@ const updateClass = async (classRoom) => {
   if (!checkTimeStart(classRoom.timeStart)) {
     throw new HttpException(400, "TimeStart is not suitable");
   }
-  if (!checkTimeEnd(classRoom.timeEnd, classRoom.timeStart)) {
-    throw new HttpException(400, "TimeEnd is not suitable");
-  }
   if (!checkName(classRoom)) {
     throw new HttpException(400, "Name is not exists");
   }
+  const course = await courseService.findCourseById(classRoom.courseId);
+  const timeEnd = new Date(classRoom.timeStart);
+  timeEnd.setMonth(timeEnd.getMonth() + course.trainingTime);
+  classRoom.timeEnd = timeEnd;
   const upClass = await db.Class.update(classRoom, {
     where: { id: classRoom.id },
   });
