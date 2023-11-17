@@ -72,6 +72,23 @@ export const createRound = async (data) => {
   return roundNew;
 };
 
+export const getRoundById = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Round.findOne({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Round"));
+  }
+
+  return data;
+};
 export const updateRound = async () => {};
 export const deleteRound = async () => {};
 
@@ -81,4 +98,5 @@ export default {
   getRoundsByCompetition,
   updateRound,
   deleteRound,
+  getRoundById,
 };

@@ -67,7 +67,40 @@ export const createEmployee = async (data) => {
   return employeeNew;
 };
 
+const findEmployeeById = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Employee.findOne({
+    where: {
+      id: id,
+    },
+  });
+  return data;
+};
+
+const getEmployeeById = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Employee.findOne({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Employee"));
+  }
+
+  return data;
+};
+
 export default {
   getAllEmployees,
   createEmployee,
+  getEmployeeById,
+  findEmployeeById,
 };

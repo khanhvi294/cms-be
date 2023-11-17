@@ -7,6 +7,7 @@ import employeeRoutes from "./employee";
 import roundRoutes from "./round";
 import examFormRoutes from "./examForm";
 import competitionRoutes from "./competition";
+import judgeRoutes from "./judge";
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ const initWebRoutes = (app) => {
   router.use("/employees", employeeRoutes);
   router.use("/examforms", examFormRoutes);
   router.use("/competitions", competitionRoutes);
+  router.use("/judges", judgeRoutes);
 
   return app.use("/api", router);
 };
