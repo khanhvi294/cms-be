@@ -10,6 +10,17 @@ const getAllRounds = async (req, res, next) => {
   }
 };
 
+const getRoundsByCompetition = async (req, res, next) => {
+  try {
+    const result = await roundService.getRoundsByCompetition(
+      req.params.competitionId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const createRound = async (req, res, next) => {
   try {
     // validate data sau
@@ -34,4 +45,5 @@ const createRound = async (req, res, next) => {
 export default {
   getAllRounds,
   createRound,
+  getRoundsByCompetition,
 };
