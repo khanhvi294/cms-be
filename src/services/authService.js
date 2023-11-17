@@ -51,7 +51,7 @@ export const getEmployeeByAccount = async (id) => {
     raw: true,
     nest: true,
     attributes: { exclude: ["accountId"] },
-    attributes: ["id", "email"],
+    attributes: ["id", "email", "role"],
     include: [
       {
         model: db.Employee,
