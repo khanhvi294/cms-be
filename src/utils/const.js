@@ -9,6 +9,13 @@ export const STATUS = {
   failed: "failed",
 };
 
+export const STATUS_COMPETITION = {
+  CREATED: 0,
+  STARTED: 1,
+  ENDED: 2,
+  CANCEL: 3,
+};
+
 export const DEFAULT_PASSWORD = "123123";
 
 export const ENV_CONFIG = {

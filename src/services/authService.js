@@ -29,6 +29,7 @@ export const findAccount = async (id) => {
   let account = await db.Account.findOne({ where: { id } });
   return account;
 };
+
 export const getStudentByAccount = async (id) => {
   const student = await db.Account.findOne({
     where: { id },
@@ -94,4 +95,11 @@ const login = async (email, password) => {
   return { token };
 };
 
-export default { login, findAccount, findAccountByEmail, getInfo };
+export default {
+  login,
+  findAccount,
+  findAccountByEmail,
+  getInfo,
+  getEmployeeByAccount,
+  getStudentByAccount,
+};
