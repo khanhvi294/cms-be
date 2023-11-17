@@ -1,10 +1,9 @@
 import { successResponse, STATUS_CODE } from "./baseController";
-import studentService from "../services/studentService";
 import roundService from "../services/roundService";
 
-const getAllStudents = async (req, res, next) => {
+const getAllRounds = async (req, res, next) => {
   try {
-    const result = await studentService.getAllStudents();
+    const result = await roundService.getAllRounds();
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -33,6 +32,6 @@ const createRound = async (req, res, next) => {
 };
 
 export default {
-  getAllStudents,
+  getAllRounds,
   createRound,
 };

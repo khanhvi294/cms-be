@@ -11,9 +11,9 @@ export const findExamFormByName = async (name) => {
   return examForm;
 };
 
-export const getAllExamForms = async () => {
-  const data = await db.ExamForm.findAll({
-    order: [["updatedAt", "DESC"]],
+export const getAllRounds = async () => {
+  const data = await db.Round.findAll({
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };
@@ -44,7 +44,7 @@ export const createRound = async (data) => {
 export const updateStudent = async () => {};
 
 export default {
-  getAllExamForms,
+  getAllRounds,
   createRound,
   updateStudent,
 };
