@@ -16,11 +16,11 @@ const createCompetition = async (req, res, next) => {
       FORMAT
         {
           name
-           maximumQuantity
+          maximumQuantity
           minimumQuantity
-           numOfPrizes
-            numberOfRound
-           timeStart
+          numOfPrizes
+          numberOfRound
+          timeStart
           timeEnd
           competitionClass: ["1","2","3","4","5"]
         }

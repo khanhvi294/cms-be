@@ -1,3 +1,4 @@
+import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { ROLES } from "../utils/const";
@@ -7,14 +8,14 @@ import passwordUtil from "../utils/password";
 export const authAccount = async (email, password) => {
   let account = await db.Account.findOne({ where: { email } });
   if (!account) {
-    throw new HttpException(404, "Email hoặc mật khẩu không đúng !!!");
+    throw new HttpException(404, ErrorMessage.LOGIN_FAILED);
   }
   const isPasswordMatch = await passwordUtil.comparePassword(
     account.password,
     password
   );
   if (!isPasswordMatch) {
-    throw new HttpException(404, "Email hoặc mật khẩu không đúng !!!");
+    throw new HttpException(404, ErrorMessage.LOGIN_FAILED);
   }
   if (!account.isActive) {
     throw new HttpException(
