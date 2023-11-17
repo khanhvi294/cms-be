@@ -16,6 +16,10 @@ export const STATUS_COMPETITION = {
   CANCEL: 3,
 };
 
+export const checkCompetitionStatus = (statusId) => {
+  return Object.values(STATUS_COMPETITION).includes(statusId);
+};
+
 export const DEFAULT_PASSWORD = "123123";
 
 export const ENV_CONFIG = {

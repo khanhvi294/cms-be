@@ -5,6 +5,7 @@ const ErrorMessage = {
   OBJECT_NOT_FOUND: (name) => `${name} is not found`,
   DATA_IS_INVALID: (name) => `${name} is invalid`,
   LOGIN_FAILED: "Email or password is incorrect",
+  INTERNAL_ERROR: "Internal error",
 };
 
 export default ErrorMessage;

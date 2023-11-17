@@ -5,6 +5,7 @@ import { STATUS_COMPETITION, resFindAll } from "../utils/const";
 import classService from "./classService";
 import competitionClassService from "./competitionClassService";
 import { sequelize } from "../config/connectDB";
+import { checkCompetitionStatus } from "../utils/const";
 
 export const createCompetition = async (employeeId, data) => {
   if (!data.competitionClass) {
@@ -61,7 +62,54 @@ export const getAllCompetition = async () => {
   return resFindAll(data);
 };
 
+export const getCompetitionById = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Competition.findOne({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Competition"));
+  }
+
+  return data;
+};
+
+export const updateStatusCompetition = async (id, statusId) => {
+  const competition = await getCompetitionById(id);
+  if (!checkCompetitionStatus(statusId)) {
+    throw new HttpException(422, ErrorMessage.DATA_IS_INVALID("Status"));
+  }
+
+  const dataUpdate = await db.Competition.update(
+    {
+      status: statusId,
+    },
+    { where: { id } }
+  );
+
+  if (dataUpdate[0] === 1) {
+    return await getCompetitionById(id);
+  }
+
+  throw new HttpException(400, ErrorMessage.INTERNAL_ERROR);
+};
+
+const addClassToCompetition = async () => {};
+const removeClassToCompetition = async () => {};
+const updateCompetition = async () => {};
+
 export default {
   createCompetition,
   getAllCompetition,
+  getCompetitionById,
+  updateStatusCompetition,
+  addClassToCompetition,
+  removeClassToCompetition,
+  updateCompetition,
 };
