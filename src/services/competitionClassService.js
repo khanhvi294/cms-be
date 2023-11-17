@@ -33,10 +33,24 @@ const getAllClassCanJoinCompetition = async (competitionId) => {
     order: [["updatedAt", "DESC"]],
   });
 
-  return classes;
+  // return classes;
+
+  return classes.filter((item) => checkClassCanJoinCompetition(item));
 };
 
-const checkClassCanJoinCompetition = async (classObj) => {};
+const checkClassCanJoinCompetition = async (classObj) => {
+  const timeStart = new Date(classObj.timeStart);
+  const timeEnd = new Date(classObj.timeEnd);
+
+  const month =
+    (timeEnd.getYear() - timeStart.getYear()) * 12 +
+    (timeEnd.getMonth() - timeStart.getMonth());
+
+  if (month >= (2 / 3) * classObj.courseClass.trainingTime) {
+    return true;
+  }
+  return false;
+};
 
 export default {
   createCompetitionClass,
