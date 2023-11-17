@@ -38,8 +38,8 @@ module.exports = {
       roundNumber: {
         type: Sequelize.INTEGER,
       },
-      floorPoint: {
-        type: Sequelize.FLOAT,
+      numPoint: {
+        type: Sequelize.INTEGER,
       },
       timeStart: {
         type: Sequelize.DATEONLY,

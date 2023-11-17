@@ -2,38 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Scores", {
+    await queryInterface.createTable("StudentRounds", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      judgeId: {
+      studentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Judges",
+          model: "Students",
           key: "id",
         },
         onUpdate: "cascade",
         onDelete: "cascade",
       },
-      participantRoundId: {
+      roundId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "StudentRounds",
+          model: "Rounds",
           key: "id",
         },
         onUpdate: "cascade",
         onDelete: "cascade",
-      },
-      // roundId: {
-      //   type: Sequelize.INTEGER,
-      // },
-      score: {
-        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,
@@ -46,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Scores");
+    await queryInterface.dropTable("StudentRounds");
   },
 };

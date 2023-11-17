@@ -12,6 +12,20 @@ const getAllCompetition = async (req, res, next) => {
 };
 const createCompetition = async (req, res, next) => {
   try {
+    /*
+      FORMAT
+        {
+          name
+           maximumQuantity
+          minimumQuantity
+           numOfPrizes
+            numberOfRound
+           timeStart
+          timeEnd
+          competitionClass: ["1","2","3","4","5"]
+        }
+    */
+
     const employee = await authService.getEmployeeByAccount(req.user.id);
     const result = await competitionService.createCompetition(
       employee.accountEmployee.id,

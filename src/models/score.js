@@ -9,22 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // Score.belongsTo(models.StudentRound);
+      Score.belongsTo(models.StudentRound, {
+        foreignKey: "participantRoundId",
+        targetKey: "id",
+        as: "studentRoundScore",
+      });
       Score.belongsTo(models.Judge, {
         foreignKey: "judgeId",
         targetKey: "id",
         as: "scoreJudge",
       });
-      Score.belongsTo(models.Register, {
-        foreignKey: "participantId",
-        targetKey: "id",
-        as: "registerScore",
-      });
+      // Score.belongsTo(models.Register, {
+      //   foreignKey: "participantId",
+      //   targetKey: "id",
+      //   as: "registerScore",
+      // });
     }
   }
   Score.init(
     {
-      participantId: DataTypes.INTEGER,
+      participantRoundId: DataTypes.INTEGER,
       judgeId: DataTypes.INTEGER,
       // roundId: DataTypes.INTEGER,
       score: DataTypes.FLOAT,

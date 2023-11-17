@@ -19,7 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "examFormRound",
       });
-      Round.hasMany(models.StudentRound);
+      Round.hasMany(models.StudentRound, {
+        foreignKey: "roundId",
+        as: "roundStudentRound",
+      });
       Round.hasMany(models.Judge, {
         foreignKey: "roundId",
         as: "roundJudge",
@@ -33,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       exam: DataTypes.STRING,
       time: DataTypes.INTEGER,
       roundNumber: DataTypes.INTEGER,
-      floorPoint: DataTypes.FLOAT,
+      numPoint: DataTypes.INTEGER,
       timeStart: DataTypes.DATEONLY,
     },
     {
