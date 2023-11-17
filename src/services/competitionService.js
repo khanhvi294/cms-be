@@ -19,7 +19,7 @@ export const createCompetition = async (employeeId, data) => {
 };
 
 export const getAllCompetition = async () => {
-  const data = await db.Competition.findAll();
+  const data = await db.Competition.findAll({ order: [["createdAt", "DESC"]] });
   return resFindAll(data);
 };
 
