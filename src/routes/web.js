@@ -4,6 +4,7 @@ import courseRoutes from "./course";
 import classRoutes from "./class";
 import studentRoutes from "./student";
 import employeeRoutes from "./employee";
+import roundRoutes from "./round";
 import examFormRoutes from "./examForm";
 import competitionRoutes from "./competition";
 
@@ -17,6 +18,7 @@ const initWebRoutes = (app) => {
   router.use("/courses", courseRoutes);
   router.use("/classes", classRoutes);
   router.use("/students", studentRoutes);
+  router.use("/rounds", roundRoutes);
   router.use("/employees", employeeRoutes);
   router.use("/examforms", examFormRoutes);
   router.use("/competitions", competitionRoutes);
