@@ -17,10 +17,10 @@ const findCourseById = async (id) => {
 };
 
 const checkName = async (course) => {
-  const course = await db.Course.findOne({
+  const courseCheck = await db.Course.findOne({
     where: { name: course.name, id: { [Op.ne]: course.id } },
   });
-  return course;
+  return courseCheck;
 };
 
 const getCourseById = async (id) => {

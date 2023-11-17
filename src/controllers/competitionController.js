@@ -1,6 +1,7 @@
 import competitionService from "../services/competitionService";
 import { successResponse, STATUS_CODE } from "./baseController";
 import authService from "../services/authService";
+import competitionClassService from "../services/competitionClassService";
 
 const getAllCompetition = async (req, res, next) => {
   try {
@@ -10,6 +11,18 @@ const getAllCompetition = async (req, res, next) => {
     next(error);
   }
 };
+
+const getAllClassCanJoinCompetition = async (req, res, next) => {
+  try {
+    const result = await competitionClassService.getAllClassCanJoinCompetition(
+      req.params.id
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const createCompetition = async (req, res, next) => {
   try {
     /*
@@ -60,4 +73,5 @@ export default {
   createCompetition,
   getAllCompetition,
   updateStatusCompetition,
+  getAllClassCanJoinCompetition,
 };

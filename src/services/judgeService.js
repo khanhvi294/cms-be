@@ -1,6 +1,6 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { resFindAll } from "../utils/const";
+import { ROLES, resFindAll } from "../utils/const";
 import ErrorMessage from "../common/errorMessage";
 import employeeService from "./employeeService";
 import roundService from "./roundService";
@@ -31,11 +31,33 @@ export const getAllJudgeByRound = async (roundId) => {
   return resFindAll([]);
 };
 
+export const findJudgeByEmployeeIdAndRoundId = async (data) => {
+  if (!data.employeeId || !data.roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const judge = await db.Judge.findOne({
+    where: { roundId: data.roundId, employeeId: data.employeeId },
+  });
+  return judge;
+};
+
 export const createJudge = async (data) => {
-  await Promise.all[
-    (employeeService.getEmployeeById(data.employeeId),
-    roundService.getRoundById(data.roundId))
-  ];
+  const checkJudge = await findJudgeByEmployeeIdAndRoundId(data);
+  if (checkJudge) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
+  }
+
+  const employeePromise = employeeService.getEmployeeByIdIncludesAccount(
+    data.employeeId
+  );
+  const roundPromise = roundService.getRoundById(data.roundId);
+
+  const [employee] = await Promise.all([employeePromise, roundPromise]);
+
+  if (employee?.accountEmployee?.role != ROLES.TEACHER) {
+    throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("Data"));
+  }
 
   const judge = await db.Judge.create({
     employeeId: data.employeeId,

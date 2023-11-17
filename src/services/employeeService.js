@@ -98,9 +98,37 @@ const getEmployeeById = async (id) => {
   return data;
 };
 
+const getEmployeeByIdIncludesAccount = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Employee.findOne({
+    where: {
+      id: id,
+    },
+    raw: true,
+    nest: true,
+    include: [
+      {
+        model: db.Account,
+        as: "accountEmployee",
+        attributes: ["email", "isActive", "id", "role"],
+      },
+    ],
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Employee"));
+  }
+
+  return data;
+};
+
 export default {
   getAllEmployees,
   createEmployee,
   getEmployeeById,
   findEmployeeById,
+  getEmployeeByIdIncludesAccount,
 };
