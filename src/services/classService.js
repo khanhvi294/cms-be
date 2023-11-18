@@ -106,6 +106,17 @@ const getAllClasses = async () => {
   return resFindAll(data);
 };
 
+const getClassChooseJoin = async (timeStart) => {
+  const data = await db.Class.findAll({
+    where: {
+      timeEnd: {
+        [db.Sequelize.Op.gt]: timeStart,
+      },
+    },
+  });
+
+  return data;
+};
 export const addStudent = async () => {};
 
 export default {
@@ -114,4 +125,5 @@ export default {
   createClass,
   updateClass,
   getClassById,
+  getClassChooseJoin,
 };

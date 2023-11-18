@@ -8,6 +8,7 @@ import authService from "../services/authService";
 import competitionClassService from "../services/competitionClassService";
 import { validateData } from "../utils/validateData";
 import competitionValidation from "../validations/competitionValidation";
+import classService from "../services/classService";
 
 const getAllCompetition = async (req, res, next) => {
   try {
@@ -17,7 +18,14 @@ const getAllCompetition = async (req, res, next) => {
     next(error);
   }
 };
-
+const getClass = async (req, res, next) => {
+  try {
+    const result = await classService.getClassChooseJoin(req.params.timeStart);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 const getAllClassCanJoinCompetition = async (req, res, next) => {
   try {
     const result = await competitionClassService.getAllClassCanJoinCompetition(
@@ -85,4 +93,5 @@ export default {
   getAllCompetition,
   updateStatusCompetition,
   getAllClassCanJoinCompetition,
+  getClass,
 };
