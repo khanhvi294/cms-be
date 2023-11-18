@@ -1,5 +1,11 @@
-import { successResponse, STATUS_CODE } from "./baseController";
+import {
+  successResponse,
+  STATUS_CODE,
+  errorValidateResponse,
+} from "./baseController";
 import examFormsService from "../services/examFormsService";
+import { validateData } from "../utils/validateData";
+import examFormValidate from "../validations/examFormValidation";
 
 const getAllExamForms = async (req, res, next) => {
   try {
@@ -12,6 +18,11 @@ const getAllExamForms = async (req, res, next) => {
 
 const createExamForm = async (req, res, next) => {
   try {
+    const err = await validateData(examFormValidate.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+
     const result = await examFormsService.createExamForm(req.body);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {

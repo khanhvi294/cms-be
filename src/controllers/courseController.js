@@ -1,5 +1,11 @@
 import courseService from "../services/courseService";
-import { successResponse, STATUS_CODE } from "./baseController";
+import { validateData } from "../utils/validateData";
+import courseValidation from "../validations/courseValidation";
+import {
+  successResponse,
+  STATUS_CODE,
+  errorValidateResponse,
+} from "./baseController";
 
 const getAllCourses = async (req, res, next) => {
   try {
@@ -11,6 +17,10 @@ const getAllCourses = async (req, res, next) => {
 };
 const createCourse = async (req, res, next) => {
   try {
+    const err = await validateData(courseValidation.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
     const result = await courseService.createCourse(req.body);
     successResponse(STATUS_CODE.CREATED, result, res);
   } catch (error) {

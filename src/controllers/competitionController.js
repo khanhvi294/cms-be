@@ -1,7 +1,13 @@
 import competitionService from "../services/competitionService";
-import { successResponse, STATUS_CODE } from "./baseController";
+import {
+  successResponse,
+  STATUS_CODE,
+  errorValidateResponse,
+} from "./baseController";
 import authService from "../services/authService";
 import competitionClassService from "../services/competitionClassService";
+import { validateData } from "../utils/validateData";
+import competitionValidation from "../validations/competitionValidation";
 
 const getAllCompetition = async (req, res, next) => {
   try {
@@ -38,6 +44,11 @@ const createCompetition = async (req, res, next) => {
           competitionClass: ["1","2","3","4","5"]
         }
     */
+
+    // const err = await validateData(competitionValidation.create, req.body);
+    // if (err) {
+    //   return errorValidateResponse(422, err, res);
+    // }
 
     const employee = await authService.getEmployeeByAccount(req.user.id);
     const result = await competitionService.createCompetition(
