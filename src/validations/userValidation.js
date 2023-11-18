@@ -4,13 +4,13 @@ const userValidate = {
   login: (data) => {
     const schema = Joi.object({
       email: Joi.string().email().required().messages({
-        "any.required": "Vui lòng nhập email",
-        "string.email": "Email không hợp lệ",
-        "string.empty": "Vui lòng nhập email",
+        "any.required": "Email is required",
+        "string.email": "Email is invalid",
+        "string.empty": "Email is required",
       }),
       password: Joi.string().required().messages({
-        "any.required": "Vui lòng nhập mật khẩu",
-        "string.empty": "Vui lòng nhập mật khẩu",
+        "any.required": "Password is required",
+        "string.empty": "Password is required",
       }),
     });
 
@@ -18,4 +18,4 @@ const userValidate = {
   },
 };
 
-export default { userValidate };
+export default userValidate;
