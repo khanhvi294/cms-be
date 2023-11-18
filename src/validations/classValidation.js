@@ -14,6 +14,11 @@ const classValidate = {
         "string.empty": "Password is required",
         "string.isoDate": "timeStart is invalid",
       }),
+      courseId: Joi.number().integer().min(1).required().messages({
+        "any.required": "courseId is required",
+        "number.integer": "courseId must be integer",
+        "number.min": "courseId must be greater than 0 and is an integer",
+      }),
     });
 
     return schema.validate(data);
