@@ -45,6 +45,10 @@ export const createCompetition = async (employeeId, data) => {
       return { ...competition, competitionClass: result };
     });
 
+    if (result?.dataValues) {
+      return result.dataValues;
+    }
+
     return result;
     // If the execution reaches this line, the transaction has been committed successfully
     // `result` is whatever was returned from the transaction callback (the `user`, in this case)
