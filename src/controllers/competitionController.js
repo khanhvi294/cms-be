@@ -18,6 +18,16 @@ const getAllCompetition = async (req, res, next) => {
     next(error);
   }
 };
+
+const getCompetitionById = async (req, res, next) => {
+  try {
+    const result = await competitionService.getCompetitionById(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getClass = async (req, res, next) => {
   try {
     const result = await classService.getClassChooseJoin(req.params.timeStart);
@@ -94,4 +104,5 @@ export default {
   updateStatusCompetition,
   getAllClassCanJoinCompetition,
   getClass,
+  getCompetitionById,
 };

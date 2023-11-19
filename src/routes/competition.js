@@ -7,6 +7,7 @@ const router = Router();
 
 router.post("/", verifyEmployee, competitionController.createCompetition);
 router.get("/", competitionController.getAllCompetition);
+router.get("/:id", competitionController.getCompetitionById);
 // router.get(
 //   "/:id/join",
 //   verifyEmployee,
