@@ -43,7 +43,7 @@ export const authAccount = async (id) => {
 
 export const isAccessible = (permissions) => {
   return async (req, res, next) => {
-    const role = req?.user?.role || "";
+    const role = req?.user?.role;
     if (!permissions.includes(role)) {
       res
         .status(401)

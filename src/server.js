@@ -4,7 +4,6 @@ import connection from "./config/connectDB.js";
 import handleError from "./middlewares/error.js";
 import cors from "cors";
 import seedsData from "./seeders";
-
 require("dotenv").config(); // giup chayj dc dong process.env
 
 let app = express();

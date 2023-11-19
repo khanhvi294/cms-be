@@ -4,6 +4,7 @@ import db from "../models";
 import { resFindAll } from "../utils/const";
 import courseService from "./courseService";
 import ErrorMessage from "../common/errorMessage";
+import studentService from "./studentService";
 
 const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
@@ -117,7 +118,48 @@ const getClassChooseJoin = async (timeStart) => {
 
   return data;
 };
-export const addStudent = async () => {};
+
+export const checkStudentByStudentIdAndClassId = async (data) => {
+  const studentClass = await db.StudentClass.findOne({
+    where: { studentId: data.studentId, classId: data.classId },
+  });
+
+  if (studentClass) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("This student is already in class " + data.classId)
+    );
+  }
+  return false;
+};
+
+export const addStudent = async (data) => {
+  /**
+   * data {
+   *    studentId
+   *    classId
+   * }
+   */
+
+  if (!data.studentId || !data.classId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  // check student va class ton tai hay khong
+  // check student da duoc add vo lop chua
+  await Promise.all([
+    studentService.getStudentById(data.studentId),
+    getClassById(data.classId),
+    checkStudentByStudentIdAndClassId(data),
+  ]);
+
+  const studentRegister = await db.StudentClass.create({
+    studentId: data.studentId,
+    classId: data.classId,
+  });
+
+  return studentRegister;
+};
 
 export default {
   addStudent,

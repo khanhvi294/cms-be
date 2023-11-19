@@ -39,7 +39,7 @@ export const getStudentByAccount = async (id) => {
     attributes: { exclude: ["accountId"] },
     include: [
       {
-        model: db.Student,
+        model: db.Students,
         as: "accountStudent",
       },
     ],

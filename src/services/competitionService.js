@@ -89,6 +89,32 @@ export const getCompetitionById = async (id) => {
   return data;
 };
 
+export const getCompetitionIncludeClass = async (id) => {
+  if (!id) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Competition.findOne({
+    where: {
+      id: id,
+    },
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.CompetitionClass,
+        as: "competitionCompetitionClass",
+      },
+    ],
+  });
+
+  if (!data) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Competition"));
+  }
+
+  return data;
+};
+
 export const updateStatusCompetition = async (id, statusId) => {
   const competition = await getCompetitionById(id);
   if (!checkCompetitionStatus(statusId)) {
@@ -121,4 +147,5 @@ export default {
   addClassToCompetition,
   removeClassToCompetition,
   updateCompetition,
+  getCompetitionIncludeClass,
 };

@@ -3,6 +3,7 @@ import db from "../models";
 import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
 import authService from "./authService";
 import passwordUtil from "../utils/password";
+import ErrorMessage from "../common/errorMessage";
 
 export const findStudentById = async (id) => {
   if (!id) {
@@ -33,11 +34,36 @@ export const findStudentByEmail = async (email) => {
   return account;
 };
 
+export const getStudentIncludesObj = async (studentId, obj) => {};
+
+export const getStudentIncludesClass = async (studentId) => {
+  if (!studentId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.Students.findOne({
+    raw: false,
+    nest: true,
+    where: { id: studentId },
+    attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+    include: [
+      {
+        model: db.StudentClass,
+        as: "ClassStudentStudent",
+        // attributes: ["email", "isActive"],
+        // order: [["updatedAt", "DESC"]],
+      },
+    ],
+  });
+
+  return data;
+};
+
 export const getAllStudents = async () => {
   const data = await db.Students.findAll({
     raw: true,
     nest: true,
-    attributes: { exclude: ["accountId"] },
+    attributes: { exclude: ["accountId", "password"] },
     include: [
       {
         model: db.Account,
@@ -92,4 +118,5 @@ export default {
   findStudentByEmail,
   getAllStudents,
   createStudent,
+  getStudentIncludesClass,
 };

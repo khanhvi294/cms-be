@@ -36,8 +36,18 @@ const updateClass = async (req, res, next) => {
   }
 };
 
+const addStudent = async (req, res, next) => {
+  try {
+    const result = await classService.addStudent(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAllClasses,
   createClass,
   updateClass,
+  addStudent,
 };
