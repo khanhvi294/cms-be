@@ -10,20 +10,20 @@ module.exports = (sequelize, DataTypes) => {
     // tam thoi bo qua bang nay
     static associate(models) {
       // define association here
-      StudentRound.belongsTo(models.Round, {
-        foreignKey: "roundId",
-        targetKey: "id",
-        as: "roundStudentRound",
-      });
-      StudentRound.belongsTo(models.Students, {
-        foreignKey: "studentId",
-        targetKey: "id",
-        as: "studentStudentRound",
-      });
-      StudentRound.hasMany(models.Score, {
-        foreignKey: "participantRoundId",
-        as: "scoreStudentRound",
-      });
+      // StudentRound.belongsTo(models.Round, {
+      //   foreignKey: "roundId",
+      //   targetKey: "id",
+      //   as: "roundStudentRound",
+      // });
+      // StudentRound.belongsTo(models.Students, {
+      //   foreignKey: "studentId",
+      //   targetKey: "id",
+      //   as: "studentStudentRound",
+      // });
+      // StudentRound.hasMany(models.Score, {
+      //   foreignKey: "participantRoundId",
+      //   as: "scoreStudentRound",
+      // });
     }
   }
   StudentRound.init(

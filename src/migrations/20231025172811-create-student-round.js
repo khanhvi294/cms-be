@@ -9,26 +9,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      studentId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Students",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
-      roundId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Rounds",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
+      //   studentId: {
+      //     type: Sequelize.INTEGER,
+      //     allowNull: false,
+      //     references: {
+      //       model: "Students",
+      //       key: "id",
+      //     },
+      //     onUpdate: "cascade",
+      //     onDelete: "cascade",
+      //   },
+      //   roundId: {
+      //     type: Sequelize.INTEGER,
+      //     allowNull: false,
+      //     references: {
+      //       model: "Rounds",
+      //       key: "id",
+      //     },
+      //     onUpdate: "cascade",
+      //     onDelete: "cascade",
+      //   },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

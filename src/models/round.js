@@ -19,10 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "examFormRound",
       });
-      Round.hasMany(models.StudentRound, {
+      Round.hasMany(models.Score, {
         foreignKey: "roundId",
-        as: "roundStudentRound",
+        as: "scoreRound",
       });
+      // Round.hasMany(models.StudentRound, {
+      //   foreignKey: "roundId",
+      //   as: "roundStudentRound",
+      // });
       Round.hasMany(models.Judge, {
         foreignKey: "roundId",
         as: "roundJudge",
