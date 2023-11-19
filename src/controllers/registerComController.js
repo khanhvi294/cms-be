@@ -29,9 +29,11 @@ const registerCompetition = async (req, res, next) => {
 
 const getAllCompetitionByStudentId = async (req, res, next) => {
   try {
-    const studentId = 123;
-    const result =
-      await registerComService.getAllCompetitionByStudentId(studentId);
+    const student = await authService.getStudentByAccount(req.user.id);
+
+    const result = await registerComService.getAllCompetitionByStudentId(
+      student?.accountStudent.id || -1
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);

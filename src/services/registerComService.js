@@ -2,6 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import competitionService from "../services/competitionService";
+import { resFindAll } from "../utils/const";
 import studentService from "./studentService";
 
 export const findRegisterCompetition = async (data) => {
@@ -89,7 +90,12 @@ export const unRegisterCompetition = async (data) => {
   });
   return result;
 };
-export const getAllCompetitionByStudentId = (studentId) => {};
+export const getAllCompetitionByStudentId = async (studentId) => {
+  const data = await db.Register.findAll({
+    where: { studentId: studentId },
+  });
+  return resFindAll(data);
+};
 
 export default {
   registerCompetition,
