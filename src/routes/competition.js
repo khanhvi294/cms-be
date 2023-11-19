@@ -13,7 +13,11 @@ router.get("/:id", competitionController.getCompetitionById);
 //   verifyEmployee,
 //   competitionController.getAllClassCanJoinCompetition
 // );
-router.get("/:timeStart/join", verifyEmployee, competitionController.getClass);
+router.get(
+  "/:timeStart/join",
+  verifyEmployee,
+  competitionController.getClassCanJoin
+);
 router.patch("/:id/status", competitionController.updateStatusCompetition);
 
 export default router;
