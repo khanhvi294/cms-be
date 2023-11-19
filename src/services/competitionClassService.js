@@ -49,7 +49,7 @@ const checkClassCanJoinCompetition = async (classObj) => {
   if (month >= (2 / 3) * classObj.courseClass.trainingTime) {
     return true;
   }
-  return false;
+  return true;
 };
 
 export default {
