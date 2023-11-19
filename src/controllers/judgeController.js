@@ -19,7 +19,23 @@ const getAllJudgeByRound = async (req, res, next) => {
   }
 };
 
+export const createJudgesForRound = async (req, res, next) => {
+  /**
+   * ex: data = {
+   *    roundId: 12,
+   *    employeeIds: [1,2,3,4,5]
+   * }
+   */
+  try {
+    const result = await judgeService.createJudgesForRound(req.body);
+    successResponse(STATUS_CODE.CREATED, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createJudge,
   getAllJudgeByRound,
+  createJudgesForRound,
 };

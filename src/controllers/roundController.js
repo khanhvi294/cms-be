@@ -28,10 +28,7 @@ const createRound = async (req, res, next) => {
     /*
       data format
       {
-        accountStudent: {
-          email: 
-        }
-        fullName
+       
       }
     */
 

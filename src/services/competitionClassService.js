@@ -4,11 +4,14 @@ import db from "../models";
 import { STATUS_COMPETITION } from "../utils/const";
 import competitionService from "./competitionService";
 
-const createCompetitionClass = async (data) => {
-  const result = await db.CompetitionClass.create({
-    competitionId: data.competitionId,
-    classId: data.classId,
-  });
+const createCompetitionClass = async (data, t) => {
+  const result = await db.CompetitionClass.create(
+    {
+      competitionId: data.competitionId,
+      classId: data.classId,
+    },
+    { transaction: t }
+  );
   return result;
 };
 

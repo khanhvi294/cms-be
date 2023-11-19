@@ -26,23 +26,28 @@ export const getRoundsByCompetition = async (competitionId) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const data = await db.Competition.findOne({
-    where: { id: competitionId },
-    raw: true,
-    nest: true,
-    include: [
-      {
-        model: db.Round,
-        as: "competitionRound",
-      },
-    ],
-    order: [["updatedAt", "DESC"]],
-  });
-  if (data.competitionRound) {
-    return resFindAll(data.competitionRound);
-  }
+  // const data = await db.Competition.findOne({
+  //   where: { id: competitionId },
+  //   raw: true,
+  //   nest: true,
+  //   include: [
+  //     {
+  //       model: db.Round,
+  //       as: "competitionRound",
+  //     },
+  //   ],
+  //   order: [["updatedAt", "DESC"]],
+  // });
+  // if (data.competitionRound) {
+  //   return resFindAll(data.competitionRound);
+  // }
 
-  return resFindAll([]);
+  // return resFindAll([]);
+
+  const data = await db.Round.findAll({
+    where: { competitionId: competitionId },
+  });
+  return resFindAll(data);
 };
 
 export const createRound = async (data) => {

@@ -3,6 +3,7 @@ import db from "../models";
 import authService from "./authService";
 import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
 import passwordUtil from "../utils/password";
+import ErrorMessage from "../common/errorMessage";
 
 export const getAllEmployees = async () => {
   const data = await db.Employee.findAll({

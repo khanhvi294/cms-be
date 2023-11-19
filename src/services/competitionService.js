@@ -33,14 +33,17 @@ export const createCompetition = async (employeeId, data) => {
       const competitionClassPromise = await data.competitionClass.map(
         async (item) => {
           await classService.getClassById(item);
-          return competitionClassService.createCompetitionClass({
-            competitionId: competition.id,
-            classId: item,
-          });
+          return competitionClassService.createCompetitionClass(
+            {
+              competitionId: competition.id,
+              classId: item,
+            },
+            t
+          );
         }
       );
 
-      const result = await Promise.all[competitionClassPromise];
+      const result = await Promise.all(competitionClassPromise);
 
       return { ...competition, competitionClass: result };
     });
@@ -54,6 +57,8 @@ export const createCompetition = async (employeeId, data) => {
     // `result` is whatever was returned from the transaction callback (the `user`, in this case)
   } catch (error) {
     console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+
     // If the execution reaches this line, an error occurred.
     // The transaction has already been rolled back automatically by Sequelize!
   }

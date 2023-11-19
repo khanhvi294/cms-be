@@ -3,6 +3,7 @@ import db from "../models";
 import { ROLES, resFindAll } from "../utils/const";
 import ErrorMessage from "../common/errorMessage";
 import employeeService from "./employeeService";
+import { sequelize } from "../config/connectDB";
 import roundService from "./roundService";
 
 export const getAllJudgeByCompetition = async (competitionId) => {};
@@ -67,8 +68,76 @@ export const createJudge = async (data) => {
   return judge;
 };
 
+const createJudgeByEmployee = async (data, t) => {
+  const checkJudge = await findJudgeByEmployeeIdAndRoundId(data);
+  if (checkJudge) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
+  }
+
+  const employee = await employeeService.getEmployeeByIdIncludesAccount(
+    data.employeeId
+  );
+
+  if (employee?.accountEmployee?.role != ROLES.TEACHER) {
+    throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("Data"));
+  }
+
+  const judge = await db.Judge.create(
+    {
+      employeeId: data.employeeId,
+      roundId: data.roundId,
+    },
+    { transaction: t }
+  );
+
+  // console.log("judge ", judge);
+
+  return judge;
+};
+
+export const createJudgesForRound = async (data) => {
+  /**
+   * ex: data = {
+   *    roundId: 12,
+   *    employeeIds: [1,2,3,4,5]
+   * }
+   */
+
+  if (!data?.employeeIds || !data?.employeeIds?.length) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const result = await sequelize.transaction(async (t) => {
+      // console.log("response ", response, judgesPromise);
+
+      const judgesPromise = await data.employeeIds.map(async (item) => {
+        return createJudgeByEmployee(
+          {
+            employeeId: item,
+            roundId: data.roundId,
+          },
+          t
+        );
+      });
+
+      const response = await Promise.all(judgesPromise);
+      return response;
+    });
+
+    // if (result?.dataValues) {
+    //   return result.dataValues;
+    // }
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+  }
+};
+
 export default {
   getAllJudgeByCompetition,
   getAllJudgeByRound,
   createJudge,
+  createJudgesForRound,
 };
