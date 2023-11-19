@@ -8,7 +8,7 @@ import { sequelize } from "../config/connectDB";
 import { checkCompetitionStatus } from "../utils/const";
 
 export const createCompetition = async (employeeId, data) => {
-  if (!data.competitionClass) {
+  if (!data?.competitionClass || !data?.competitionClass?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 

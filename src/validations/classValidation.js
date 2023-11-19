@@ -9,10 +9,14 @@ const classValidate = {
         "string.min": "Name min is 3 characters",
         "string.max": "Name max is 50 characters",
       }),
-      timeStart: Joi.string().required().isoDate().messages({
-        "any.required": "Password is required",
-        "string.empty": "Password is required",
-        "string.isoDate": "timeStart is invalid",
+      // timeStart: Joi.string().required().isoDate().messages({
+      //   "any.required": "timeStart is required",
+      //   "string.empty": "timeStart is required",
+      //   "string.isoDate": "timeStart is invalid",
+      // }),
+      timeStart: Joi.date().min("now").required().messages({
+        "any.required": "timeStart is required",
+        "date.min": "Min date is tomorrow",
       }),
       courseId: Joi.number().integer().min(1).required().messages({
         "any.required": "courseId is required",
