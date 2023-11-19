@@ -25,10 +25,14 @@ module.exports = (sequelize, DataTypes) => {
         as: "studentRegister",
       });
 
-      Students.hasMany(models.StudentRound, {
+      Students.hasMany(models.Score, {
         foreignKey: "studentId",
-        as: "studentStudentRound",
+        as: "scoreStudent",
       });
+      // Students.hasMany(models.StudentRound, {
+      //   foreignKey: "studentId",
+      //   as: "studentStudentRound",
+      // });
     }
   }
   Students.init(
