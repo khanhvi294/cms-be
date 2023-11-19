@@ -13,23 +13,38 @@ export const getAllJudgeByRound = async (roundId) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const data = await db.Round.findOne({
-    where: { id: roundId },
+  // const data = await db.Round.findOne({
+  //   where: { id: roundId },
+  //   raw: true,
+  //   nest: true,
+  //   include: [
+  //     {
+  //       model: db.Judge,
+  //       as: "roundJudge",
+  //     },
+  //   ],
+  //   order: [["updatedAt", "DESC"]],
+  // });
+  // if (data.roundJudge) {
+  //   return resFindAll(data.roundJudge);
+  // }
+
+  const data = await db.Judge.findAll({
+    where: { roundId: roundId },
     raw: true,
     nest: true,
+    attributes: { exclude: ["employeeId"] },
     include: [
       {
-        model: db.Judge,
-        as: "roundJudge",
+        model: db.Employee,
+        as: "employeeJudge",
+        attributes: ["fullName", "id"],
       },
     ],
     order: [["updatedAt", "DESC"]],
   });
-  if (data.roundJudge) {
-    return resFindAll(data.roundJudge);
-  }
 
-  return resFindAll([]);
+  return resFindAll(data);
 };
 
 export const findJudgeByEmployeeIdAndRoundId = async (data) => {
@@ -102,7 +117,7 @@ export const createJudgesForRound = async (data) => {
    *    employeeIds: [1,2,3,4,5]
    * }
    */
-
+  console.log("aaaaaaa", data);
   if (!data?.employeeIds || !data?.employeeIds?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }

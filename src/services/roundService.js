@@ -53,7 +53,7 @@ export const getRoundsByCompetition = async (competitionId) => {
 export const createRound = async (data) => {
   // find competition
   const competitionPromises = competitionService.getCompetitionById(
-    data.competitionId
+    data?.competitionId
   );
 
   // find examForm
