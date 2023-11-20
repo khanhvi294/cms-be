@@ -117,7 +117,7 @@ export const createJudgesForRound = async (data) => {
    *    employeeIds: [1,2,3,4,5]
    * }
    */
-  console.log("aaaaaaa", data);
+
   if (!data?.employeeIds || !data?.employeeIds?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
