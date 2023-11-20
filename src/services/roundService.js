@@ -52,22 +52,37 @@ export const getRoundsByCompetition = async (competitionId) => {
 
 export const createRound = async (data) => {
   // find competition
-  const competitionPromises = competitionService.getCompetitionById(
+  const competitionPromises = competitionService.getCompetitionIncludeRounds(
     data?.competitionId
   );
 
   // find examForm
   const examFormPromises = examFormsService.getExamFormById(data.examFormId);
 
-  await Promise.all([competitionPromises, examFormPromises]);
+  const [competition] = await Promise.all([
+    competitionPromises,
+    examFormPromises,
+  ]);
 
+  // check time start if less than time end competition
+  if (new Date(competition.timeEnd) < new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Time start round must be less than time end of the competition"
+      )
+    );
+  }
+
+  // round tu dong nhap
   // save to db
   const newRound = {
     time: data.time,
     exam: data.exam,
     examFormId: data.examFormId,
     competitionId: data.competitionId,
-    roundNumber: data.roundNumber,
+    roundNumber: competition?.competitionRound.length + 1,
+    // roundNumber: data.roundNumber,
     numPoint: data.numPoint,
     timeStart: data.timeStart,
   };

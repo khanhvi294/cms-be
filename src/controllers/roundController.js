@@ -1,5 +1,11 @@
-import { successResponse, STATUS_CODE } from "./baseController";
+import {
+  successResponse,
+  STATUS_CODE,
+  errorValidateResponse,
+} from "./baseController";
 import roundService from "../services/roundService";
+import { validateData } from "../utils/validateData";
+import roundValidation from "../validations/roundValidation";
 
 const getAllRounds = async (req, res, next) => {
   try {
@@ -31,7 +37,10 @@ const createRound = async (req, res, next) => {
        
       }
     */
-
+    const err = await validateData(roundValidation.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
     const result = await roundService.createRound(req.body);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
