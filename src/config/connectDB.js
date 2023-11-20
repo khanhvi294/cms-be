@@ -5,6 +5,12 @@ export const sequelize = new Sequelize("cms-db", "root", null, {
   dialect: "mysql",
 });
 
+// const sequelize = new Sequelize("cms-db", "root", "abc", {
+//   host: "localhost",
+//   dialect: "mysql",
+//   port: 33065
+// });
+
 const connection = async () => {
   try {
     await sequelize.authenticate();

@@ -161,6 +161,42 @@ export const addStudent = async (data) => {
   return studentRegister;
 };
 
+export const addMultipleStudent = async (data) => {
+  /**
+   * ex: data = {
+   *    classId: 12,
+   *    studentIds: [1,2,3,4,5]
+   * }
+   */
+
+  if (!data?.classId || !data?.studentIds?.length) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const result = await sequelize.transaction(async (t) => {
+      // console.log("response ", response, judgesPromise);
+
+      const studentsPromise = await data.studentIds.map(async (item) => {
+        return addStudent(
+          {
+            studentId: item,
+            classId: data.classId,
+          },
+          t
+        );
+      });
+
+      const response = await Promise.all(studentsPromise);
+      return response;
+    });
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+  }
+}
+
 export default {
   addStudent,
   getAllClasses,
