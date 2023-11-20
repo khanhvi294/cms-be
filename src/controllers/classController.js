@@ -57,7 +57,9 @@ const addMultipleStudent = async (req, res, next) => {
 
 const getAllStudentByClass = async (req, res, next) => {
   try {
-    const result = await studentClassService.getAllStudentByClass(req.body);
+    const result = await studentClassService.getAllStudentByClass(
+      req.params.classId
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
