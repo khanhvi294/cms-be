@@ -90,7 +90,7 @@ export const createStudent = async (data) => {
 
   // luu vao db
   const newStudent = {
-    fullName: data.fullName,
+    ...data,
     accountStudent: {
       email: data.accountStudent.email,
       password: hashPassword,

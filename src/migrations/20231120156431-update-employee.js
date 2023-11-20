@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.addColumn(
       "Employees",
       "dateOfBirth",
-      Sequelize.STRING
+      Sequelize.DATEONLY
     );
     await queryInterface.addColumn("Employees", "address", Sequelize.STRING);
     await queryInterface.addColumn("Employees", "gender", Sequelize.BOOLEAN);

@@ -3,7 +3,11 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.addColumn("Students", "phone", Sequelize.STRING);
-    await queryInterface.addColumn("Students", "dateOfBirth", Sequelize.STRING);
+    await queryInterface.addColumn(
+      "Students",
+      "dateOfBirth",
+      Sequelize.DATEONLY
+    );
     await queryInterface.addColumn("Students", "address", Sequelize.STRING);
     await queryInterface.addColumn("Students", "gender", Sequelize.BOOLEAN);
   },
