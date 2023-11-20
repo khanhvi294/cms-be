@@ -10,6 +10,11 @@ router.get(
   verifyStudent,
   studentController.getAllClassesByStudent
 );
+router.get(
+  "/:id/competitions",
+  verifyStudent,
+  studentController.getCompetitionsForStudent
+);
 router.post("/", verifyEmployee, studentController.createStudent);
 
 export default router;

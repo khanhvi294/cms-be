@@ -111,8 +111,67 @@ export const createStudent = async (data) => {
   });
 
   return studentNew;
-  //  const updateStudent = async () => {};
 };
+//  const updateStudent = async () => {};
+
+export const getCompetitionsForStudent = async (studentId) => {
+  // Tìm học viên với studentId tương ứng
+  const student = await db.Students.findOne({
+    nest: true,
+    raw: false,
+    where: { id: studentId },
+    include: [
+      {
+        model: db.StudentClass,
+        as: "ClassStudentStudent",
+        nest: true,
+        raw: false,
+        include: [
+          {
+            model: db.Class,
+            as: "ClassStudentClass",
+            nest: true,
+            raw: false,
+            include: [
+              {
+                model: db.CompetitionClass,
+                as: "ClassCompetitionClass",
+                nest: true,
+                raw: false,
+                include: [
+                  {
+                    model: db.Competition,
+                    as: "competitionCompetitionClass",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  if (!student) {
+    console.log("Không tìm thấy học viên");
+    return [];
+  }
+
+  // Trích xuất danh sách các cuộc thi từ cấu trúc lồng nhau
+  const competitions = student.ClassStudentStudent.map((studentClass) => {
+    return studentClass.ClassStudentClass.ClassCompetitionClass.map(
+      (competitionClass) => competitionClass.competitionCompetitionClass
+    );
+  });
+
+  // Hợp nhất mảng
+  const flattenedCompetitions = [].concat(...competitions);
+  const uniqueCompetitions = Array.from(
+    new Set(flattenedCompetitions.map((c) => c.id))
+  ).map((id) => flattenedCompetitions.find((c) => c.id === id));
+  return uniqueCompetitions;
+};
+
 export default {
   findStudentById,
   getStudentById,
@@ -120,4 +179,5 @@ export default {
   getAllStudents,
   createStudent,
   getStudentIncludesClass,
+  getCompetitionsForStudent,
 };

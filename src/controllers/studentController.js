@@ -28,6 +28,17 @@ const getAllClassesByStudent = async (req, res, next) => {
   }
 };
 
+const getCompetitionsForStudent = async (req, res, next) => {
+  try {
+    const result = await studentService.getCompetitionsForStudent(
+      req.params.id
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getStudentById = async (req, res, next) => {
   try {
     const result = await studentService.getStudentById();
@@ -74,4 +85,5 @@ export default {
   createStudent,
   getStudentById,
   getAllClassesByStudent,
+  getCompetitionsForStudent,
 };
