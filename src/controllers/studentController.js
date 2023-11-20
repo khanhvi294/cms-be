@@ -6,10 +6,31 @@ import {
 import studentService from "../services/studentService";
 import studentValidate from "../validations/studentValidation";
 import { validateData } from "../utils/validateData";
+import studentClassService from "../services/studentClassService";
 
 const getAllStudents = async (req, res, next) => {
   try {
     const result = await studentService.getAllStudents();
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllClassesByStudent = async (req, res, next) => {
+  try {
+    const result = await studentClassService.getAllClassesByStudent(
+      req.params.id
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getStudentById = async (req, res, next) => {
+  try {
+    const result = await studentService.getStudentById();
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -51,4 +72,6 @@ const createStudent = async (req, res, next) => {
 export default {
   getAllStudents,
   createStudent,
+  getStudentById,
+  getAllClassesByStudent,
 };

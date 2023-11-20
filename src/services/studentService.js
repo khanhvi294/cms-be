@@ -12,6 +12,7 @@ export const findStudentById = async (id) => {
 
   const data = await db.Students.findOne({
     where: { id: id },
+
     attributes: { exclude: ["createdAt", "updatedAt", "password"] },
   });
   return data;
