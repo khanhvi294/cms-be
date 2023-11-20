@@ -6,6 +6,7 @@ import {
 } from "./baseController";
 import classValidate from "../validations/classValidation";
 import { validateData } from "../utils/validateData";
+import studentClassService from "../services/studentClassService";
 
 const getAllClasses = async (req, res, next) => {
   try {
@@ -54,11 +55,20 @@ const addMultipleStudent = async (req, res, next) => {
   }
 };
 
-
+const getAllStudentByClass = async (req, res, next) => {
+  try {
+    const result = await studentClassService.getAllStudentByClass(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export default {
   getAllClasses,
   createClass,
   updateClass,
-  addStudent,addMultipleStudent
+  addStudent,
+  addMultipleStudent,
+  getAllStudentByClass,
 };

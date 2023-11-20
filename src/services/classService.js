@@ -5,6 +5,7 @@ import { resFindAll } from "../utils/const";
 import courseService from "./courseService";
 import ErrorMessage from "../common/errorMessage";
 import studentService from "./studentService";
+import { sequelize } from "../config/connectDB";
 
 const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
@@ -195,7 +196,7 @@ export const addMultipleStudent = async (data) => {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error);
   }
-}
+};
 
 export default {
   addStudent,
@@ -204,4 +205,5 @@ export default {
   updateClass,
   getClassById,
   getClassChooseJoin,
+  addMultipleStudent,
 };

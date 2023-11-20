@@ -73,7 +73,7 @@ export const getAllStudents = async () => {
     ],
     order: [["updatedAt", "DESC"]],
   });
-  console.log("serrrrrrrrrrrrrrrrr", data);
+
   return resFindAll(data);
 };
 
