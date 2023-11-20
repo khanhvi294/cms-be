@@ -13,7 +13,11 @@ router.post(
   classController.addMultipleStudent
 );
 router.get("/", verifyEmployee, classController.getAllClasses);
-router.get("/students", verifyEmployee, classController.getAllStudentByClass);
+router.get(
+  "/:classId/students",
+  verifyEmployee,
+  classController.getAllStudentByClass
+);
 router.patch("/", verifyEmployee, classController.updateClass);
 
 export default router;
