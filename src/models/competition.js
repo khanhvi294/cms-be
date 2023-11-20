@@ -34,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.INTEGER,
       employeeId: DataTypes.INTEGER,
       // courseId: DataTypes.INTEGER,
-      maximumQuantity: DataTypes.INTEGER,
       minimumQuantity: DataTypes.INTEGER,
       numOfPrizes: DataTypes.INTEGER,
       numberOfRound: DataTypes.INTEGER,

@@ -45,8 +45,7 @@ export const createEmployee = async (data) => {
 
   // luu vao db
   const newEmployee = {
-    fullName: data.fullName,
-    cccd: data.CCCD,
+    ...data,
     accountEmployee: {
       email: data.accountEmployee.email,
       password: hashPassword,
