@@ -79,6 +79,7 @@ const createClass = async (classRoom) => {
 };
 
 const updateClass = async (classRoom) => {
+  console.log(classRoom);
   const result = await findClassById(classRoom.id);
   const dateCheck = new Date(result.timeStart);
 
@@ -102,7 +103,8 @@ const updateClass = async (classRoom) => {
     const upClass = await db.Class.update(classRoom, {
       where: { id: classRoom.id },
     });
-    return upClass;
+    const classNew = await findClassById(classRoom.id);
+    return classNew;
   } else {
     throw new HttpException(400, "Can't update classroom");
   }
