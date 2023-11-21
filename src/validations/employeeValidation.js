@@ -18,17 +18,16 @@ const employeeValidate = {
         "string.max": "FullName max is 50",
       }),
       cccd: Joi.string()
-        .length(11)
+        .length(12)
         .required()
         // .min(3)
         // .max(11)
         .pattern(/^[0-9]+$/, { name: "numbers" })
         .messages({
           "any.required": "cccd is required",
-          "string.length": "cccd must be 11 character",
+          "string.length": "cccd must be 12 character",
           "string.empty": "cccd is required",
-          "string.min": "cccd min is 3",
-          "string.max": "cccd max is 11",
+
           "string.pattern.name": "cccd is 11 characters only in 0-9",
         }),
       phone: Joi.string()

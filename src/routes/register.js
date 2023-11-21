@@ -1,5 +1,5 @@
 import registerComController from "../controllers/registerComController";
-import { verifyEmployee, verifyStudent } from "./verify";
+import { verifyStudent } from "./verify";
 
 import { Router } from "express";
 

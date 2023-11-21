@@ -2,6 +2,7 @@ import db from "../models";
 import { resFindAll } from "../utils/const";
 import HttpException from "../errors/httpException";
 import ErrorMessage from "../common/errorMessage";
+import { Op } from "sequelize";
 
 const findCourseByName = async (nameCourse) => {
   const course = await db.Course.findOne({ where: { name: nameCourse } });
@@ -16,12 +17,15 @@ const findCourseById = async (id) => {
   return course;
 };
 
-// const checkName = async (course) => {
-//   const course = await db.Course.findOne({
-//     where: { name: course.name, id: { [Op.ne]: course.id } },
-//   });
-//   return course;
-// };
+const checkNameUpdate = async (course) => {
+  const existingCourse = await db.Course.findOne({
+    where: {
+      name: course.name,
+      id: { $ne: +course.id },
+    },
+  });
+  return existingCourse;
+};
 
 const getCourseById = async (id) => {
   if (!id) {
@@ -71,12 +75,12 @@ const updateCourse = async (course) => {
   if (!result) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Course"));
   }
-  if (!checkCourseTime(course.trainingTime)) {
+  if (!(await checkCourseTime(course.trainingTime))) {
     throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("Time"));
   }
-  // if (checkName(course)) {
-  //   throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Name"));
-  // }
+  if (!!(await checkNameUpdate(course))) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Name"));
+  }
   const upCourse = await db.Course.update(course, {
     where: { id: course.id },
   });

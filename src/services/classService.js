@@ -11,6 +11,7 @@ const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
   return classRoom;
 };
+
 const findClassById = async (id) => {
   const classRoom = await db.Class.findOne({ where: { id: id } });
   return classRoom;
@@ -40,7 +41,7 @@ const checkTimeStart = (timeStart) => {
   return isRight;
 };
 
-const checkName = async (classRoom) => {
+const checkNameUpdate = async (classRoom) => {
   const checkClassRoom = await db.Class.findOne({
     where: { name: classRoom.name, id: { [Op.ne]: classRoom.id } },
   });
@@ -79,28 +80,32 @@ const createClass = async (classRoom) => {
 
 const updateClass = async (classRoom) => {
   const result = await findClassById(classRoom.id);
+  const dateCheck = new Date(result.timeStart);
 
   if (!result) {
     throw new HttpException(400, "Class not exists");
   }
-  const haveClassRoom = await findClassRoomByName(classRoom.name);
-  if (haveClassRoom) {
-    throw new HttpException(400, "classRoom already exists");
+  if (dateCheck > new Date()) {
+    if (!checkTimeStart(classRoom.timeStart)) {
+      throw new HttpException(400, "TimeStart is not suitable");
+    }
+    if (!!(await checkNameUpdate(classRoom))) {
+      throw new HttpException(400, "Name is exists");
+    }
+    if (classRoom.timeStart) {
+      const course = await courseService.findCourseById(classRoom.courseId);
+      const timeEnd = new Date(classRoom.timeStart);
+      timeEnd.setMonth(timeEnd.getMonth() + course.trainingTime);
+      classRoom.timeEnd = timeEnd;
+    }
+
+    const upClass = await db.Class.update(classRoom, {
+      where: { id: classRoom.id },
+    });
+    return upClass;
+  } else {
+    throw new HttpException(400, "Can't update classroom");
   }
-  if (!checkTimeStart(classRoom.timeStart)) {
-    throw new HttpException(400, "TimeStart is not suitable");
-  }
-  if (checkName(classRoom)) {
-    throw new HttpException(400, "Name is exists");
-  }
-  const course = await courseService.findCourseById(classRoom.courseId);
-  const timeEnd = new Date(classRoom.timeStart);
-  timeEnd.setMonth(timeEnd.getMonth() + course.trainingTime);
-  classRoom.timeEnd = timeEnd;
-  const upClass = await db.Class.update(classRoom, {
-    where: { id: classRoom.id },
-  });
-  return upClass;
 };
 
 const getAllClasses = async () => {

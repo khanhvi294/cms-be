@@ -14,6 +14,7 @@ const registerCompetition = async (req, res, next) => {
      *     competitionId
      *  }
      */
+    console.log("vooooooooooooooooooooooooooooooooooooooooooooooooo");
     const student = await authService.getStudentByAccount(req.user.id);
 
     const result = await registerComService.registerCompetition({

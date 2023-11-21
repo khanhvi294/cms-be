@@ -49,7 +49,7 @@ export const createEmployee = async (data) => {
     accountEmployee: {
       email: data.accountEmployee.email,
       password: hashPassword,
-      role: ROLES.TEACHER,
+      role: data.role,
       isActive: true,
     },
   };
