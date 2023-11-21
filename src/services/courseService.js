@@ -65,8 +65,8 @@ const createCourse = async (course) => {
   return newCourse;
 };
 
-const updateCourse = async (course) => {
-  const result = findCourseById(course.id);
+const updateCourse = async (id, course) => {
+  const result = findCourseById(id);
 
   if (!result) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Course"));
@@ -78,7 +78,9 @@ const updateCourse = async (course) => {
   //   throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Name"));
   // }
   const upCourse = await db.Course.update(course, {
-    where: { id: course.id },
+    where: { id: id },
+  }).then(async (data) => {
+    return await findCourseById(id);
   });
   return upCourse;
 };

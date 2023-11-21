@@ -30,7 +30,11 @@ const createCourse = async (req, res, next) => {
 
 const updateCourse = async (req, res, next) => {
   try {
-    const result = await courseService.updateCourse(req.body);
+    const err = await validateData(courseValidation.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+    const result = await courseService.updateCourse(req.params.id, req.body);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
