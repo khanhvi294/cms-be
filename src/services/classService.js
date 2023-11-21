@@ -103,8 +103,8 @@ const updateClass = async (classRoom) => {
     const upClass = await db.Class.update(classRoom, {
       where: { id: classRoom.id },
     });
-    const classNew = await findClassById(classRoom.id);
-    return classNew;
+
+    return upClass;
   } else {
     throw new HttpException(400, "Can't update classroom");
   }
