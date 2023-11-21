@@ -205,6 +205,16 @@ export const addMultipleStudent = async (data) => {
   }
 };
 
+const getClassByCourseId = async (courseId) => {
+  const data = await db.Class.findAll({
+    where: {
+      courseId: courseId,
+    },
+  });
+
+  return data;
+};
+
 export default {
   addStudent,
   getAllClasses,
@@ -213,4 +223,5 @@ export default {
   getClassById,
   getClassChooseJoin,
   addMultipleStudent,
+  getClassByCourseId,
 };

@@ -3,6 +3,7 @@ import { resFindAll } from "../utils/const";
 import HttpException from "../errors/httpException";
 import ErrorMessage from "../common/errorMessage";
 import { Op } from "sequelize";
+import classService from "./classService";
 
 const findCourseByName = async (nameCourse) => {
   const course = await db.Course.findOne({ where: { name: nameCourse } });
@@ -90,10 +91,28 @@ const updateCourse = async (id, course) => {
   return upCourse;
 };
 
+const deleteCourse = async (id) => {
+  const haveCourse = await findCourseById(id);
+  if (!haveCourse) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Course"));
+  }
+  const classes = await classService.getClassByCourseId(id);
+  if (classes.length > 0) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Class"));
+  }
+  const course = await db.Course.destroy({
+    where: {
+      id: id,
+    },
+  });
+  return course;
+};
+
 export default {
   getAllCourses,
   createCourse,
   updateCourse,
   getCourseById,
   findCourseById,
+  deleteCourse,
 };

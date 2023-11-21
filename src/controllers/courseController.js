@@ -28,6 +28,15 @@ const createCourse = async (req, res, next) => {
   }
 };
 
+const deleteCourse = async (req, res, next) => {
+  try {
+    const result = await courseService.deleteCourse(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateCourse = async (req, res, next) => {
   try {
     const err = await validateData(courseValidation.create, req.body);
@@ -45,4 +54,5 @@ export default {
   getAllCourses,
   createCourse,
   updateCourse,
+  deleteCourse,
 };
