@@ -1,8 +1,7 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { STATUS_COMPETITION } from "../utils/const";
-import competitionService from "./competitionService";
+import { resFindAll } from "../utils/const";
 
 const createCompetitionClass = async (data, t) => {
   const result = await db.CompetitionClass.create(
@@ -13,6 +12,18 @@ const createCompetitionClass = async (data, t) => {
     { transaction: t }
   );
   return result;
+};
+
+export const getAllCompetitionByClass = async (classId) => {
+  if (!classId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.CompetitionClass.findAll({
+    where: { classId: classId },
+  });
+
+  return resFindAll(data);
 };
 
 // const getAllClassCanJoinCompetition = async (competitionId) => {
@@ -57,6 +68,7 @@ const createCompetitionClass = async (data, t) => {
 
 export default {
   createCompetitionClass,
+  getAllCompetitionByClass,
   // getAllClassCanJoinCompetition,
   // checkClassCanJoinCompetition,
 };

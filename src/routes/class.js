@@ -19,5 +19,5 @@ router.get(
   classController.getAllStudentByClass
 );
 router.patch("/", verifyEmployee, classController.updateClass);
-
+router.delete("/:id", verifyEmployee, classController.deleteClass);
 export default router;

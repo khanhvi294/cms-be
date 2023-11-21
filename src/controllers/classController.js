@@ -66,6 +66,15 @@ const getAllStudentByClass = async (req, res, next) => {
   }
 };
 
+const deleteClass = async (req, res, next) => {
+  try {
+    const result = await classService.deleteClass(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAllClasses,
   createClass,
@@ -73,4 +82,5 @@ export default {
   addStudent,
   addMultipleStudent,
   getAllStudentByClass,
+  deleteClass,
 };

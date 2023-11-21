@@ -6,6 +6,8 @@ import courseService from "./courseService";
 import ErrorMessage from "../common/errorMessage";
 import studentService from "./studentService";
 import { sequelize } from "../config/connectDB";
+import studentClassService from "./studentClassService";
+import competitionClassService from "./competitionClassService";
 
 const findClassRoomByName = async (nameClass) => {
   const classRoom = await db.Class.findOne({ where: { name: nameClass } });
@@ -79,7 +81,6 @@ const createClass = async (classRoom) => {
 };
 
 const updateClass = async (classRoom) => {
-  console.log(classRoom);
   const result = await findClassById(classRoom.id);
   const dateCheck = new Date(result.timeStart);
 
@@ -215,6 +216,32 @@ const getClassByCourseId = async (courseId) => {
   return data;
 };
 
+const deleteClass = async (id) => {
+  const haveClass = await findClassById(id);
+  if (!haveClass) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Class"));
+  }
+  const students = await studentClassService.getAllStudentByClass(id);
+  const competitions =
+    await competitionClassService.getAllCompetitionByClass(id);
+
+  if (students.data.length > 0) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Students"));
+  }
+  if (competitions.data.length > 0) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_EXISTING("Competitions")
+    );
+  }
+  const deleteClass = await db.Class.destroy({
+    where: {
+      id: id,
+    },
+  });
+  return deleteClass;
+};
+
 export default {
   addStudent,
   getAllClasses,
@@ -224,4 +251,5 @@ export default {
   getClassChooseJoin,
   addMultipleStudent,
   getClassByCourseId,
+  deleteClass,
 };
