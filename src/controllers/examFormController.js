@@ -29,7 +29,23 @@ const createExamForm = async (req, res, next) => {
     next(error);
   }
 };
+
+const updateExamForm = async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const err = await validateData(examFormValidate.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+
+    const result = await examFormsService.updateExamForm(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   getAllExamForms,
   createExamForm,
+  updateExamForm,
 };

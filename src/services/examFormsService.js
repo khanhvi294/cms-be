@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
@@ -8,6 +9,17 @@ export const findExamFormByName = async (name) => {
   }
 
   const examForm = await db.ExamForm.findOne({ where: { name } });
+  return examForm;
+};
+
+export const findExamFormByNameUpdate = async (examFormI) => {
+  if (!examFormI) {
+    throw new HttpException(400, "Missing parameter");
+  }
+
+  const examForm = await db.ExamForm.findOne({
+    where: { name: examFormI.name, id: { [Op.ne]: examFormI.id } },
+  });
   return examForm;
 };
 
@@ -52,9 +64,23 @@ export const createExamForm = async (data) => {
 
   return examFormNew;
 };
+const updateExamForm = async (data) => {
+  console.log(data);
+  const examForm = await findExamFormByNameUpdate(data);
+  if (examForm) {
+    throw new HttpException(404, "Name is existing");
+  }
+
+  const examFormUp = await db.ExamForm.update(data, {
+    where: { id: data.id },
+  });
+
+  return examFormUp;
+};
 
 export default {
   getAllExamForms,
   createExamForm,
   getExamFormById,
+  updateExamForm,
 };
