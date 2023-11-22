@@ -22,13 +22,13 @@ export const findExamFormById = async (id) => {
   return examForm;
 };
 
-export const findExamFormByNameUpdate = async (examFormI) => {
+export const findExamFormByNameUpdate = async (examFormI, id) => {
   if (!examFormI) {
     throw new HttpException(400, "Missing parameter");
   }
 
   const examForm = await db.ExamForm.findOne({
-    where: { name: examFormI.name, id: { [Op.ne]: examFormI.id } },
+    where: { name: examFormI.name, id: { [Op.ne]: id } },
   });
   return examForm;
 };
@@ -74,15 +74,14 @@ export const createExamForm = async (data) => {
 
   return examFormNew;
 };
-const updateExamForm = async (data) => {
-  console.log(data);
-  const examForm = await findExamFormByNameUpdate(data);
+const updateExamForm = async (id, data) => {
+  const examForm = await findExamFormByNameUpdate(data, id);
   if (examForm) {
     throw new HttpException(404, "Name is existing");
   }
 
   const examFormUp = await db.ExamForm.update(data, {
-    where: { id: data.id },
+    where: { id },
   });
 
   return examFormUp;

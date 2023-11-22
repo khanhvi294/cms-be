@@ -38,7 +38,10 @@ const updateExamForm = async (req, res, next) => {
       return errorValidateResponse(422, err, res);
     }
 
-    const result = await examFormsService.updateExamForm(req.body);
+    const result = await examFormsService.updateExamForm(
+      req.params.id,
+      req.body
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);

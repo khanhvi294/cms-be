@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", verifyEmployee, examFormController.getAllExamForms);
 router.post("/", verifyEmployee, examFormController.createExamForm);
-router.patch("/", verifyEmployee, examFormController.updateExamForm);
+router.patch("/:id", verifyEmployee, examFormController.updateExamForm);
 router.delete("/:id", verifyEmployee, examFormController.deleteExamForm);
 
 export default router;
