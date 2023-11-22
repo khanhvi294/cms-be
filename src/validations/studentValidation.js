@@ -19,7 +19,7 @@ const studentValidate = {
       }),
       phone: Joi.string()
         .length(10)
-        .required()
+        .allow(null, "")
         .pattern(/^[0-9]+$/, { name: "numbers" })
         .messages({
           "any.required": "phone is required",

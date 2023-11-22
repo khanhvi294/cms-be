@@ -2,6 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import classService from "./classService";
 
 export const getAllStudentByClass = async (classId) => {
   if (!classId) {
@@ -20,13 +21,13 @@ export const getAllStudentByClass = async (classId) => {
         attributes: ["fullName", "id"],
       },
     ],
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
 
   return resFindAll(data);
 };
 
-const getAllClassesByStudent = async (studentId) => {
+export const getAllClassesByStudent = async (studentId) => {
   if (!studentId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
@@ -45,7 +46,35 @@ const getAllClassesByStudent = async (studentId) => {
   return resFindAll(data);
 };
 
+export const deleteStudentInClass = async (studentId, classId) => {
+  if (!classId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  if (!studentId) throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  const classRoom = await classService.getClassById(classId);
+
+  const data = await db.StudentClass.destroy({
+    where: { classId: classId, studentId: studentId },
+    include: [
+      {
+        model: db.Class,
+        where: {
+          timeStart: {
+            [Op.lt]: new Date(), // Lấy những lớp học có thời gian bắt đầu nhỏ hơn ngày hiện tại
+          },
+        },
+        required: true, // Sử dụng `required: true` để thực hiện INNER JOIN thay vì LEFT JOIN
+        // nest: true,
+        // raw: false,
+      },
+    ],
+  });
+
+  return data;
+};
+
 export default {
   getAllStudentByClass,
   getAllClassesByStudent,
+  deleteStudentInClass,
 };

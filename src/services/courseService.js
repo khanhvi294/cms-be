@@ -72,7 +72,8 @@ const createCourse = async (course) => {
 
 const updateCourse = async (id, course) => {
   const result = findCourseById(id);
-
+  console.log(id);
+  console.log(course);
   if (!result) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Course"));
   }

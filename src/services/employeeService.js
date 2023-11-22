@@ -14,7 +14,7 @@ export const getAllEmployees = async () => {
       {
         model: db.Account,
         as: "accountEmployee",
-        attributes: ["email", "isActive"],
+        attributes: ["email", "isActive", "role"],
       },
     ],
     order: [["updatedAt", "DESC"]],
@@ -32,7 +32,6 @@ export const findEmployeeByEmail = async (email) => {
 };
 
 export const createEmployee = async (data) => {
-  console.log(data);
   // check mail ton tai chua
   const account = await findEmployeeByEmail(data.accountEmployee.email);
   if (account) {
@@ -63,7 +62,7 @@ export const createEmployee = async (data) => {
       },
     ],
   });
-  console.log("data re", employeeNew);
+
   return employeeNew;
 };
 
@@ -124,6 +123,35 @@ const getEmployeeByIdIncludesAccount = async (id) => {
 
   return data;
 };
+
+// const updateEmployee = async (employee) => {
+//   console.log(employee);
+//   // const account = await authService.checkEmailAccountUpdate(employee.accountEmployee.email);
+//   // if (account) {
+//   //   throw new HttpException(404, "Email is existing");
+//   // }
+
+//   // luu vao db
+//   const updateEmployee = {
+//     ...data,
+//     accountEmployee: {
+//       email: data.accountEmployee.email,
+//       password: hashPassword,
+//       role: data.role,
+//       isActive: true,
+//     },
+//   };
+
+//   // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
+//   const employeeNew = await db.Employee.create(newEmployee, {
+//     include: [
+//       {
+//         model: db.Account,
+//         as: "accountEmployee",
+//       },
+//     ],
+//   });
+// };
 
 export default {
   getAllEmployees,

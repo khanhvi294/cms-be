@@ -30,9 +30,10 @@ const employeeValidate = {
 
           "string.pattern.name": "cccd is 11 characters only in 0-9",
         }),
+      role: Joi.number().optional().default(0),
       phone: Joi.string()
         .length(10)
-        .required()
+        .allow(null, "")
         .pattern(/^[0-9]+$/, { name: "numbers" })
         .messages({
           "any.required": "phone is required",
@@ -40,14 +41,14 @@ const employeeValidate = {
           "string.empty": "phone is required",
           "string.pattern.name": "phone is 10 number only in 0-9",
         }),
-      address: Joi.string().optional().max(50).messages({
+      address: Joi.string().allow(null, "").optional().max(50).messages({
         // "string.base": "Address must be string",
         "string.max": "address max is 50",
       }),
       gender: Joi.boolean().messages({
         "boolean.base": "Gender must be boolean",
       }),
-      dateOfBirth: Joi.date().optional().max("now").messages({
+      dateOfBirth: Joi.date().allow(null, "").optional().max("now").messages({
         "date.max": "Birthday is invalid",
       }),
     });

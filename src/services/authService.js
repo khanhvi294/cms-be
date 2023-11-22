@@ -82,6 +82,13 @@ export const findAccountByEmail = async (email) => {
   return account;
 };
 
+// export const checkEmailAccountUpdate = async (account) => {
+//   let account = await db.Account.findOne({
+//     where: { email: account.email, id: { [Op.ne]: account.id } },
+//   });
+//   return account;
+// };
+
 export const getAccountByEmail = async (email) => {
   const account = await findAccountByEmail(email);
   if (!account) {
