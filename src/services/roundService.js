@@ -25,27 +25,17 @@ export const getRoundsByCompetition = async (competitionId) => {
   if (!competitionId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
-
-  // const data = await db.Competition.findOne({
-  //   where: { id: competitionId },
-  //   raw: true,
-  //   nest: true,
-  //   include: [
-  //     {
-  //       model: db.Round,
-  //       as: "competitionRound",
-  //     },
-  //   ],
-  //   order: [["updatedAt", "DESC"]],
-  // });
-  // if (data.competitionRound) {
-  //   return resFindAll(data.competitionRound);
-  // }
-
-  // return resFindAll([]);
-
   const data = await db.Round.findAll({
     where: { competitionId: competitionId },
+  });
+  return resFindAll(data);
+};
+export const getRoundsByExamForm = async (examFormId) => {
+  if (!examFormId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  const data = await db.Round.findAll({
+    where: { examFormId: examFormId },
   });
   return resFindAll(data);
 };
@@ -119,4 +109,5 @@ export default {
   updateRound,
   deleteRound,
   getRoundById,
+  getRoundsByExamForm,
 };

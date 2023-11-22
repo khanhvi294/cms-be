@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import roundService from "./roundService";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
@@ -9,6 +10,15 @@ export const findExamFormByName = async (name) => {
   }
 
   const examForm = await db.ExamForm.findOne({ where: { name } });
+  return examForm;
+};
+
+export const findExamFormById = async (id) => {
+  if (!id) {
+    throw new HttpException(400, "Missing parameter");
+  }
+
+  const examForm = await db.ExamForm.findOne({ where: { id } });
   return examForm;
 };
 
@@ -78,9 +88,32 @@ const updateExamForm = async (data) => {
   return examFormUp;
 };
 
+const deleteExamForm = async (id) => {
+  const haveExam = await findExamFormById(id);
+  if (!haveExam) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Class"));
+  }
+
+  const rounds = await roundService.getRoundsByExamForm(id);
+
+  if (rounds.data.length > 0) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Students"));
+  }
+
+  const deleteExamForm = await db.ExamForm.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  return deleteExamForm;
+};
+
 export default {
   getAllExamForms,
   createExamForm,
   getExamFormById,
   updateExamForm,
+  deleteExamForm,
+  findExamFormById,
 };
