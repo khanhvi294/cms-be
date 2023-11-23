@@ -18,6 +18,11 @@ router.get(
   verifyEmployee,
   competitionController.getClassCanJoin
 );
+router.get(
+  "/:id/allclass",
+  verifyEmployee,
+  competitionController.getAllClassJoinCompetition
+);
 router.patch("/:id/status", competitionController.updateStatusCompetition);
 
 export default router;

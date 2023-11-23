@@ -26,6 +26,29 @@ export const getAllCompetitionByClass = async (classId) => {
   return resFindAll(data);
 };
 
+const getAllClassJoinCompetition = async (competitionId) => {
+  if (!competitionId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.CompetitionClass.findAll({
+    where: { competitionId: competitionId },
+    raw: true,
+    nest: true,
+    include: [
+      {
+        model: db.Class,
+        as: "ClassCompetitionClass",
+        attributes: ["id", "name", "courseId", "timeStart", "timeEnd"],
+      },
+    ],
+  });
+
+  const formattedData = data.map((item) => item.ClassCompetitionClass);
+
+  return resFindAll(formattedData);
+};
+
 // const getAllClassCanJoinCompetition = async (competitionId) => {
 //   const competition =
 //     await competitionService.getCompetitionById(competitionId);
@@ -69,6 +92,7 @@ export const getAllCompetitionByClass = async (classId) => {
 export default {
   createCompetitionClass,
   getAllCompetitionByClass,
+  getAllClassJoinCompetition,
   // getAllClassCanJoinCompetition,
   // checkClassCanJoinCompetition,
 };
