@@ -24,19 +24,39 @@ export const getAllEmployees = async () => {
 
 export const findEmployeeByEmail = async (email) => {
   if (!email) {
-    throw new HttpException(400, "Missing parameter");
+    throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
   }
 
   const account = await authService.findAccountByEmail(email);
   return account;
 };
 
+export const findEmployeeByCCCD = async (cccd) => {
+  if (!cccd) {
+    throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const employee = await db.Employee.findOne({ where: { cccd } });
+  return employee;
+};
+
+export const checkEmployeeByCCCD = async (cccd) => {
+  const employee = await findEmployeeByCCCD(cccd);
+  console.log("check cddd: ", cccd);
+
+  if (employee) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("CCCD"));
+  }
+};
+
 export const createEmployee = async (data) => {
   // check mail ton tai chua
   const account = await findEmployeeByEmail(data.accountEmployee.email);
   if (account) {
-    throw new HttpException(404, "Email is existing");
+    throw new HttpException(404, ErrorMessage.OBJECT_IS_EXISTING("Email"));
   }
+
+  await checkEmployeeByCCCD(data.cccd);
 
   // hash password
   const hashPassword =

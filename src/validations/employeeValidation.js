@@ -12,8 +12,8 @@ const employeeValidate = {
         }),
       }),
       fullName: Joi.string().required().min(3).max(50).messages({
-        "any.required": "fullName is required",
-        "string.empty": "fullName is required",
+        "any.required": "FullName is required",
+        "string.empty": "FullName is required",
         "string.min": "FullName min is 3",
         "string.max": "FullName max is 50",
       }),
