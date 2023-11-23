@@ -11,4 +11,5 @@ router.get(
 );
 router.post("/", verifyEmployee, roundController.createRound);
 
+router.delete("/:id", verifyEmployee, roundController.deleteRound);
 export default router;

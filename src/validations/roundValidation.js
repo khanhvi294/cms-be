@@ -22,11 +22,11 @@ const roundValidation = {
         "number.integer": "competitionId must be integer",
         "number.min": "competitionId must be greater than 0 and is an integer",
       }),
-      numPoint: Joi.number().integer().min(1).required().messages({
-        "any.required": "numPoint is required",
-        "number.integer": "numPoint must be integer",
-        "number.min": "numPoint must be greater than 0 and is an integer",
-      }),
+      // numPoint: Joi.number().integer().min(1).required().messages({
+      //   "any.required": "numPoint is required",
+      //   "number.integer": "numPoint must be integer",
+      //   "number.min": "numPoint must be greater than 0 and is an integer",
+      // }),
       timeStart: Joi.date().iso().required().messages({
         "any.required": "timeStart must be required",
         "timeStart.iso": "timeStart is invalid",

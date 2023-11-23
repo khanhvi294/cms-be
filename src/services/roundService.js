@@ -4,6 +4,8 @@ import { resFindAll } from "../utils/const";
 import examFormsService from "./examFormsService";
 import competitionService from "./competitionService";
 import ErrorMessage from "../common/errorMessage";
+import judgeService from "./judgeService";
+import scoreService from "./scoreService";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
@@ -12,6 +14,11 @@ export const findExamFormByName = async (name) => {
 
   const examForm = await db.ExamForm.findOne({ where: { name } });
   return examForm;
+};
+
+const findRoundById = async (id) => {
+  const round = await db.Round.findOne({ where: { id: id } });
+  return round;
 };
 
 export const getAllRounds = async () => {
@@ -100,7 +107,29 @@ export const getRoundById = async (id) => {
   return data;
 };
 export const updateRound = async () => {};
-export const deleteRound = async () => {};
+export const deleteRound = async (id) => {
+  const haveRound = await findRoundById(id);
+  if (!haveRound) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
+  }
+  const judges = await judgeService.getAllJudgeByRound(id);
+  if (judges.data.length > 0) {
+    throw new HttpException(400, ErrorMessage.CUSTOM("Judges"));
+  }
+
+  const scores = await scoreService.getAllScoreByRound(id);
+
+  if (scores.data.length > 0) {
+    throw new HttpException(400, ErrorMessage.CUSTOM("Score"));
+  }
+
+  const deleteRound = await db.Round.destroy({
+    where: {
+      id: id,
+    },
+  });
+  return deleteRound;
+};
 
 export default {
   getAllRounds,
