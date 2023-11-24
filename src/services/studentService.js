@@ -78,6 +78,29 @@ export const getAllStudents = async () => {
   return resFindAll(data);
 };
 
+const getStudentAddClass = async (classId) => {
+  const students = await db.Students.findAll({
+    raw: true,
+    nest: true,
+    include: [
+      {
+        model: db.StudentClass,
+        as: "ClassStudentStudent",
+        where: {
+          classId: classId,
+        },
+        required: false,
+        attributes: [],
+      },
+    ],
+    where: {
+      "$ClassStudentStudent.classId$": null,
+    },
+  });
+
+  return students;
+};
+
 export const createStudent = async (data) => {
   // check mail ton tai chua
   const account = await findStudentByEmail(data.accountStudent.email);
@@ -180,4 +203,5 @@ export default {
   createStudent,
   getStudentIncludesClass,
   getCompetitionsForStudent,
+  getStudentAddClass,
 };

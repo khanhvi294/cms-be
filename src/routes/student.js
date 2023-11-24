@@ -6,6 +6,12 @@ import { Router } from "express";
 const router = Router();
 router.get("/", verifyEmployee, studentController.getAllStudents);
 router.get(
+  "/class/:classId",
+  verifyEmployee,
+  studentController.getStudentAddClass
+);
+
+router.get(
   "/:id/classes",
   verifyStudent,
   studentController.getAllClassesByStudent

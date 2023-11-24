@@ -47,7 +47,14 @@ const getStudentById = async (req, res, next) => {
     next(error);
   }
 };
-
+const getStudentAddClass = async (req, res, next) => {
+  try {
+    const result = await studentService.getStudentAddClass(req.params.classId);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 const createStudent = async (req, res, next) => {
   try {
     // validate data sau
@@ -86,4 +93,5 @@ export default {
   getStudentById,
   getAllClassesByStudent,
   getCompetitionsForStudent,
+  getStudentAddClass,
 };
