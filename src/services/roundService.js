@@ -61,6 +61,17 @@ export const createRound = async (data) => {
     examFormPromises,
   ]);
 
+  // check if competition is max round
+  if (
+    competition?.competitionRound &&
+    competition?.competitionRound.length == competition.numberOfRound
+  ) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("This competition is max round")
+    );
+  }
+
   // check time start if less than time end competition
   if (new Date(competition.timeEnd) < new Date(data.timeStart)) {
     throw new HttpException(
