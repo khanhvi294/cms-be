@@ -78,8 +78,8 @@ const deleteClass = async (req, res, next) => {
 const deleteStudentInClass = async (req, res, next) => {
   try {
     const result = await studentClassService.deleteStudentInClass(
-      req.body.studentId,
-      req.body.classId
+      req.params.studentId,
+      req.params.classId
     );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {

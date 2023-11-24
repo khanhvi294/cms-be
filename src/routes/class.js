@@ -19,10 +19,11 @@ router.get(
   classController.getAllStudentByClass
 );
 router.patch("/", verifyEmployee, classController.updateClass);
-router.delete("/:id", verifyEmployee, classController.deleteClass);
 router.delete(
-  "/student/delete",
+  "/:classId/student/:studentId",
   verifyEmployee,
   classController.deleteStudentInClass
 );
+router.delete("/:id", verifyEmployee, classController.deleteClass);
+
 export default router;

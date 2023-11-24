@@ -22,6 +22,52 @@ export const getAllEmployees = async () => {
   return resFindAll(data);
 };
 
+export const getAllTeacherAddJudge = async (roundId) => {
+  const employees = await db.Employee.findAll({
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["accountId"] },
+    include: [
+      {
+        model: db.Account,
+        as: "accountEmployee",
+        where: {
+          role: ROLES.TEACHER,
+        },
+        attributes: [],
+      },
+      {
+        model: db.Judge,
+        as: "employeeJudge",
+        where: {
+          roundId: roundId,
+        },
+        required: false,
+        attributes: [],
+      },
+    ],
+    where: {
+      "$employeeJudge.roundId$": null,
+    },
+  });
+  return resFindAll(employees);
+
+  // const data = await db.Employee.findAll({
+  //   raw: true,
+  //   nest: true,
+  //   attributes: { exclude: ["accountId"] },
+  //   include: [
+  //     {
+  //       model: db.Account,
+  //       as: "accountEmployee",
+  //       attributes: ["email", "isActive", "role"],
+  //     },
+  //   ],
+  //   order: [["updatedAt", "DESC"]],
+  // });
+  // return resFindAll(data);
+};
+
 export const findEmployeeByEmail = async (email) => {
   if (!email) {
     throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
@@ -184,6 +230,7 @@ export default {
   createEmployee,
   getEmployeeById,
   findEmployeeById,
+  getAllTeacherAddJudge,
   getEmployeeByIdIncludesAccount,
   updateEmployee,
 };
