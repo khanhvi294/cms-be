@@ -84,8 +84,9 @@ const studentValidate = {
       gender: Joi.boolean().messages({
         "boolean.base": "Gender must be boolean",
       }),
-      dateOfBirth: Joi.date().allow(null, "").optional().max("now").messages({
+      dateOfBirth: Joi.date().required().max("now").messages({
         "date.max": "Birthday is invalid",
+        "any.required": "Birthday is required",
       }),
     });
 

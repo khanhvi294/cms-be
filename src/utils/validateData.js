@@ -1,3 +1,6 @@
+import HttpException from "../errors/httpException";
+import ErrorMessage from "../common/errorMessage";
+
 export const validateData = async (func, data) => {
   const { error } = func(data);
   if (error) {
@@ -47,6 +50,12 @@ const formatField = (field, data) => {
       break;
 
     case "dateOfBirth":
+      if (!is18OrOlder(result)) {
+        throw new HttpException(
+          400,
+          ErrorMessage.CUSTOM("Age must be 18 or older")
+        );
+      }
       break;
 
     default:
@@ -54,3 +63,15 @@ const formatField = (field, data) => {
   }
   return result;
 };
+
+function is18OrOlder(dateOfBirth) {
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  const dayDifference = today.getDate() - birthDate.getDate();
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+  return age >= 18;
+}
