@@ -72,7 +72,7 @@ export const getAllStudents = async () => {
         attributes: ["email", "isActive"],
       },
     ],
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
 
   return resFindAll(data);
@@ -96,6 +96,7 @@ const getStudentAddClass = async (classId) => {
     where: {
       "$ClassStudentStudent.classId$": null,
     },
+    order: [["createdAt", "DESC"]],
   });
 
   return students;

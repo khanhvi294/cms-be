@@ -21,6 +21,7 @@ export const getAllCompetitionByClass = async (classId) => {
 
   const data = await db.CompetitionClass.findAll({
     where: { classId: classId },
+    order: [["createdAt", "DESC"]],
   });
 
   return resFindAll(data);
@@ -42,6 +43,7 @@ const getAllClassJoinCompetition = async (competitionId) => {
         attributes: ["id", "name", "courseId", "timeStart", "timeEnd"],
       },
     ],
+    order: [["createdAt", "DESC"]],
   });
 
   const formattedData = data.map((item) => item.ClassCompetitionClass);

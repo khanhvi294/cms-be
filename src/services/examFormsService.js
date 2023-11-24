@@ -53,7 +53,7 @@ export const getExamFormById = async (id) => {
 
 export const getAllExamForms = async () => {
   const data = await db.ExamForm.findAll({
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };

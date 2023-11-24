@@ -107,12 +107,12 @@ const updateClass = async (classRoom) => {
 
     return upClass;
   } else {
-    throw new HttpException(400, "Can't update classroom");
+    throw new HttpException(400, "Class is started,can't update");
   }
 };
 
 const getAllClasses = async () => {
-  const data = await db.Class.findAll();
+  const data = await db.Class.findAll({ order: [["createdAt", "DESC"]] });
   return resFindAll(data);
 };
 
@@ -123,6 +123,7 @@ const getClassChooseJoin = async (timeStart) => {
         [db.Sequelize.Op.gt]: timeStart,
       },
     },
+    order: [["createdAt", "DESC"]],
   });
 
   return data;
@@ -211,6 +212,7 @@ const getClassByCourseId = async (courseId) => {
     where: {
       courseId: courseId,
     },
+    order: [["createdAt", "DESC"]],
   });
 
   return data;

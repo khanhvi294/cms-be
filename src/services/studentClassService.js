@@ -43,6 +43,7 @@ export const getAllClassesByStudent = async (studentId) => {
         as: "ClassStudentClass",
       },
     ],
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };

@@ -17,7 +17,7 @@ export const getAllEmployees = async () => {
         attributes: ["email", "isActive", "role"],
       },
     ],
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };
@@ -49,6 +49,7 @@ export const getAllTeacherAddJudge = async (roundId) => {
     where: {
       "$employeeJudge.roundId$": null,
     },
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(employees);
 
