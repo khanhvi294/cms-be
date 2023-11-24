@@ -5,8 +5,9 @@ import {
 } from "./baseController";
 import studentService from "../services/studentService";
 import studentValidate from "../validations/studentValidation";
-import { validateData } from "../utils/validateData";
+import { formatInfoProfile, validateData } from "../utils/validateData";
 import studentClassService from "../services/studentClassService";
+import authService from "../services/authService";
 
 const getAllStudents = async (req, res, next) => {
   try {
@@ -80,7 +81,29 @@ const createStudent = async (req, res, next) => {
     if (err) {
       return errorValidateResponse(422, err, res);
     }
-    const result = await studentService.createStudent(req.body);
+    const dataFormat = await formatInfoProfile(req.body);
+
+    const result = await studentService.createStudent(dataFormat);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateStudent = async (req, res, next) => {
+  try {
+    const err = await validateData(studentValidate.update, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+
+    const student = await authService.getStudentByAccount(req?.user.id);
+
+    const dataFormat = await formatInfoProfile(req.body);
+    const result = await studentService.updateStudent(
+      student?.accountStudent?.id || -1,
+      dataFormat
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -93,5 +116,6 @@ export default {
   getStudentById,
   getAllClassesByStudent,
   getCompetitionsForStudent,
+  updateStudent,
   getStudentAddClass,
 };

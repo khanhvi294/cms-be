@@ -89,7 +89,6 @@ export const findEmployeeByCCCD = async (cccd) => {
 
 export const checkEmployeeByCCCD = async (cccd) => {
   const employee = await findEmployeeByCCCD(cccd);
-  console.log("check cddd: ", cccd);
 
   if (employee) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("CCCD"));
@@ -191,34 +190,41 @@ const getEmployeeByIdIncludesAccount = async (id) => {
   return data;
 };
 
-// const updateEmployee = async (employee) => {
-//   console.log(employee);
-//   // const account = await authService.checkEmailAccountUpdate(employee.accountEmployee.email);
-//   // if (account) {
-//   //   throw new HttpException(404, "Email is existing");
-//   // }
+const checkUpdateCCCD = async (newVal, employeeId) => {
+  const employee = await findEmployeeByCCCD(newVal);
 
-//   // luu vao db
-//   const updateEmployee = {
-//     ...data,
-//     accountEmployee: {
-//       email: data.accountEmployee.email,
-//       password: hashPassword,
-//       role: data.role,
-//       isActive: true,
-//     },
-//   };
+  if (employee) {
+    if (employee.id != employeeId) {
+      throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("CCCD"));
+    }
+  }
 
-//   // luu thong tin nhay cam thi k tra ve, thong tin khac tra ve binh thuong
-//   const employeeNew = await db.Employee.create(newEmployee, {
-//     include: [
-//       {
-//         model: db.Account,
-//         as: "accountEmployee",
-//       },
-//     ],
-//   });
-// };
+  return false;
+};
+
+const updateEmployee = async (employeeId, data) => {
+  const getEmployeeByIdPromise = getEmployeeById(employeeId);
+  let checkCCCDPromise;
+  if (data.cccd) {
+    checkCCCDPromise = checkUpdateCCCD(data.cccd, employeeId);
+  }
+
+  const checkPromise = [getEmployeeByIdPromise];
+  if (checkCCCDPromise) {
+    checkPromise.push(checkCCCDPromise);
+  }
+
+  await Promise.all(checkPromise);
+
+  const result = await db.Employee.update(
+    { ...data },
+    { where: { id: employeeId } }
+  ).then(async () => {
+    return await findEmployeeById(employeeId);
+  });
+
+  return result;
+};
 
 export default {
   getAllEmployees,
@@ -227,4 +233,5 @@ export default {
   findEmployeeById,
   getAllTeacherAddJudge,
   getEmployeeByIdIncludesAccount,
+  updateEmployee,
 };

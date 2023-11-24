@@ -15,3 +15,42 @@ export const validateData = async (func, data) => {
 
   return false;
 };
+
+export const formatInfoProfile = (data) => {
+  const dataReturn = { ...data };
+
+  Object.keys(data).forEach((key) => {
+    dataReturn[key] = formatField(key, data[key]);
+  });
+  return dataReturn;
+};
+
+const formatField = (field, data) => {
+  let result = data;
+  switch (field) {
+    case "fullName":
+      result = data.trim();
+      break;
+
+    case "cccd":
+      result = data.trim();
+      break;
+
+    case "phone":
+      result = data.trim();
+
+      break;
+
+    case "address":
+      result = data.trim();
+
+      break;
+
+    case "dateOfBirth":
+      break;
+
+    default:
+      return data;
+  }
+  return result;
+};

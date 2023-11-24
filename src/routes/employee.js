@@ -1,5 +1,5 @@
 import employeeController from "../controllers/employeeController";
-import { verifyEmployee } from "./verify";
+import { verifyEmployee, verifyEmployeeTeacher } from "./verify";
 
 import { Router } from "express";
 
@@ -12,5 +12,6 @@ router.get(
   employeeController.getAllTeacherAddJudge
 );
 router.post("/", verifyEmployee, employeeController.createEmployee);
+router.patch("/", verifyEmployeeTeacher, employeeController.updateEmployee); // employee - teacher
 
 export default router;

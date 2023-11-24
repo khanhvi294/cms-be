@@ -22,5 +22,6 @@ router.get(
   studentController.getCompetitionsForStudent
 );
 router.post("/", verifyEmployee, studentController.createStudent);
+router.patch("/", verifyStudent, studentController.updateStudent);
 
 export default router;
