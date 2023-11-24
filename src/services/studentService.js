@@ -195,6 +195,23 @@ export const getCompetitionsForStudent = async (studentId) => {
   return uniqueCompetitions;
 };
 
+export const updateStudent = async (studentId, data) => {
+  const getStudentByIdPromise = getStudentById(studentId);
+
+  const checkPromise = [getStudentByIdPromise];
+
+  await Promise.all(checkPromise);
+
+  const result = await db.Students.update(
+    { ...data },
+    { where: { id: studentId } }
+  ).then(async () => {
+    return await findStudentById(studentId);
+  });
+
+  return result;
+};
+
 export default {
   findStudentById,
   getStudentById,
@@ -204,4 +221,5 @@ export default {
   getStudentIncludesClass,
   getCompetitionsForStudent,
   getStudentAddClass,
+  updateStudent,
 };
