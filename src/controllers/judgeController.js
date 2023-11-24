@@ -34,8 +34,21 @@ export const createJudgesForRound = async (req, res, next) => {
   }
 };
 
+const deleteJudgeInRound = async (req, res, next) => {
+  try {
+    const result = await judgeService.deleteJudgeInRound(
+      req.params.employeeId,
+      req.params.roundId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createJudge,
   getAllJudgeByRound,
   createJudgesForRound,
+  deleteJudgeInRound,
 };

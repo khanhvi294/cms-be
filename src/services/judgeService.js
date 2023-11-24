@@ -150,9 +150,28 @@ export const createJudgesForRound = async (data) => {
   }
 };
 
+export const deleteJudgeInRound = async (teacherId, roundId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  if (!teacherId) throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  const round = await roundService.getRoundById(roundId);
+  if (new Date(round.timeStart) <= new Date()) {
+    throw new HttpException(
+      422,
+      ErrorMessage.CUSTOM("Round has started, can't removed judge")
+    );
+  }
+  const data = await db.Judge.destroy({
+    where: { roundId: roundId, employeeId: teacherId },
+  });
+  return data;
+};
+
 export default {
   getAllJudgeByCompetition,
   getAllJudgeByRound,
   createJudge,
   createJudgesForRound,
+  deleteJudgeInRound,
 };
