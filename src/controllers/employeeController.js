@@ -16,6 +16,17 @@ const getAllEmployees = async (req, res, next) => {
   }
 };
 
+const getAllTeacherAddJudge = async (req, res, next) => {
+  try {
+    const result = await employeeService.getAllTeacherAddJudge(
+      req.params.roundId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const createEmployee = async (req, res, next) => {
   try {
     if (!req.body.accountEmployee) {
@@ -38,4 +49,5 @@ const createEmployee = async (req, res, next) => {
 export default {
   getAllEmployees,
   createEmployee,
+  getAllTeacherAddJudge,
 };
