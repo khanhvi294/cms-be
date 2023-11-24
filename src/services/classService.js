@@ -112,7 +112,19 @@ const updateClass = async (classRoom) => {
 };
 
 const getAllClasses = async () => {
-  const data = await db.Class.findAll({ order: [["createdAt", "DESC"]] });
+  const data = await db.Class.findAll({
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["CourseId"] },
+    include: [
+      {
+        model: db.Course,
+        as: "courseClass",
+        attributes: ["name"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
   return resFindAll(data);
 };
 
