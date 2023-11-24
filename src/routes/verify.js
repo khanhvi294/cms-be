@@ -14,6 +14,11 @@ export const verifyStudent = [
   auth.isAccessible([ROLES.STUDENT]),
 ];
 
+export const verifyEmployeeTeacher = [
+  auth.isAuthenticated,
+  auth.isAccessible([ROLES.EMPLOYEE, ROLES.TEACHER]),
+];
+
 export const verifyRole = [
   auth.isAuthenticated,
   auth.isAccessible([ROLES.STUDENT, ROLES.TEACHER, ROLES.EMPLOYEE]),
