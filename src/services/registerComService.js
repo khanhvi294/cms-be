@@ -93,6 +93,7 @@ export const unRegisterCompetition = async (data) => {
 export const getAllCompetitionByStudentId = async (studentId) => {
   const data = await db.Register.findAll({
     where: { studentId: studentId },
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };

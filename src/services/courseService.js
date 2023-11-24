@@ -53,7 +53,7 @@ const checkCourseTime = (time) => {
 
 export const getAllCourses = async () => {
   const data = await db.Course.findAll({
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };

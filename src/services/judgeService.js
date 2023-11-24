@@ -6,28 +6,10 @@ import employeeService from "./employeeService";
 import { sequelize } from "../config/connectDB";
 import roundService from "./roundService";
 
-export const getAllJudgeByCompetition = async (competitionId) => {};
-
 export const getAllJudgeByRound = async (roundId) => {
   if (!roundId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
-
-  // const data = await db.Round.findOne({
-  //   where: { id: roundId },
-  //   raw: true,
-  //   nest: true,
-  //   include: [
-  //     {
-  //       model: db.Judge,
-  //       as: "roundJudge",
-  //     },
-  //   ],
-  //   order: [["updatedAt", "DESC"]],
-  // });
-  // if (data.roundJudge) {
-  //   return resFindAll(data.roundJudge);
-  // }
 
   const data = await db.Judge.findAll({
     where: { roundId: roundId },
@@ -41,7 +23,7 @@ export const getAllJudgeByRound = async (roundId) => {
         attributes: ["fullName", "id"],
       },
     ],
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
   });
 
   return resFindAll(data);
@@ -169,7 +151,6 @@ export const deleteJudgeInRound = async (teacherId, roundId) => {
 };
 
 export default {
-  getAllJudgeByCompetition,
   getAllJudgeByRound,
   createJudge,
   createJudgesForRound,

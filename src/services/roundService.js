@@ -34,6 +34,7 @@ export const getRoundsByCompetition = async (competitionId) => {
   }
   const data = await db.Round.findAll({
     where: { competitionId: competitionId },
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };
@@ -43,6 +44,7 @@ export const getRoundsByExamForm = async (examFormId) => {
   }
   const data = await db.Round.findAll({
     where: { examFormId: examFormId },
+    order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
 };
