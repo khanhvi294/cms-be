@@ -110,6 +110,15 @@ export const updateStudent = async (req, res, next) => {
   }
 };
 
+const deleteStudent = async (req, res, next) => {
+  try {
+    const result = await studentService.deleteStudent(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAllStudents,
   createStudent,
@@ -118,4 +127,5 @@ export default {
   getCompetitionsForStudent,
   updateStudent,
   getStudentAddClass,
+  deleteStudent,
 };

@@ -4,6 +4,7 @@ import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
 import authService from "./authService";
 import passwordUtil from "../utils/password";
 import ErrorMessage from "../common/errorMessage";
+import studentClassService from "./studentClassService";
 
 export const findStudentById = async (id) => {
   if (!id) {
@@ -213,6 +214,34 @@ export const updateStudent = async (studentId, data) => {
   return result;
 };
 
+const deleteStudent = async (id) => {
+  const haveStudent = await findStudentById(id);
+  if (!haveStudent) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Student")
+    );
+  }
+  const classStudent = await studentClassService.getAllClassesByStudent(id);
+
+  if (classStudent.length > 0) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Student already add to class. Can remove it")
+    );
+  }
+
+  const student = await db.Student.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  const account = authService.deleteAccount(classStudent.accountId);
+
+  return student;
+};
+
 export default {
   findStudentById,
   getStudentById,
@@ -223,4 +252,5 @@ export default {
   getCompetitionsForStudent,
   getStudentAddClass,
   updateStudent,
+  deleteStudent,
 };
