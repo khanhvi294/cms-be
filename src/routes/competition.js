@@ -25,4 +25,10 @@ router.get(
 );
 router.patch("/:id/status", competitionController.updateStatusCompetition);
 
+router.delete(
+  "/:competitionId/class/:classId",
+  verifyEmployee,
+  competitionController.deleteClassCompetition
+);
+
 export default router;

@@ -2,6 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import competitionService from "./competitionService";
 
 const createCompetitionClass = async (data, t) => {
   const result = await db.CompetitionClass.create(
@@ -51,6 +52,28 @@ const getAllClassJoinCompetition = async (competitionId) => {
   return resFindAll(formattedData);
 };
 
+const deleteClassCompetition = async (competitionId, classId) => {
+  if (!classId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  if (!competitionId)
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  const competition =
+    await competitionService.getCompetitionById(competitionId);
+
+  if (new Date(competition.timeStart) <= new Date()) {
+    throw new HttpException(
+      422,
+      ErrorMessage.CUSTOM("Competition has started, can't removed class")
+    );
+  }
+  const data = await db.CompetitionClass.destroy({
+    where: { competitionId, classId },
+  });
+
+  return data;
+};
+
 // const getAllClassCanJoinCompetition = async (competitionId) => {
 //   const competition =
 //     await competitionService.getCompetitionById(competitionId);
@@ -95,6 +118,7 @@ export default {
   createCompetitionClass,
   getAllCompetitionByClass,
   getAllClassJoinCompetition,
+  deleteClassCompetition,
   // getAllClassCanJoinCompetition,
   // checkClassCanJoinCompetition,
 };

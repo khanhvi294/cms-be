@@ -109,7 +109,17 @@ const updateStatusCompetition = async (req, res, next) => {
     next(error);
   }
 };
-
+const deleteClassCompetition = async (req, res, next) => {
+  try {
+    const result = await competitionClassService.deleteClassCompetition(
+      req.params.competitionId,
+      req.params.classId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   createCompetition,
   getAllCompetition,
@@ -118,4 +128,5 @@ export default {
   getClassCanJoin,
   getCompetitionById,
   getAllClassJoinCompetition,
+  deleteClassCompetition,
 };
