@@ -71,6 +71,11 @@ export const getAllCompetition = async () => {
   return resFindAll(data);
 };
 
+export const getAllCompetitionIncludeEmployee = async (employeeId) => {
+  const data = await db.Competition.findAll({ where: { employeeId } });
+  return resFindAll(data);
+};
+
 export const getCompetitionById = async (id) => {
   if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -175,4 +180,5 @@ export default {
   updateCompetition,
   getCompetitionIncludeClass,
   getCompetitionIncludeRounds,
+  getAllCompetitionIncludeEmployee,
 };

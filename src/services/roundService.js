@@ -34,6 +34,16 @@ export const getRoundsByCompetition = async (competitionId) => {
   }
   const data = await db.Round.findAll({
     where: { competitionId: competitionId },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["examFormId"] },
+    include: [
+      {
+        model: db.ExamForm,
+        as: "examFormRound",
+        attributes: ["name"],
+      },
+    ],
     order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);

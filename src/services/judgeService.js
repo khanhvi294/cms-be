@@ -29,6 +29,11 @@ export const getAllJudgeByRound = async (roundId) => {
   return resFindAll(data);
 };
 
+export const getAllJudgeIncludeEmployee = async (employeeId) => {
+  const data = await db.Competition.findAll({ where: { employeeId } });
+  return resFindAll(data);
+};
+
 export const findJudgeByEmployeeIdAndRoundId = async (data) => {
   if (!data.employeeId || !data.roundId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -155,4 +160,5 @@ export default {
   createJudge,
   createJudgesForRound,
   deleteJudgeInRound,
+  getAllJudgeIncludeEmployee,
 };

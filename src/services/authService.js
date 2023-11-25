@@ -103,6 +103,23 @@ const login = async (email, password) => {
   return { token };
 };
 
+const deleteAccount = async (id) => {
+  const haveAccount = await findAccount(id);
+  if (!haveAccount) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Account")
+    );
+  }
+  const account = await db.Account.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  return account;
+};
+
 export default {
   login,
   findAccount,
@@ -110,4 +127,5 @@ export default {
   getInfo,
   getEmployeeByAccount,
   getStudentByAccount,
+  deleteAccount,
 };

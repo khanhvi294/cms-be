@@ -4,6 +4,8 @@ import authService from "./authService";
 import { DEFAULT_PASSWORD, ROLES, resFindAll } from "../utils/const";
 import passwordUtil from "../utils/password";
 import ErrorMessage from "../common/errorMessage";
+import competitionService from "./competitionService";
+import judgeService from "./judgeService";
 
 export const getAllEmployees = async () => {
   const data = await db.Employee.findAll({
@@ -226,6 +228,38 @@ const updateEmployee = async (employeeId, data) => {
   return result;
 };
 
+const deleteEmployee = async (id) => {
+  const haveEmployee = await findEmployeeById(id);
+  if (!haveEmployee) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Employee")
+    );
+  }
+  const competitions =
+    await competitionService.getAllCompetitionIncludeEmployee(id);
+
+  if (competitions.length > 0) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_EXISTING("Competition")
+    );
+  }
+  const judges = await judgeService.getAllJudgeIncludeEmployee(id);
+  if (judges.length > 0) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
+  }
+  const employee = await db.Employee.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  const account = authService.deleteAccount(haveEmployee.accountId);
+
+  return employee;
+};
+
 export default {
   getAllEmployees,
   createEmployee,
@@ -234,4 +268,5 @@ export default {
   getAllTeacherAddJudge,
   getEmployeeByIdIncludesAccount,
   updateEmployee,
+  deleteEmployee,
 };

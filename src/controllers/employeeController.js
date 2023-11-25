@@ -67,9 +67,19 @@ const updateEmployee = async (req, res, next) => {
     next(error);
   }
 };
+
+const deleteEmployee = async (req, res, next) => {
+  try {
+    const result = await employeeService.deleteEmployee(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   getAllEmployees,
   createEmployee,
   updateEmployee,
   getAllTeacherAddJudge,
+  deleteEmployee,
 };
