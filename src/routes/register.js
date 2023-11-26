@@ -11,6 +11,10 @@ router.get(
   registerComController.getAllCompetitionByStudentId
 );
 router.post("/", verifyStudent, registerComController.registerCompetition);
-router.delete("/", verifyStudent, registerComController.unRegisterCompetition);
+router.delete(
+  "/:competitionId",
+  verifyStudent,
+  registerComController.unRegisterCompetition
+);
 
 export default router;

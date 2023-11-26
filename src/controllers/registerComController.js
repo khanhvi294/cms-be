@@ -51,7 +51,7 @@ const unRegisterCompetition = async (req, res, next) => {
 
     const result = await registerComService.unRegisterCompetition({
       studentId: student?.accountStudent.id || -1,
-      competitionId: req.body.competitionId,
+      competitionId: req.params.competitionId,
     });
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {

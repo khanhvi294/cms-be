@@ -1,5 +1,5 @@
 import competitionController from "../controllers/competitionController";
-import { verifyEmployee } from "./verify";
+import { verifyEmployee, verifyRole } from "./verify";
 
 import { Router } from "express";
 
@@ -20,7 +20,7 @@ router.get(
 );
 router.get(
   "/:id/allclass",
-  verifyEmployee,
+  verifyRole,
   competitionController.getAllClassJoinCompetition
 );
 router.patch("/:id/status", competitionController.updateStatusCompetition);

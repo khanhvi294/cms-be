@@ -178,8 +178,10 @@ export const getCompetitionsForStudent = async (studentId) => {
   });
 
   if (!student) {
-    console.log("Không tìm thấy học viên");
-    return [];
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Student")
+    );
   }
 
   // Trích xuất danh sách các cuộc thi từ cấu trúc lồng nhau

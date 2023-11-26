@@ -7,6 +7,7 @@ const router = Router();
 router.get("/", verifyRole, roundController.getAllRounds);
 router.get(
   "/:competitionId/competition",
+  verifyRole,
   roundController.getRoundsByCompetition
 );
 router.post("/", verifyEmployee, roundController.createRound);
