@@ -30,7 +30,8 @@ export const getAllJudgeByRound = async (roundId) => {
 };
 
 export const getAllJudgeIncludeEmployee = async (employeeId) => {
-  const data = await db.Competition.findAll({ where: { employeeId } });
+  const data = await db.Judge.findAll({ where: { employeeId } });
+
   return resFindAll(data);
 };
 

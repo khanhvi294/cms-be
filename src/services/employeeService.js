@@ -239,16 +239,19 @@ const deleteEmployee = async (id) => {
   const competitions =
     await competitionService.getAllCompetitionIncludeEmployee(id);
 
-  if (competitions.length > 0) {
+  if (competitions.data.length > 0) {
     throw new HttpException(
       400,
       ErrorMessage.OBJECT_IS_EXISTING("Competition")
     );
   }
   const judges = await judgeService.getAllJudgeIncludeEmployee(id);
-  if (judges.length > 0) {
+
+  console.log(competitions);
+  if (judges.data.length > 0) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
   }
+
   const employee = await db.Employee.destroy({
     where: {
       id: id,
@@ -257,7 +260,7 @@ const deleteEmployee = async (id) => {
 
   const account = authService.deleteAccount(haveEmployee.accountId);
 
-  return employee;
+  return 1;
 };
 
 export default {
