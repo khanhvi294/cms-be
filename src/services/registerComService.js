@@ -16,6 +16,7 @@ export const findRegisterCompetition = async (data) => {
 
   return registerData;
 };
+
 export const getRegisterCompetition = async (data) => {
   const registerData = await findRegisterCompetition(data);
 
@@ -24,6 +25,11 @@ export const getRegisterCompetition = async (data) => {
   }
 
   return registerData;
+};
+
+export const getRegisterByCompetition = async (competitionId) => {
+  const register = await db.Register.findAll({ where: { competitionId } });
+  return resFindAll(register);
 };
 
 export const registerCompetition = async (data) => {
@@ -104,4 +110,5 @@ export default {
   getAllCompetitionByStudentId,
   findRegisterCompetition,
   getRegisterCompetition,
+  getRegisterByCompetition,
 };

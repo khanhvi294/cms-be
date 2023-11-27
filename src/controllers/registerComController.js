@@ -41,6 +41,17 @@ const getAllCompetitionByStudentId = async (req, res, next) => {
   }
 };
 
+const getRegisterByCompetition = async (req, res, next) => {
+  try {
+    const result = await registerComService.getRegisterByCompetition(
+      req.params.competitionId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const unRegisterCompetition = async (req, res, next) => {
   try {
     //   const err = await validateData(examFormValidate.create, req.body);
@@ -62,4 +73,5 @@ export default {
   registerCompetition,
   unRegisterCompetition,
   getAllCompetitionByStudentId,
+  getRegisterByCompetition,
 };

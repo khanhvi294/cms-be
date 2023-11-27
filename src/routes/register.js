@@ -1,5 +1,5 @@
 import registerComController from "../controllers/registerComController";
-import { verifyStudent } from "./verify";
+import { verifyEmployee, verifyStudent } from "./verify";
 
 import { Router } from "express";
 
@@ -15,6 +15,11 @@ router.delete(
   "/:competitionId",
   verifyStudent,
   registerComController.unRegisterCompetition
+);
+router.get(
+  "/competition/:competitionId",
+  verifyEmployee,
+  registerComController.getRegisterByCompetition
 );
 
 export default router;
