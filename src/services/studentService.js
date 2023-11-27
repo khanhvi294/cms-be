@@ -218,6 +218,7 @@ export const updateStudent = async (studentId, data) => {
 
 const deleteStudent = async (id) => {
   const haveStudent = await findStudentById(id);
+  console.log(id);
   if (!haveStudent) {
     throw new HttpException(
       400,
@@ -226,20 +227,20 @@ const deleteStudent = async (id) => {
   }
   const classStudent = await studentClassService.getAllClassesByStudent(id);
 
-  if (classStudent.length > 0) {
+  if (classStudent?.data.length > 0) {
     throw new HttpException(
       400,
       ErrorMessage.CUSTOM("Student already add to class. Can remove it")
     );
   }
 
-  const student = await db.Student.destroy({
+  const student = await db.Students.destroy({
     where: {
       id: id,
     },
   });
 
-  const account = authService.deleteAccount(classStudent.accountId);
+  const account = authService.deleteAccount(haveStudent.accountId);
 
   return student;
 };
