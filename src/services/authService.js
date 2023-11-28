@@ -36,11 +36,19 @@ export const getStudentByAccount = async (id) => {
     where: { id },
     raw: true,
     nest: true,
-    attributes: { exclude: ["accountId"] },
+    attributes: { exclude: ["accountId", "password"] },
     include: [
       {
         model: db.Students,
         as: "accountStudent",
+        attributes: [
+          "id",
+          "fullName",
+          "gender",
+          "dateOfBirth",
+          "address",
+          "phone",
+        ],
       },
     ],
   });
@@ -52,13 +60,21 @@ export const getEmployeeByAccount = async (id) => {
     where: { id },
     raw: true,
     nest: true,
-    attributes: { exclude: ["accountId"] },
+    attributes: { exclude: ["accountId", "password"] },
     attributes: ["id", "email", "role"],
     include: [
       {
         model: db.Employee,
         as: "accountEmployee",
-        attributes: ["id", "fullName", "cccd"],
+        attributes: [
+          "id",
+          "fullName",
+          "cccd",
+          "gender",
+          "dateOfBirth",
+          "address",
+          "phone",
+        ],
       },
     ],
   });

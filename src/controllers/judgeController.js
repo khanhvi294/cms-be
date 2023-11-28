@@ -1,5 +1,6 @@
 import judgeService from "../services/judgeService";
 import { successResponse, STATUS_CODE } from "./baseController";
+import authService from "../services/authService";
 
 const createJudge = async (req, res, next) => {
   try {
@@ -13,6 +14,18 @@ const createJudge = async (req, res, next) => {
 const getAllJudgeByRound = async (req, res, next) => {
   try {
     const result = await judgeService.getAllJudgeByRound(req.params.roundId);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllRoundByJudge = async (req, res, next) => {
+  try {
+    const employee = await authService.getEmployeeByAccount(req.user.id);
+    const result = await judgeService.getAllRoundByJudge(
+      employee?.accountEmployee.id
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -51,4 +64,5 @@ export default {
   getAllJudgeByRound,
   createJudgesForRound,
   deleteJudgeInRound,
+  getAllRoundByJudge,
 };
