@@ -129,7 +129,14 @@ export const getRoundById = async (id) => {
 
   return data;
 };
-export const updateRound = async () => {};
+
+export const updateRound = async (id) => {
+  // const haveRound = await findRoundById(id);
+  // if (!haveRound) {
+  //   throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
+  // }
+};
+
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
   if (!haveRound) {
