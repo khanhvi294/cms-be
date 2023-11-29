@@ -2,7 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import competitionService from "../services/competitionService";
-import { resFindAll } from "../utils/const";
+import { STATUS_COMPETITION, resFindAll } from "../utils/const";
 import studentService from "./studentService";
 
 export const findRegisterCompetition = async (data) => {
@@ -46,6 +46,17 @@ export const registerCompetition = async (data) => {
     findRegisterCompetition(data),
     competitionService.getCompetitionIncludeClass(data.competitionId),
   ]);
+
+  // check cuoc thi da bat dau chua
+  if (
+    competition.status !== STATUS_COMPETITION.CREATED ||
+    new Date(competition.timeStart) <= new Date()
+  ) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Competition is already started, cannot do this")
+    );
+  }
 
   if (registerComFind) {
     throw new HttpException(
@@ -91,6 +102,22 @@ export const unRegisterCompetition = async (data) => {
    *  }
    */
   const registerComFind = await getRegisterCompetition(data);
+
+  const competition = await competitionService.getCompetitionById(
+    registerComFind.competitionId
+  );
+
+  // check cuoc thi da bat dau chua
+  if (
+    competition.status !== STATUS_COMPETITION.CREATED ||
+    new Date(competition.timeStart) <= new Date()
+  ) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Competition is already started, cannot do this")
+    );
+  }
+
   const result = await db.Register.destroy({
     where: { id: registerComFind.id },
   });
