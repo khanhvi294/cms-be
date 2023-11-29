@@ -1,6 +1,6 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { resFindAll } from "../utils/const";
+import { STATUS_COMPETITION, resFindAll } from "../utils/const";
 import examFormsService from "./examFormsService";
 import competitionService from "./competitionService";
 import ErrorMessage from "../common/errorMessage";
@@ -62,6 +62,14 @@ export const createRound = async (data) => {
     competitionPromises,
     examFormPromises,
   ]);
+
+  // check status competition cannot be canceled or ended
+  if (
+    competition.status === STATUS_COMPETITION.CANCEL ||
+    competition.status === STATUS_COMPETITION.ENDED
+  ) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_ADD_ROUND);
+  }
 
   // check if competition is max round
   if (

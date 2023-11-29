@@ -8,6 +8,8 @@ const ErrorMessage = {
   INTERNAL_ERROR: "Internal error",
   CUSTOM: (message) => `${message}`,
   HAS_NO_DATA: "Has no data",
+  COMPETITION_CANNOT_ADD_ROUND:
+    "Competition ended or canceled  cannot be added round",
 };
 
 export default ErrorMessage;

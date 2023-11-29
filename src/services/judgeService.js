@@ -6,6 +6,22 @@ import employeeService from "./employeeService";
 import { sequelize } from "../config/connectDB";
 import roundService from "./roundService";
 
+export const findJudgeById = async (id) => {
+  if (!i) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const result = await db.Judge.findOne({ where: { id: id } });
+  return result;
+};
+export const getJudgeById = async (id) => {
+  const result = await findJudgeById(id);
+  if (!result) {
+    throw new HttpException(400, ErrorMessage.OBJECT_NOT_FOUND("Judge"));
+  }
+  return result;
+};
+
 export const getAllJudgeByRound = async (roundId) => {
   if (!roundId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -155,4 +171,6 @@ export default {
   createJudge,
   createJudgesForRound,
   deleteJudgeInRound,
+  findJudgeById,
+  getJudgeById,
 };
