@@ -57,9 +57,19 @@ const deleteRound = async (req, res, next) => {
   }
 };
 
+const updateRound = async (req, res, next) => {
+  try {
+    const result = await roundService.updateRound(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAllRounds,
   createRound,
   getRoundsByCompetition,
   deleteRound,
+  updateRound,
 };

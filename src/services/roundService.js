@@ -130,11 +130,17 @@ export const getRoundById = async (id) => {
   return data;
 };
 
-export const updateRound = async (id) => {
-  // const haveRound = await findRoundById(id);
-  // if (!haveRound) {
-  //   throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
-  // }
+export const updateRound = async (round) => {
+  const haveRound = await findRoundById(id);
+  if (!haveRound) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
+  }
+  if (new Date(haveRound.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is already started,can't update")
+    );
+  }
 };
 
 export const deleteRound = async (id) => {
