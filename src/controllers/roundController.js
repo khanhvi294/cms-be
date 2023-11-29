@@ -59,6 +59,10 @@ const deleteRound = async (req, res, next) => {
 
 const updateRound = async (req, res, next) => {
   try {
+    const err = await validateData(roundValidation.update, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
     const result = await roundService.updateRound(req.body);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
