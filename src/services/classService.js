@@ -232,6 +232,7 @@ const getClassByCourseId = async (courseId) => {
 
 const deleteClass = async (id) => {
   const haveClass = await findClassById(id);
+
   if (!haveClass) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Class"));
   }

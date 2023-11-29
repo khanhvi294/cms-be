@@ -139,12 +139,18 @@ export const updateRound = async (id) => {
 
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
+  if (new Date(haveRound.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is already started,can't delete")
+    );
+  }
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
   const judges = await judgeService.getAllJudgeByRound(id);
   if (judges.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.CUSTOM("Judges"));
+    throw new HttpException(400, ErrorMessage.CUSTOM("Round"));
   }
 
   const scores = await scoreService.getAllScoreByRound(id);
