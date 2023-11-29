@@ -190,6 +190,16 @@ export const addMultipleStudent = async (data) => {
    *    studentIds: [1,2,3,4,5]
    * }
    */
+  const classRoom = await findClassById(data.classId);
+  if (
+    new Date(classRoom.timeStart) <=
+    new Date().setDate(new Date().getDate() + 7)
+  ) {
+    throw new HttpException(
+      422,
+      ErrorMessage.CUSTOM("Class has started 1 week, can't add students")
+    );
+  }
 
   if (!data?.classId || !data?.studentIds?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
