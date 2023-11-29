@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       roundNumber: DataTypes.INTEGER,
       numPoint: DataTypes.INTEGER,
       timeStart: DataTypes.DATEONLY,
+      name: DataTypes.STRING,
     },
     {
       sequelize,
