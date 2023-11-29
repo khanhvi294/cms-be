@@ -166,19 +166,17 @@ export const updateStatusCompetition = async (id, statusId) => {
   throw new HttpException(400, ErrorMessage.INTERNAL_ERROR);
 };
 
-const addClassToCompetition = async () => {};
-const removeClassToCompetition = async () => {};
 const updateCompetition = async () => {};
+const deleteCompetition = async (id) => {};
 
 export default {
   createCompetition,
   getAllCompetition,
   getCompetitionById,
   updateStatusCompetition,
-  addClassToCompetition,
-  removeClassToCompetition,
   updateCompetition,
   getCompetitionIncludeClass,
   getCompetitionIncludeRounds,
   getAllCompetitionIncludeEmployee,
+  deleteCompetition,
 };
