@@ -45,6 +45,34 @@ export const getAllJudgeByRound = async (roundId) => {
   return resFindAll(data);
 };
 
+export const getAllRoundByJudge = async (judgeId) => {
+  if (!judgeId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  console.log(judgeId);
+  const data = await db.Judge.findAll({
+    where: { employeeId: judgeId },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["roundId"] },
+    include: [
+      {
+        model: db.Round,
+        as: "roundJudge",
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  return resFindAll(data);
+};
+
+export const getAllJudgeIncludeEmployee = async (employeeId) => {
+  const data = await db.Judge.findAll({ where: { employeeId } });
+
+  return resFindAll(data);
+};
+
 export const findJudgeByEmployeeIdAndRoundId = async (data) => {
   if (!data.employeeId || !data.roundId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -173,4 +201,6 @@ export default {
   deleteJudgeInRound,
   findJudgeById,
   getJudgeById,
+  getAllJudgeIncludeEmployee,
+  getAllRoundByJudge,
 };

@@ -23,5 +23,6 @@ router.get(
 );
 router.post("/", verifyEmployee, studentController.createStudent);
 router.patch("/", verifyStudent, studentController.updateStudent);
+router.delete("/:id", verifyEmployee, studentController.deleteStudent);
 
 export default router;

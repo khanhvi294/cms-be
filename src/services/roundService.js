@@ -34,6 +34,16 @@ export const getRoundsByCompetition = async (competitionId) => {
   }
   const data = await db.Round.findAll({
     where: { competitionId: competitionId },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["examFormId"] },
+    include: [
+      {
+        model: db.ExamForm,
+        as: "examFormRound",
+        attributes: ["name"],
+      },
+    ],
     order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
@@ -127,15 +137,34 @@ export const getRoundById = async (id) => {
 
   return data;
 };
-export const updateRound = async () => {};
+
+export const updateRound = async (round) => {
+  const haveRound = await findRoundById(id);
+  if (!haveRound) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
+  }
+  if (new Date(haveRound.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is already started,can't update")
+    );
+  }
+};
+
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
+  if (new Date(haveRound.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is already started,can't delete")
+    );
+  }
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
   const judges = await judgeService.getAllJudgeByRound(id);
   if (judges.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.CUSTOM("Judges"));
+    throw new HttpException(400, ErrorMessage.CUSTOM("Round"));
   }
 
   const scores = await scoreService.getAllScoreByRound(id);

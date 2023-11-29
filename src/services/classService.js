@@ -112,7 +112,19 @@ const updateClass = async (classRoom) => {
 };
 
 const getAllClasses = async () => {
-  const data = await db.Class.findAll({ order: [["createdAt", "DESC"]] });
+  const data = await db.Class.findAll({
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["CourseId"] },
+    include: [
+      {
+        model: db.Course,
+        as: "courseClass",
+        attributes: ["name"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
   return resFindAll(data);
 };
 
@@ -220,6 +232,7 @@ const getClassByCourseId = async (courseId) => {
 
 const deleteClass = async (id) => {
   const haveClass = await findClassById(id);
+
   if (!haveClass) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Class"));
   }

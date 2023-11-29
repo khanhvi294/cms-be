@@ -36,11 +36,19 @@ export const getStudentByAccount = async (id) => {
     where: { id },
     raw: true,
     nest: true,
-    attributes: { exclude: ["accountId"] },
+    attributes: { exclude: ["accountId", "password"] },
     include: [
       {
         model: db.Students,
         as: "accountStudent",
+        attributes: [
+          "id",
+          "fullName",
+          "gender",
+          "dateOfBirth",
+          "address",
+          "phone",
+        ],
       },
     ],
   });
@@ -52,13 +60,21 @@ export const getEmployeeByAccount = async (id) => {
     where: { id },
     raw: true,
     nest: true,
-    attributes: { exclude: ["accountId"] },
+    attributes: { exclude: ["accountId", "password"] },
     attributes: ["id", "email", "role"],
     include: [
       {
         model: db.Employee,
         as: "accountEmployee",
-        attributes: ["id", "fullName", "cccd"],
+        attributes: [
+          "id",
+          "fullName",
+          "cccd",
+          "gender",
+          "dateOfBirth",
+          "address",
+          "phone",
+        ],
       },
     ],
   });
@@ -103,6 +119,23 @@ const login = async (email, password) => {
   return { token };
 };
 
+const deleteAccount = async (id) => {
+  const haveAccount = await findAccount(id);
+  if (!haveAccount) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Account")
+    );
+  }
+  const account = await db.Account.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  return account;
+};
+
 export default {
   login,
   findAccount,
@@ -110,4 +143,5 @@ export default {
   getInfo,
   getEmployeeByAccount,
   getStudentByAccount,
+  deleteAccount,
 };

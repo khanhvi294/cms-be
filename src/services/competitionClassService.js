@@ -2,6 +2,8 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import classService from "./classService";
+import competitionService from "./competitionService";
 
 const createCompetitionClass = async (data, t) => {
   const result = await db.CompetitionClass.create(
@@ -26,6 +28,20 @@ export const getAllCompetitionByClass = async (classId) => {
 
   return resFindAll(data);
 };
+const getUnselectedClasses = (allClasses, selectedClasses) => {
+  // Lọc ra các lớp chưa được chọn
+  const unselectedClasses = allClasses.filter((classItem) => {
+    // Kiểm tra xem lớp có trong danh sách đã chọn hay không
+    const isSelected = selectedClasses.some(
+      (selectedClass) => selectedClass.id === classItem.id
+    );
+
+    // Nếu lớp chưa được chọn, thì giữ lại trong mảng
+    return !isSelected;
+  });
+
+  return unselectedClasses;
+};
 
 const getAllClassJoinCompetition = async (competitionId) => {
   if (!competitionId) {
@@ -49,6 +65,41 @@ const getAllClassJoinCompetition = async (competitionId) => {
   const formattedData = data.map((item) => item.ClassCompetitionClass);
 
   return resFindAll(formattedData);
+};
+
+const getClassChooseUpdate = async (competitionId) => {
+  const competition =
+    await competitionService.getCompetitionById(competitionId);
+
+  const classChoose = await classService.getClassChooseJoin(
+    competition.timeStart
+  );
+
+  const classAlreadyChoose = await getAllClassJoinCompetition(competitionId);
+
+  return getUnselectedClasses(classChoose, classAlreadyChoose.data);
+};
+
+const deleteClassCompetition = async (competitionId, classId) => {
+  if (!classId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  if (!competitionId)
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  const competition =
+    await competitionService.getCompetitionById(competitionId);
+
+  if (new Date(competition.timeStart) <= new Date()) {
+    throw new HttpException(
+      422,
+      ErrorMessage.CUSTOM("Competition has started, can't removed class")
+    );
+  }
+  const data = await db.CompetitionClass.destroy({
+    where: { competitionId, classId },
+  });
+
+  return data;
 };
 
 // const getAllClassCanJoinCompetition = async (competitionId) => {
@@ -95,6 +146,8 @@ export default {
   createCompetitionClass,
   getAllCompetitionByClass,
   getAllClassJoinCompetition,
+  deleteClassCompetition,
+  getClassChooseUpdate,
   // getAllClassCanJoinCompetition,
   // checkClassCanJoinCompetition,
 };
