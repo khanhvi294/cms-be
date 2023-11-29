@@ -12,6 +12,11 @@ const roundValidation = {
         "string.base": "exam must be a string",
         "string.max": "string must be max 100 characters",
       }),
+      name: Joi.string().required().max(100).messages({
+        "string.base": "round name must be a string",
+        "string.max": "string must be max 100 characters",
+        "any.required": "round name must be required",
+      }),
       examFormId: Joi.number().integer().min(1).required().messages({
         "any.required": "examFormId is required",
         "number.integer": "examFormId must be integer",

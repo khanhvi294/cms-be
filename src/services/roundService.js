@@ -108,6 +108,7 @@ export const createRound = async (data) => {
     time: data.time,
     exam: data.exam,
     examFormId: data.examFormId,
+    name: data.name,
     competitionId: data.competitionId,
     roundNumber: competition?.competitionRound.length + 1,
     // roundNumber: data.roundNumber,
