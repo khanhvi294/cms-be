@@ -41,7 +41,7 @@ export const getRoundsByCompetition = async (competitionId) => {
       {
         model: db.ExamForm,
         as: "examFormRound",
-        attributes: ["name"],
+        attributes: ["name", "id"],
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -161,12 +161,12 @@ export const updateRound = async (round) => {
 
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
-  if (new Date(haveRound.timeStart) <= new Date()) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Round is already started,can't delete")
-    );
-  }
+  // if (new Date(haveRound.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Round is already started,can't delete")
+  //   );
+  // }
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
