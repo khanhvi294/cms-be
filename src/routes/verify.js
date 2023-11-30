@@ -18,6 +18,10 @@ export const verifyEmployeeTeacher = [
   auth.isAuthenticated,
   auth.isAccessible([ROLES.EMPLOYEE, ROLES.TEACHER]),
 ];
+export const verifyEmployeeStudent = [
+  auth.isAuthenticated,
+  auth.isAccessible([ROLES.EMPLOYEE, ROLES.STUDENT]),
+];
 
 export const verifyRole = [
   auth.isAuthenticated,

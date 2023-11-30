@@ -1,5 +1,5 @@
 import studentController from "../controllers/studentController";
-import { verifyEmployee, verifyStudent } from "./verify";
+import { verifyEmployee, verifyEmployeeStudent, verifyStudent } from "./verify";
 
 import { Router } from "express";
 
@@ -22,7 +22,7 @@ router.get(
   studentController.getCompetitionsForStudent
 );
 router.post("/", verifyEmployee, studentController.createStudent);
-router.patch("/", verifyStudent, studentController.updateStudent);
+router.patch("/", verifyEmployeeStudent, studentController.updateStudent);
 router.delete("/:id", verifyEmployee, studentController.deleteStudent);
 
 export default router;
