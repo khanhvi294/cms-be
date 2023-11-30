@@ -5,6 +5,7 @@ import { resFindAll } from "../utils/const";
 import studentService from "./studentService";
 import judgeService from "./judgeService";
 import roundService from "./roundService";
+import roundResultService from "./roundResultService";
 
 export const checkScoreIsExists = async (data) => {
   if (!data.studentId || !data.judgeId || !data.roundId) {
@@ -28,7 +29,30 @@ export const checkScoreIsExists = async (data) => {
   return false;
 };
 
-export const createScore = async (data) => {
+export const createScoreOnRound = async (data) => {
+  /**
+   * data {
+   *    roundId, scoreId
+   *  [
+   *    {studentId, score}
+   *  ]
+   *
+   * }
+   */
+
+  // check judge
+  const judgePromise = judgeService.getJudgeById(data.judgeId);
+  // check round
+  const roundPromise = roundService.getRoundById(data.roundId);
+
+  await Promise.all([
+    judgePromise,
+    roundPromise,
+    // scoreExistsPromise,
+  ]);
+};
+
+export const createScoreByOneJudge = async (data) => {
   /**
    * data {
    *    studentId,
@@ -37,32 +61,49 @@ export const createScore = async (data) => {
    *    score
    * }
    */
-  // check student
-  const studentPromise = studentService.getStudentById(data.studentId);
-  // check judge
-  const judgePromise = judgeService.getJudgeById(data.judgeId);
-  // check round
-  const roundPromise = roundService.getRoundById(data.roundId);
-  // check if score is created before
-  const scoreExistsPromise = checkScoreIsExists(data);
-  // check if student is joined this round
 
-  await Promise.all([
-    studentPromise,
-    judgePromise,
-    roundPromise,
-    scoreExistsPromise,
-  ]);
+  try {
+    // check student
+    const studentPromise = studentService.getStudentById(data.studentId);
+    // check judge
+    // const judgePromise = judgeService.getJudgeById(data.judgeId);
+    // check round
+    // const roundPromise = roundService.getRoundById(data.roundId);
+    // check if score is created before
+    // const scoreExistsPromise = checkScoreIsExists(data);
+    // // check if student is joined this round
 
-  // create score
-  const result = await db.Score.create({
-    judgeId: data.judgeId,
-    studentId: data.studentId,
-    roundId: data.roundId,
-    score: null,
-  });
+    await Promise.all([
+      studentPromise,
+      // judgePromise,
+      // roundPromise,
+      // scoreExistsPromise,
+    ]);
 
-  return result;
+    await db.sequelize.transaction(async (t) => {
+      // create score
+      const result = await db.Score.create(
+        {
+          judgeId: data.judgeId,
+          studentId: data.studentId,
+          roundId: data.roundId,
+          score: data.score,
+        },
+        { transaction: t }
+      );
+
+      // update to totalScore of Round
+      const roundResult = await roundResultService.updateRoundResult(
+        { studentId: data.studentId, roundId: data.roundId, score: data.score },
+        true
+      );
+
+      return { result, roundResult };
+    });
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error?.message || error);
+  }
 };
 
 export const findScoreById = async (id) => {
@@ -101,11 +142,12 @@ export const getAllScoreByRound = async (roundId) => {
 };
 
 export default {
-  createScore,
+  createScoreByOneJudge,
   getScoreByRound,
   getAllScoreByRound,
   updateScore,
   deleteScore,
   findScoreById,
   getScoreById,
+  createScoreOnRound,
 };
