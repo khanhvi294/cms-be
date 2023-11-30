@@ -181,6 +181,31 @@ export const updateRound = async (round) => {
     );
   }
 
+  if (new Date(competition.timeEnd) < new Date(round.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Time start round must be less than time end of the competition"
+      )
+    );
+  }
+
+  if (new Date(competition.timeStart) > new Date(round.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Time start round must be greater than time start of the competition"
+      )
+    );
+  }
+
+  if (new Date() >= new Date(round.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Time start round must be greater than today")
+    );
+  }
+
   const result = await db.Round.update(
     { ...round },
     { where: { id: round.id } }
