@@ -102,6 +102,22 @@ export const createRound = async (data) => {
     );
   }
 
+  if (new Date(competition.timeStart) > new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Time start round must be greater than time start of the competition"
+      )
+    );
+  }
+
+  if (new Date() >= new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Time start round must be greater than today")
+    );
+  }
+
   // round tu dong nhap
   // save to db
   const newRound = {
