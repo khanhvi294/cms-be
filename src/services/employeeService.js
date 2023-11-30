@@ -218,14 +218,54 @@ const updateEmployee = async (employeeId, data) => {
 
   await Promise.all(checkPromise);
 
-  const result = await db.Employee.update(
-    { ...data },
-    { where: { id: employeeId } }
-  ).then(async () => {
-    return await findEmployeeById(employeeId);
-  });
+  // const result = await db.Employee.update(
+  //   { ...data },
+  //   { where: { id: employeeId } }
+  // ).then(async () => {
+  //   return await findEmployeeById(employeeId);
+  // });
 
-  return result;
+  // return result;
+
+  try{
+    await db.sequelize.transaction(async (t) => {
+      await db.Employee.update(
+        { ...data },
+        { where: { id: employeeId } ,transaction: t},
+      );
+
+      const employee = await db.Employee.findOne({
+        where: { id: employeeId },
+        nest: true,
+        raw: false,
+        include: [
+          {
+            model: db.Account,
+            as: "accountEmployee",
+          },
+        ],
+      });
+
+
+      // Update the associated Account
+      if ( data.accountEmployee && data?.accountEmployee.email) {
+      await authService.checkEmailIsExistsExceptId(data.accountEmployee.email, employee.accountEmployee.id)
+
+        await db.Account.update(
+          { email: data.accountEmployee.email },
+          { where: { id: employee.accountEmployee.id},transaction: t  },
+        );
+      }
+    })
+
+    return await findEmployeeById(employeeId);
+
+  }
+  catch(error){
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error?.message || error);
+  }
+
 };
 
 const deleteEmployee = async (id) => {
