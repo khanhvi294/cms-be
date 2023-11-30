@@ -110,6 +110,24 @@ export const updateStudent = async (req, res, next) => {
   }
 };
 
+export const updateStudentByAdmin = async (req, res, next) => {
+  try {
+    const err = await validateData(studentValidate.updateByAdmin, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+
+    const dataFormat = await formatInfoProfile(req.body);
+    const result = await studentService.updateStudent(
+      dataFormat.id || -1,
+      dataFormat
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteStudent = async (req, res, next) => {
   try {
     const result = await studentService.deleteStudent(req.params.id);
@@ -128,4 +146,5 @@ export default {
   updateStudent,
   getStudentAddClass,
   deleteStudent,
+  updateStudentByAdmin,
 };

@@ -22,7 +22,9 @@ router.get(
   studentController.getCompetitionsForStudent
 );
 router.post("/", verifyEmployee, studentController.createStudent);
-router.patch("/", verifyEmployeeStudent, studentController.updateStudent);
+router.patch("/", verifyStudent, studentController.updateStudent);
+router.patch("/byad", verifyEmployee, studentController.updateStudentByAdmin);
+
 router.delete("/:id", verifyEmployee, studentController.deleteStudent);
 
 export default router;
