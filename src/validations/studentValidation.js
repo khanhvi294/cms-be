@@ -52,6 +52,14 @@ const studentValidate = {
   },
   update: (data) => {
     const schema = Joi.object({
+      accountStudent: Joi.object({
+        email: Joi.string().email().optional().messages({
+          "any.required": "Email is required",
+          "string.email": "Email is invalid",
+          "string.base": "Email is invalid",
+          "string.empty": "Email is required",
+        }),
+      }),
       fullName: Joi.string()
         .required()
         .pattern(

@@ -10,6 +10,8 @@ const ErrorMessage = {
   HAS_NO_DATA: "Has no data",
   COMPETITION_CANNOT_ADD_ROUND:
     "Competition ended or canceled  cannot be added round",
+    COMPETITION_CANNOT_UPDATE_ROUND:
+    "Competition ended or canceled  cannot be updated round",
 };
 
 export default ErrorMessage;

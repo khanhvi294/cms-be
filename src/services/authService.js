@@ -4,6 +4,7 @@ import db from "../models";
 import { ROLES } from "../utils/const";
 import jwtUtil from "../utils/jwt";
 import passwordUtil from "../utils/password";
+import { Op } from 'sequelize';
 
 export const authAccount = async (email, password) => {
   let account = await db.Account.findOne({ where: { email } });
@@ -25,6 +26,20 @@ export const authAccount = async (email, password) => {
   }
   return account;
 };
+
+export const checkEmailIsExistsExceptId = async (email, id) => {
+  if(!email || !id){
+    throw new HttpException(404, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const account = await db.Account.findOne({
+    where: { email: email, id: { [Op.ne]: id } },
+  });
+
+  if (account) {
+    throw new HttpException(422, ErrorMessage.EMAIL_IS_EXISTING);
+  }
+}
 
 export const findAccount = async (id) => {
   let account = await db.Account.findOne({ where: { id } });
@@ -143,5 +158,5 @@ export default {
   getInfo,
   getEmployeeByAccount,
   getStudentByAccount,
-  deleteAccount,
+  deleteAccount,checkEmailIsExistsExceptId
 };

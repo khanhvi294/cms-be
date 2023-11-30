@@ -140,7 +140,18 @@ export const getRoundById = async (id) => {
 };
 
 export const updateRound = async (round) => {
-  const haveRound = await getRoundById(round.id);
+  const haveRoundPromise = getRoundById(round.id);
+  const competitionPromise = competitionService.getCompetitionIncludeRounds(round.competitionId)
+  
+  const [haveRound, competition] = await Promise.all([haveRoundPromise,competitionPromise])
+
+  // check status competition cannot be canceled or ended
+  if (
+    competition.status === STATUS_COMPETITION.CANCEL ||
+    competition.status === STATUS_COMPETITION.ENDED
+  ) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE_ROUND);
+  }
 
   if (new Date(haveRound.timeStart) <= new Date()) {
     throw new HttpException(
