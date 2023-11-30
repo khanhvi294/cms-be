@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "roundId",
         as: "scoreRound",
       });
+      Round.hasMany(models.RoundResult, {
+        foreignKey: "roundId",
+        as: "roundResultRound",
+      });
       // Round.hasMany(models.StudentRound, {
       //   foreignKey: "roundId",
       //   as: "roundStudentRound",
