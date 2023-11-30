@@ -170,7 +170,35 @@ export const updateStatusCompetition = async (id, statusId) => {
   throw new HttpException(400, ErrorMessage.INTERNAL_ERROR);
 };
 
-const updateCompetition = async () => {};
+const updateCompetition = async (data) => {
+
+  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  }
+
+  getCompetitionById(data.id);
+
+  const competitionDataUpdate = {
+    name: data.name,
+    maximumQuantity: data.maximumQuantity,
+    minimumQuantity: data.minimumQuantity,
+    numOfPrizes: data.numOfPrizes,
+    numberOfRound: data.numberOfRound,
+    timeStart: data.timeStart,
+    timeEnd: data.timeEnd,
+  };
+
+  const result = await db.Competition.update(
+    {...competitionDataUpdate},
+    {where: {id: data.id}}
+  ).then(async () => {
+        return await getCompetitionById(data.id);
+      });
+
+    return result;
+
+};
+
 const deleteCompetition = async (id) => {};
 
 export default {

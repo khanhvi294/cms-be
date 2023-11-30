@@ -103,6 +103,15 @@ const createCompetition = async (req, res, next) => {
   }
 };
 
+export const updateCompetition = async (req, res, next) => {
+  try{
+
+  }
+  catch(error){
+    next(error)
+  }
+}
+
 const updateStatusCompetition = async (req, res, next) => {
   try {
     /*
