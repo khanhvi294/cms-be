@@ -105,7 +105,11 @@ const createCompetition = async (req, res, next) => {
 
 export const updateCompetition = async (req, res, next) => {
   try{
-
+    
+    const result = await competitionService.updateCompetition(
+      req.body
+    );
+    successResponse(STATUS_CODE.OK, result, res);
   }
   catch(error){
     next(error)
@@ -150,5 +154,5 @@ export default {
   getCompetitionById,
   getAllClassJoinCompetition,
   deleteClassCompetition,
-  getClassCanJoinUpdate,
+  getClassCanJoinUpdate,updateCompetition
 };

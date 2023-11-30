@@ -5,6 +5,7 @@ import { Router } from "express";
 
 const router = Router();
 
+router.patch("/", verifyEmployee, competitionController.updateCompetition);
 router.post("/", verifyEmployee, competitionController.createCompetition);
 router.get("/", competitionController.getAllCompetition);
 router.get("/:id", competitionController.getCompetitionById);
