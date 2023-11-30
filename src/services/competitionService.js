@@ -12,6 +12,10 @@ export const createCompetition = async (employeeId, data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
+  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  }
+
   try {
     const result = await sequelize.transaction(async (t) => {
       const competitionData = {

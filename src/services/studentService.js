@@ -199,23 +199,6 @@ export const getCompetitionsForStudent = async (studentId) => {
   return uniqueCompetitions;
 };
 
-export const updateStudent = async (studentId, data) => {
-  const getStudentByIdPromise = getStudentById(studentId);
-
-  const checkPromise = [getStudentByIdPromise];
-
-  await Promise.all(checkPromise);
-
-  const result = await db.Students.update(
-    { ...data },
-    { where: { id: studentId } }
-  ).then(async () => {
-    return await findStudentById(studentId);
-  });
-
-  return result;
-};
-
 // export const updateStudent = async (studentId, data) => {
 //   const getStudentByIdPromise = getStudentById(studentId);
 
@@ -223,56 +206,72 @@ export const updateStudent = async (studentId, data) => {
 
 //   await Promise.all(checkPromise);
 
-//   try {
-//  // Start a new transaction
-//   await db.sequelize.transaction(
-//       async (t) => {
-//       // First, update the Student
-//      await db.Students.update(
-//         { ...data },
-//         { where: { id: studentId } ,transaction: t},
-//       );
-
-//       const student = await db.Students.findOne({
-//         where: { id: studentId },
-//         nest: true,
-//         raw: false,
-//         include: [
-//           {
-//             model: db.Account,
-//             as: "accountStudent",
-//           },
-//         ],
-//       });
-
-
-//       // Update the associated Account
-//       if ( data.accountStudent && data?.accountStudent.email) {
-//       await authService.checkEmailIsExistsExceptId(data.accountStudent.email, student.accountStudent.id)
-
-//         await db.Account.update(
-//           { email: data.accountStudent.email },
-//           { where: { id: student.accountStudent.id},transaction: t  },
-//         );
-//       }
-
-//       // Commit the transaction if everything is ok
-
-//       // Finally, return the updated Student
-//     });
+//   const result = await db.Students.update(
+//     { ...data },
+//     { where: { id: studentId } }
+//   ).then(async () => {
 //     return await findStudentById(studentId);
+//   });
+
+//   return result;
+// };
+
+export const updateStudent = async (studentId, data) => {
+  const getStudentByIdPromise = getStudentById(studentId);
+
+  const checkPromise = [getStudentByIdPromise];
+
+  await Promise.all(checkPromise);
+
+  try {
+ // Start a new transaction
+  await db.sequelize.transaction(
+      async (t) => {
+      // First, update the Student
+     await db.Students.update(
+        { ...data },
+        { where: { id: studentId } ,transaction: t},
+      );
+
+      const student = await db.Students.findOne({
+        where: { id: studentId },
+        nest: true,
+        raw: false,
+        include: [
+          {
+            model: db.Account,
+            as: "accountStudent",
+          },
+        ],
+      });
+
+
+      // Update the associated Account
+      if ( data.accountStudent && data?.accountStudent.email) {
+      await authService.checkEmailIsExistsExceptId(data.accountStudent.email, student.accountStudent.id)
+
+        await db.Account.update(
+          { email: data.accountStudent.email },
+          { where: { id: student.accountStudent.id},transaction: t  },
+        );
+      }
+
+
+      // Finally, return the updated Student
+    });
+    return await findStudentById(studentId);
 
       
-//     }
-//       catch (error) {
-//         console.log("ERROR:: ", error);
-//         throw new HttpException(400, error);
-//       }
+    }
+      catch (error) {
+        console.log("ERROR:: ", error);
+        throw new HttpException(400, error?.message || error);
+      }
  
 
 
-//   // return result;
-// };
+  // return result;
+};
 
 const deleteStudent = async (id) => {
   const haveStudent = await findStudentById(id);

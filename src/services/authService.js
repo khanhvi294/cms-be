@@ -39,6 +39,7 @@ export const checkEmailIsExistsExceptId = async (email, id) => {
   if (account) {
     throw new HttpException(422, ErrorMessage.EMAIL_IS_EXISTING);
   }
+  return false;
 }
 
 export const findAccount = async (id) => {

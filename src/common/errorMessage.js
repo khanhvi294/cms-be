@@ -12,6 +12,8 @@ const ErrorMessage = {
     "Competition ended or canceled  cannot be added round",
     COMPETITION_CANNOT_UPDATE_ROUND:
     "Competition ended or canceled  cannot be updated round",
+  TIME_START_MUST_BE_LESS_THAN_TIME_END: "Time start must be less than time end",
+  EMAIL_IS_EXISTING: "Email is existing",
 };
 
 export default ErrorMessage;

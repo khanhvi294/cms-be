@@ -2,7 +2,8 @@
   "development": {
     "username": "root",
     "database": "cms-db",
-    "password": "",
+    "password": "abc",
+    "port":"33065",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": true,

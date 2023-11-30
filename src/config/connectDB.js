@@ -1,15 +1,15 @@
 const { Sequelize } = require("sequelize");
 
-export const sequelize = new Sequelize("cms-db", "root", null, {
-  host: "localhost",
-  dialect: "mysql",
-});
-
-// const sequelize = new Sequelize("cms-db", "root", "abc", {
+// export const sequelize = new Sequelize("cms-db", "root", null, {
 //   host: "localhost",
 //   dialect: "mysql",
-//   port: 33065
 // });
+
+const sequelize = new Sequelize("cms-db", "root", "abc", {
+  host: "localhost",
+  dialect: "mysql",
+  port: 33065
+});
 
 const connection = async () => {
   try {
