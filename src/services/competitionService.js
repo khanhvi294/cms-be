@@ -69,8 +69,6 @@ export const createCompetition = async (employeeId, data) => {
     // If the execution reaches this line, an error occurred.
     // The transaction has already been rolled back automatically by Sequelize!
   }
-
-  return result;
 };
 
 export const getAllCompetition = async () => {
@@ -181,7 +179,14 @@ const updateCompetition = async (data) => {
     );
   }
 
-  getCompetitionById(data.id);
+  if (data.minimumQuantity > data.maximumQuantity) {
+    throw new HttpException(422, ErrorMessage.MIN_CANNOT_GREATER_THAN_MAX);
+  }
+
+  const competition = await getCompetitionById(data.id);
+  if (competition.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
+  }
 
   const competitionDataUpdate = {
     name: data.name,

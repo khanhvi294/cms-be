@@ -1,5 +1,6 @@
 import HttpException from "../errors/httpException";
 import ErrorMessage from "../common/errorMessage";
+import { ROLES } from "./const";
 
 export const validateData = async (func, data) => {
   const { error } = func(data);
@@ -55,6 +56,12 @@ const formatField = (field, data) => {
           400,
           ErrorMessage.CUSTOM("Age must be 18 or older")
         );
+      }
+      break;
+
+    case "role":
+      if (!Object.values(ROLES).includes(data)) {
+        throw new HttpException(400, ErrorMessage.CUSTOM("Role is invalid"));
       }
       break;
 

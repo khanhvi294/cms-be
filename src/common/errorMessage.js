@@ -10,10 +10,16 @@ const ErrorMessage = {
   HAS_NO_DATA: "Has no data",
   COMPETITION_CANNOT_ADD_ROUND:
     "Competition ended or canceled  cannot be added round",
-    COMPETITION_CANNOT_UPDATE_ROUND:
+  COMPETITION_CANNOT_UPDATE_ROUND:
     "Competition ended or canceled  cannot be updated round",
-  TIME_START_MUST_BE_LESS_THAN_TIME_END: "Time start must be less than time end",
+  TIME_START_MUST_BE_LESS_THAN_TIME_END:
+    "Time start must be less than time end",
   EMAIL_IS_EXISTING: "Email is existing",
+  MIN_CANNOT_GREATER_THAN_MAX:
+    "Min of quantity  must be greater than max of quantity",
+  COMPETITION_CANNOT_UPDATE: "This competition cannot be updated",
+  COMPEITION_ROUND_MUST_BE_GREATER:
+    "The round update must be greater current row",
 };
 
 export default ErrorMessage;

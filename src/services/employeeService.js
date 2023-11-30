@@ -218,20 +218,11 @@ const updateEmployee = async (employeeId, data) => {
 
   await Promise.all(checkPromise);
 
-  // const result = await db.Employee.update(
-  //   { ...data },
-  //   { where: { id: employeeId } }
-  // ).then(async () => {
-  //   return await findEmployeeById(employeeId);
-  // });
-
-  // return result;
-
-  try{
+  try {
     await db.sequelize.transaction(async (t) => {
       await db.Employee.update(
         { ...data },
-        { where: { id: employeeId } ,transaction: t},
+        { where: { id: employeeId }, transaction: t }
       );
 
       const employee = await db.Employee.findOne({
@@ -246,26 +237,25 @@ const updateEmployee = async (employeeId, data) => {
         ],
       });
 
-
       // Update the associated Account
-      if ( data.accountEmployee && data?.accountEmployee.email) {
-      await authService.checkEmailIsExistsExceptId(data.accountEmployee.email, employee.accountEmployee.id)
+      if (data.accountEmployee && data?.accountEmployee.email) {
+        await authService.checkEmailIsExistsExceptId(
+          data.accountEmployee.email,
+          employee.accountEmployee.id
+        );
 
         await db.Account.update(
           { email: data.accountEmployee.email },
-          { where: { id: employee.accountEmployee.id},transaction: t  },
+          { where: { id: employee.accountEmployee.id }, transaction: t }
         );
       }
-    })
+    });
 
     return await findEmployeeById(employeeId);
-
-  }
-  catch(error){
+  } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error?.message || error);
   }
-
 };
 
 const deleteEmployee = async (id) => {
@@ -303,6 +293,65 @@ const deleteEmployee = async (id) => {
   return 1;
 };
 
+const updateEmployeeByAdmin = async (data) => {
+  console.log("dataaupdat ", data);
+  const getEmployeeByIdPromise = getEmployeeById(data.id);
+  let checkCCCDPromise;
+  if (data.cccd) {
+    checkCCCDPromise = checkUpdateCCCD(data.cccd, data.id);
+  }
+
+  if (data.password) {
+    delete data.password;
+  }
+
+  const checkPromise = [getEmployeeByIdPromise];
+  if (checkCCCDPromise) {
+    checkPromise.push(checkCCCDPromise);
+  }
+
+  await Promise.all(checkPromise);
+
+  try {
+    await db.sequelize.transaction(async (t) => {
+      await db.Employee.update(
+        { ...data },
+        { where: { id: data.id }, transaction: t }
+      );
+
+      const employeeAcc = await db.Employee.findOne({
+        where: { id: data.id },
+        nest: true,
+        raw: false,
+        include: [
+          {
+            model: db.Account,
+            as: "accountEmployee",
+          },
+        ],
+      });
+
+      // Update the associated Account
+      if (data.accountEmployee && data?.accountEmployee.email) {
+        await authService.checkEmailIsExistsExceptId(
+          data.accountEmployee.email,
+          employeeAcc.accountEmployee.id
+        );
+
+        await db.Account.update(
+          { ...data.accountEmployee },
+          { where: { id: employeeAcc.accountEmployee.id }, transaction: t }
+        );
+      }
+    });
+
+    return await findEmployeeById(data.id);
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error?.message || error);
+  }
+};
+
 export default {
   getAllEmployees,
   createEmployee,
@@ -312,4 +361,5 @@ export default {
   getEmployeeByIdIncludesAccount,
   updateEmployee,
   deleteEmployee,
+  updateEmployeeByAdmin,
 };

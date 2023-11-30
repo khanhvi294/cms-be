@@ -10,7 +10,11 @@ const competitionValidation = {
         "string.min": "Name minimum is 3 characters",
         "string.max": "Name maximum is 30 characters",
       }),
-      numberOfRound: Joi.number(),
+      numberOfRound: Joi.number().min(1).integer().messages({
+        "any.required": "numberOfRound is required",
+        "number.integer": "numberOfRound must be integer",
+        "number.min": "numberOfRound must be greater than 0 and is an integer",
+      }),
       maximumQuantity: Joi.number().integer().min(1).required().messages({
         "any.required": "maximumQuantity is required",
         "number.integer": "maximumQuantity must be integer",
@@ -34,6 +38,16 @@ const competitionValidation = {
           "number.integer": "classId must be integer",
         })
       ),
+      timeStart: Joi.date().required().min("now").messages({
+        "date.min": "timeStart must be greater now",
+        "any.required": "timeStart is required",
+        "date.base": "timeStart must be a date",
+      }),
+      timeEnd: Joi.date().required().messages({
+        "date.min": "timeEnd must be greater now",
+        "any.required": "timeEnd is required",
+        "date.base": "timeEnd must be a date",
+      }),
     });
 
     return schema.validate(data);
@@ -48,7 +62,16 @@ const competitionValidation = {
         "string.min": "Name minimum is 3 characters",
         "string.max": "Name maximum is 30 characters",
       }),
-      numberOfRound: Joi.number(),
+      numberOfRound: Joi.number().min(1).integer().messages({
+        "any.required": "numberOfRound is required",
+        "number.integer": "numberOfRound must be integer",
+        "number.min": "numberOfRound must be greater than 0 and is an integer",
+      }),
+      id: Joi.number().required().integer().min(1).messages({
+        "any.required": "id is required",
+        "number.integer": "id must be integer",
+        "number.min": "id must be greater than 0 and is an integer",
+      }),
       maximumQuantity: Joi.number().integer().min(1).required().messages({
         "any.required": "maximumQuantity is required",
         "number.integer": "maximumQuantity must be integer",
@@ -72,6 +95,16 @@ const competitionValidation = {
           "number.integer": "classId must be integer",
         })
       ),
+      timeStart: Joi.date().required().messages({
+        "date.min": "timeStart must be greater now",
+        "any.required": "timeStart is required",
+        "date.base": "timeStart must be a date",
+      }),
+      timeEnd: Joi.date().required().messages({
+        "date.min": "timeEnd must be greater now",
+        "any.required": "timeEnd is required",
+        "date.base": "timeEnd must be a date",
+      }),
     });
 
     return schema.validate(data);
