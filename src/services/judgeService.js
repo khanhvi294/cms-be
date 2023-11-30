@@ -98,6 +98,15 @@ export const createJudge = async (data) => {
   if (checkJudge) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
   }
+  const round = await roundService.getRoundById(data.roundId);
+
+  //round bdau roi k dduocj them
+  if (new Date(round.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is started, can't add judge")
+    );
+  }
 
   const employeePromise = employeeService.getEmployeeByIdIncludesAccount(
     data.employeeId
