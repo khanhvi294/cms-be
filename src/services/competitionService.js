@@ -25,7 +25,6 @@ export const createCompetition = async (employeeId, data) => {
         name: data.name,
         status: STATUS_COMPETITION.CREATED,
         employeeId: employeeId,
-        maximumQuantity: data.maximumQuantity,
         minimumQuantity: data.minimumQuantity,
         numOfPrizes: data.numOfPrizes,
         numberOfRound: data.numberOfRound,
@@ -179,10 +178,6 @@ const updateCompetition = async (data) => {
     );
   }
 
-  if (data.minimumQuantity > data.maximumQuantity) {
-    throw new HttpException(422, ErrorMessage.MIN_CANNOT_GREATER_THAN_MAX);
-  }
-
   const competition = await getCompetitionById(data.id);
   if (competition.status !== STATUS_COMPETITION.CREATED) {
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
@@ -190,7 +185,6 @@ const updateCompetition = async (data) => {
 
   const competitionDataUpdate = {
     name: data.name,
-    maximumQuantity: data.maximumQuantity,
     minimumQuantity: data.minimumQuantity,
     numOfPrizes: data.numOfPrizes,
     numberOfRound: data.numberOfRound,

@@ -15,12 +15,7 @@ const competitionValidation = {
         "number.integer": "numberOfRound must be integer",
         "number.min": "numberOfRound must be greater than 0 and is an integer",
       }),
-      maximumQuantity: Joi.number().integer().min(1).required().messages({
-        "any.required": "maximumQuantity is required",
-        "number.integer": "maximumQuantity must be integer",
-        "number.min":
-          "maximumQuantity must be greater than 0 and is an integer",
-      }),
+
       minimumQuantity: Joi.number().integer().min(1).required().messages({
         "any.required": "minimumQuantity is required",
         "number.integer": "minimumQuantity must be integer",
@@ -71,12 +66,6 @@ const competitionValidation = {
         "any.required": "id is required",
         "number.integer": "id must be integer",
         "number.min": "id must be greater than 0 and is an integer",
-      }),
-      maximumQuantity: Joi.number().integer().min(1).required().messages({
-        "any.required": "maximumQuantity is required",
-        "number.integer": "maximumQuantity must be integer",
-        "number.min":
-          "maximumQuantity must be greater than 0 and is an integer",
       }),
       minimumQuantity: Joi.number().integer().min(1).required().messages({
         "any.required": "minimumQuantity is required",
