@@ -12,8 +12,11 @@ export const createCompetition = async (employeeId, data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
-    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(
+      422,
+      ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
+    );
   }
 
   try {
@@ -171,9 +174,11 @@ export const updateStatusCompetition = async (id, statusId) => {
 };
 
 const updateCompetition = async (data) => {
-
-  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
-    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(
+      422,
+      ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
+    );
   }
 
   getCompetitionById(data.id);
@@ -189,14 +194,13 @@ const updateCompetition = async (data) => {
   };
 
   const result = await db.Competition.update(
-    {...competitionDataUpdate},
-    {where: {id: data.id}}
+    { ...competitionDataUpdate },
+    { where: { id: data.id } }
   ).then(async () => {
-        return await getCompetitionById(data.id);
-      });
+    return await getCompetitionById(data.id);
+  });
 
-    return result;
-
+  return result;
 };
 
 const deleteCompetition = async (id) => {};

@@ -59,6 +59,15 @@ export const getAllRoundByJudge = async (judgeId) => {
       {
         model: db.Round,
         as: "roundJudge",
+        raw: true,
+        nest: true,
+        attributes: { exclude: ["examFormId"] },
+        include: [
+          {
+            model: db.ExamForm,
+            as: "examFormRound",
+          },
+        ],
       },
     ],
     order: [["createdAt", "DESC"]],
