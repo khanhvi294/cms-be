@@ -39,7 +39,6 @@ const getClassCanJoin = async (req, res, next) => {
 
 const getClassCanJoinUpdate = async (req, res, next) => {
   try {
-    console.log("vooooooooooooo");
     const result = await competitionClassService.getClassChooseUpdate(
       req.params.id
     );
@@ -87,10 +86,10 @@ const createCompetition = async (req, res, next) => {
         }
     */
 
-    // const err = await validateData(competitionValidation.create, req.body);
-    // if (err) {
-    //   return errorValidateResponse(422, err, res);
-    // }
+    const err = await validateData(competitionValidation.create, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
 
     const employee = await authService.getEmployeeByAccount(req.user.id);
     const result = await competitionService.createCompetition(
@@ -104,17 +103,17 @@ const createCompetition = async (req, res, next) => {
 };
 
 export const updateCompetition = async (req, res, next) => {
-  try{
-    
-    const result = await competitionService.updateCompetition(
-      req.body
-    );
+  try {
+    const err = await validateData(competitionValidation.update, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+    const result = await competitionService.updateCompetition(req.body);
     successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
   }
-  catch(error){
-    next(error)
-  }
-}
+};
 
 const updateStatusCompetition = async (req, res, next) => {
   try {
@@ -154,5 +153,6 @@ export default {
   getCompetitionById,
   getAllClassJoinCompetition,
   deleteClassCompetition,
-  getClassCanJoinUpdate,updateCompetition
+  getClassCanJoinUpdate,
+  updateCompetition,
 };

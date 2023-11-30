@@ -12,8 +12,15 @@ export const createCompetition = async (employeeId, data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
-    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(
+      422,
+      ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
+    );
+  }
+
+  if (data.minimumQuantity > data.maximumQuantity) {
+    throw new HttpException(422, ErrorMessage.MIN_CANNOT_GREATER_THAN_MAX);
   }
 
   try {
@@ -66,8 +73,6 @@ export const createCompetition = async (employeeId, data) => {
     // If the execution reaches this line, an error occurred.
     // The transaction has already been rolled back automatically by Sequelize!
   }
-
-  return result;
 };
 
 export const getAllCompetition = async () => {
@@ -171,12 +176,21 @@ export const updateStatusCompetition = async (id, statusId) => {
 };
 
 const updateCompetition = async (data) => {
-
-  if(new Date(data.timeStart) > new Date(data.timeEnd)) {
-    throw new HttpException(422, ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END)
+  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+    throw new HttpException(
+      422,
+      ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
+    );
   }
 
-  getCompetitionById(data.id);
+  if (data.minimumQuantity > data.maximumQuantity) {
+    throw new HttpException(422, ErrorMessage.MIN_CANNOT_GREATER_THAN_MAX);
+  }
+
+  const competition = await getCompetitionById(data.id);
+  if (competition.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
+  }
 
   const competitionDataUpdate = {
     name: data.name,
@@ -189,14 +203,13 @@ const updateCompetition = async (data) => {
   };
 
   const result = await db.Competition.update(
-    {...competitionDataUpdate},
-    {where: {id: data.id}}
+    { ...competitionDataUpdate },
+    { where: { id: data.id } }
   ).then(async () => {
-        return await getCompetitionById(data.id);
-      });
+    return await getCompetitionById(data.id);
+  });
 
-    return result;
-
+  return result;
 };
 
 const deleteCompetition = async (id) => {};
