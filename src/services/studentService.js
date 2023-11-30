@@ -224,13 +224,12 @@ export const updateStudent = async (studentId, data) => {
   await Promise.all(checkPromise);
 
   try {
- // Start a new transaction
-  await db.sequelize.transaction(
-      async (t) => {
+    // Start a new transaction
+    await db.sequelize.transaction(async (t) => {
       // First, update the Student
-     await db.Students.update(
+      await db.Students.update(
         { ...data },
-        { where: { id: studentId } ,transaction: t},
+        { where: { id: studentId }, transaction: t }
       );
 
       const student = await db.Students.findOne({
@@ -245,32 +244,26 @@ export const updateStudent = async (studentId, data) => {
         ],
       });
 
-
       // Update the associated Account
-      if ( data.accountStudent && data?.accountStudent.email) {
-      await authService.checkEmailIsExistsExceptId(data.accountStudent.email, student.accountStudent.id)
+      if (data.accountStudent && data?.accountStudent.email) {
+        await authService.checkEmailIsExistsExceptId(
+          data.accountStudent.email,
+          student.accountStudent.id
+        );
 
         await db.Account.update(
           { email: data.accountStudent.email },
-          { where: { id: student.accountStudent.id},transaction: t  },
+          { where: { id: student.accountStudent.id }, transaction: t }
         );
       }
-
 
       // Finally, return the updated Student
     });
     return await findStudentById(studentId);
-
-      
-    }
-      catch (error) {
-        console.log("ERROR:: ", error);
-        throw new HttpException(400, error?.message || error);
-      }
- 
-
-
-  // return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error?.message || error);
+  }
 };
 
 const deleteStudent = async (id) => {
