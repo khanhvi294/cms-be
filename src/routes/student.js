@@ -1,5 +1,5 @@
 import studentController from "../controllers/studentController";
-import { verifyEmployee, verifyStudent } from "./verify";
+import { verifyEmployee, verifyEmployeeStudent, verifyStudent } from "./verify";
 
 import { Router } from "express";
 
