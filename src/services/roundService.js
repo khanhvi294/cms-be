@@ -112,7 +112,7 @@ export const createRound = async (data) => {
     competitionId: data.competitionId,
     roundNumber: competition?.competitionRound.length + 1,
     // roundNumber: data.roundNumber,
-    numPoint: data.numPoint,
+    // numPoint: data.numPoint,
     timeStart: data.timeStart,
   };
 
@@ -141,9 +141,14 @@ export const getRoundById = async (id) => {
 
 export const updateRound = async (round) => {
   const haveRoundPromise = getRoundById(round.id);
-  const competitionPromise = competitionService.getCompetitionIncludeRounds(round.competitionId)
-  
-  const [haveRound, competition] = await Promise.all([haveRoundPromise,competitionPromise])
+  const competitionPromise = competitionService.getCompetitionIncludeRounds(
+    round.competitionId
+  );
+
+  const [haveRound, competition] = await Promise.all([
+    haveRoundPromise,
+    competitionPromise,
+  ]);
 
   // check status competition cannot be canceled or ended
   if (
