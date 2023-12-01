@@ -7,7 +7,7 @@ import { sequelize } from "../config/connectDB";
 import roundService from "./roundService";
 
 export const findJudgeById = async (id) => {
-  if (!i) {
+  if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 

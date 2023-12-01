@@ -20,7 +20,7 @@ const findOrCreateRoundResult = async (data) => {
   return roundResult;
 };
 
-export const updateRoundResult = async (data, isNew = true) => {
+export const updateRoundResult = async (data, isNew = true, transaction) => {
   if (!data.studentId || !data.roundId || !data.score) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
@@ -33,6 +33,7 @@ export const updateRoundResult = async (data, isNew = true) => {
     },
     {
       where: { id: roundResult.id },
+      transaction:  transaction
     }
   ).then(async () => {
     return await findOrCreateRoundResult(data);

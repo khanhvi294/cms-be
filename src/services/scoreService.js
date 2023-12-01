@@ -33,12 +33,16 @@ export const createScoreOnRound = async (data) => {
   /**
    * data {
    *    roundId, scoreId
-   *  [
-   *    {studentId, score}
-   *  ]
+   *    scores: [
+    *      {studentId, score}
+    *  ]
    *
    * }
    */
+
+  if(!data.roundId || !data.judgeId || !data?.scores?.length) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
 
   // check judge
   const judgePromise = judgeService.getJudgeById(data.judgeId);
@@ -48,9 +52,30 @@ export const createScoreOnRound = async (data) => {
   await Promise.all([
     judgePromise,
     roundPromise,
-    // scoreExistsPromise,
   ]);
+
+  try {
+    await db.sequelize.transaction(async (t) => {
+      const roundResult = data.scores.map((item) => {
+        return createScoreByOneJudge({
+          studentId: item.studentId,
+          judgeId: data.judgeId,
+          roundId: data.roundId,
+          score: item.score,
+        })
+      })
+
+      return await Promise.all(roundResult);
+
+    });
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error?.message || error);
+  }
+
+  
 };
+
 
 export const createScoreByOneJudge = async (data) => {
   /**
@@ -95,7 +120,7 @@ export const createScoreByOneJudge = async (data) => {
       // update to totalScore of Round
       const roundResult = await roundResultService.updateRoundResult(
         { studentId: data.studentId, roundId: data.roundId, score: data.score },
-        true
+        true,t
       );
 
       return { result, roundResult };
