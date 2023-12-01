@@ -26,7 +26,19 @@ const updateRoundResult = async (req, res, next) => {
   }
 };
 
+const getRoundResultByRound = async (req, res, next) => {
+  try {
+    const result = await roundResultService.getRoundResultByRound(
+      req.params.roundId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getCurrentRound,
   updateRoundResult,
+  getRoundResultByRound,
 };

@@ -191,10 +191,10 @@ export const addMultipleStudent = async (data) => {
    * }
    */
   const classRoom = await findClassById(data.classId);
-  if (
-    new Date(classRoom.timeStart) <=
-    new Date().setDate(new Date().getDate() + 7)
-  ) {
+  const sevenDay = new Date(classRoom.timeStart);
+  sevenDay.setDate(sevenDay.getDate() + 7);
+
+  if (new Date() >= sevenDay) {
     throw new HttpException(
       422,
       ErrorMessage.CUSTOM("Class has started 1 week, can't add students")
