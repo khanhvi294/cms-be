@@ -5,6 +5,7 @@ import { verifyEmployee, verifyTeacher } from "./verify";
 import { Router } from "express";
 
 const router = Router();
+router.patch("/", verifyTeacher, roundResultController.updateRoundResult);
 
 router.get(
   "/round/:roundId",

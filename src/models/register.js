@@ -19,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "competitionRegister",
       });
-      Register.hasMany(models.Score, {
-        foreignKey: "participantId",
-        as: "registerScore",
-      });
-      Register.hasMany(models.Score, {
-        foreignKey: "participantId",
-      });
+      // Register.hasMany(models.Score, {
+      //   foreignKey: "participantId",
+      //   as: "registerScore",
+      // });
+      // Register.hasMany(models.Score, {
+      //   foreignKey: "participantId",
+      // });
     }
   }
   Register.init(

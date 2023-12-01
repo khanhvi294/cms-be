@@ -4,14 +4,56 @@ import db from "../models";
 import { resFindAll } from "../utils/const";
 import scoreService from "./scoreService";
 
-const createRoundResult = async (data) => {};
+const createRoundResult = async (data, t) => {
+  if (!data.studentId || !data.roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  await checkRoundResultExists(data);
+
+  const roundResult = await db.RoundResult.create(
+    {
+      studentId: data.studentId,
+      roundId: data.roundId,
+      score: 0,
+    },
+    { transaction: t }
+  );
+
+  return roundResult;
+};
+
+const checkRoundResultExists = async (data) => {
+  const check = await db.RoundResult.findOne({
+    where: { roundId: data.roundId, studentId: data.studentId },
+  });
+  if (check) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_EXISTING("Student's result")
+    );
+  }
+
+  return false;
+};
 
 const findRoundResult = async (id) => {
   if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const result = await db.RoundResult.findOne({ id: id });
+  const result = await db.RoundResult.findOne({
+    where: { id: id },
+
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Score,
+        as: "roundResultScore",
+      },
+    ],
+  });
   return result;
 };
 
@@ -31,19 +73,12 @@ export const updateRoundResult = async (data, isNew = true) => {
    *  data {
    *    id
    *    judgeId,
-   *    studentId
    *    score
    *    roundId
    * }
    */
 
-  if (
-    !data.id ||
-    !data.judgeId ||
-    !data.studentId ||
-    !data.roundId ||
-    !data.score
-  ) {
+  if (!data.id || !data.judgeId || !data.roundId || !data.score) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
@@ -54,11 +89,25 @@ export const updateRoundResult = async (data, isNew = true) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       // create score
+      await scoreService.createScoreForOneStudent(
+        { roundResultId: data.id, judgeId: data.judgeId, score: data.score },
+        t
+      );
       // update to round result
+      const roundResultUpdate = await db.RoundResult.increment(
+        {
+          score: data.score,
+        },
+        { where: { id: data.id }, transaction: t }
+      ).then(async () => {
+        return await findRoundResult(data.id);
+      });
+      return roundResultUpdate;
     });
+    return result;
   } catch (error) {
     console.log("ERROR:: ", error);
-    throw new HttpException(400, error);
+    throw new HttpException(400, error.message);
   }
 };
 

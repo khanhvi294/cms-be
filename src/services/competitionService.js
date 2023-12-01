@@ -119,6 +119,7 @@ export const getCompetitionIncludeRounds = async (id) => {
       {
         model: db.Round,
         as: "competitionRound",
+        order: [["createdAt", "DESC"]],
       },
     ],
   });
