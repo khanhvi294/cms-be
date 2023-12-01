@@ -272,7 +272,7 @@ const deleteEmployee = async (id) => {
   if (competitions.data.length > 0) {
     throw new HttpException(
       400,
-      ErrorMessage.OBJECT_IS_EXISTING("Competition")
+      ErrorMessage.OBJECT_CANNOT_DELETE_ADD_OTHER("employee", "competition")
     );
   }
   const judges = await judgeService.getAllJudgeIncludeEmployee(id);

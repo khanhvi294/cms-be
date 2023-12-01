@@ -99,7 +99,10 @@ const deleteCourse = async (id) => {
   }
   const classes = await classService.getClassByCourseId(id);
   if (classes.length > 0) {
-    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Class"));
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_CANNOT_DELETE_GIVEN_OTHER("Course", "class")
+    );
   }
   const course = await db.Course.destroy({
     where: {

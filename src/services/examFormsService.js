@@ -96,7 +96,10 @@ const deleteExamForm = async (id) => {
   const rounds = await roundService.getRoundsByExamForm(id);
 
   if (rounds.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Students"));
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_CANNOT_DELETE_ADD_OTHER("Exam form", "round")
+    );
   }
 
   const deleteExamForm = await db.ExamForm.destroy({
