@@ -4,6 +4,8 @@ import {
   errorValidateResponse,
 } from "./baseController";
 import scoreService from "../services/scoreService";
+import { validateData } from "../utils/validateData";
+import scoreValidation from '../validations/scoreValidation';
 
 const createScore = async (req, res, next) => {
   try {
@@ -23,7 +25,21 @@ const getScoreByRound = async (req, res, next) => {
   }
 };
 
+const createScoreOnRound = async (req, res, next) => {
+  try {
+    const err = await validateData(scoreValidation.createOnRound, req.body);
+    if (err) {
+      return errorValidateResponse(422, err, res);
+    }
+    const result = await scoreService.createScoreOnRound(req.body);
+    successResponse(STATUS_CODE.CREATED, result, res);
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   createScore,
-  getScoreByRound,
+  getScoreByRound,createScoreOnRound
 };
