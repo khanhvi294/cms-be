@@ -235,11 +235,11 @@ export const deleteRound = async (id) => {
     );
   }
 
-  const scores = await scoreService.getAllScoreByRound(id);
+  // const scores = await scoreService.getAllScoreByRound(id);
 
-  if (scores.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.CUSTOM("Score"));
-  }
+  // if (scores.data.length > 0) {
+  //   throw new HttpException(400, ErrorMessage.CUSTOM("Score"));
+  // }
 
   const deleteRound = await db.Round.destroy({
     where: {

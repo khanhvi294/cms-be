@@ -3,6 +3,7 @@ import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
 import roundService from "./roundService";
+import ErrorMessage from "../common/errorMessage";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
