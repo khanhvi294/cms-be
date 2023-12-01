@@ -249,6 +249,11 @@ export const deleteRound = async (id) => {
   return deleteRound;
 };
 
+const getCurrentRound = async (id) => {
+  const competition = await competitionService.getCompetitionIncludeRounds(id);
+  return competition;
+};
+
 export default {
   getAllRounds,
   createRound,
@@ -257,4 +262,5 @@ export default {
   deleteRound,
   getRoundById,
   getRoundsByExamForm,
+  getCurrentRound,
 };

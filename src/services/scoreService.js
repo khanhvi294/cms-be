@@ -2,8 +2,31 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { resFindAll } from "../utils/const";
+import judgeService from "./judgeService";
 
-const createScoreForOneStudent = async (data) => {};
+const createScoreForOneStudent = async (data, t) => {
+  if (!data.roundResultId || !data.judgeId || !data.score) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  await checkScoreIsExists({
+    roundResultId: data.roundResultId,
+    judgeId: data.judgeId,
+  });
+
+  await judgeService.getJudgeById(data.judgeId);
+
+  const score = await db.Score.create(
+    {
+      roundResultId: data.roundResultId,
+      score: data.score,
+      judgeId: data.judgeId,
+    },
+    { transaction: t }
+  );
+
+  return score;
+};
 
 const checkScoreIsExists = async (data) => {
   if (!data.roundResultId || !data.judgeId) {
@@ -15,7 +38,10 @@ const checkScoreIsExists = async (data) => {
   });
 
   if (result) {
-    throw new HttpException(400, ErrorMessage.SCORE_IS_INVALID);
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_EXISTING("Score is existing")
+    );
   }
 
   return false;

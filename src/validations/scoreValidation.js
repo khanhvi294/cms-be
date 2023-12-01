@@ -15,18 +15,18 @@ const scoreValidate = {
       }),
       scores: Joi.array().items(
         Joi.object({
-            studentId:  Joi.number().integer().min(1).required().messages({
-                "any.required": "studentId is required",
-                "number.min": "studentId must be greater than 0 and is an integer",
-                "number.integer": "studentId is invalid",
-              }),
-            score: Joi.number().integer().min(0).required().messages({
-                "any.required": "score is required",
-                "number.min": "score must be greater or equal than 0 and is an integer",
-                "number.integer": "score is invalid",
-            })
+          studentId: Joi.number().integer().min(1).required().messages({
+            "any.required": "studentId is required",
+            "number.min": "studentId must be greater than 0 and is an integer",
+            "number.integer": "studentId is invalid",
+          }),
+          score: Joi.number().integer().required().messages({
+            "any.required": "score is required",
+            "number.min":
+              "score must be greater or equal than 0 and is an integer",
+            "number.integer": "score is invalid",
+          }),
         })
-       
       ),
     });
 
