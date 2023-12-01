@@ -30,7 +30,17 @@ const getInfo = async (req, res, next) => {
   }
 };
 
+const changePassword = async (req, res, next) => {
+  try {
+    const user = await authService.changePassword(req.body, req.user.id);
+    successResponse(STATUS_CODE.OK, user, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   login,
   getInfo,
+  changePassword,
 };

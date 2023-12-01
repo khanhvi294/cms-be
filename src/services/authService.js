@@ -4,7 +4,7 @@ import db from "../models";
 import { ROLES } from "../utils/const";
 import jwtUtil from "../utils/jwt";
 import passwordUtil from "../utils/password";
-import { Op } from 'sequelize';
+import { Op } from "sequelize";
 
 export const authAccount = async (email, password) => {
   let account = await db.Account.findOne({ where: { email } });
@@ -28,7 +28,7 @@ export const authAccount = async (email, password) => {
 };
 
 export const checkEmailIsExistsExceptId = async (email, id) => {
-  if(!email || !id){
+  if (!email || !id) {
     throw new HttpException(404, ErrorMessage.MISSING_PARAMETER);
   }
 
@@ -40,7 +40,7 @@ export const checkEmailIsExistsExceptId = async (email, id) => {
     throw new HttpException(422, ErrorMessage.EMAIL_IS_EXISTING);
   }
   return false;
-}
+};
 
 export const findAccount = async (id) => {
   let account = await db.Account.findOne({ where: { id } });
@@ -114,6 +114,11 @@ export const findAccountByEmail = async (email) => {
   return account;
 };
 
+export const findAccountById = async (id) => {
+  let account = await db.Account.findOne({ where: { id } });
+  return account;
+};
+
 // export const checkEmailAccountUpdate = async (account) => {
 //   let account = await db.Account.findOne({
 //     where: { email: account.email, id: { [Op.ne]: account.id } },
@@ -152,6 +157,25 @@ const deleteAccount = async (id) => {
   return account;
 };
 
+export const changePassword = async (data, accountId) => {
+  const account = await findAccountById(accountId);
+  const password = await passwordUtil.generateHashPassword(data.password);
+  console.log(data.password);
+  const isCheck = await passwordUtil.comparePassword(
+    password,
+    account.password
+  );
+  console.log("aaaaaaaaaaaaaaaaaaaaaa", password, account.password);
+  if (!isCheck) {
+    throw new HttpException(404, "Password doesn't match ");
+  }
+
+  const upPass = await db.Account.update(data.newPassword, {
+    where: { id: accountId },
+  });
+  return upPass;
+};
+
 export default {
   login,
   findAccount,
@@ -159,5 +183,7 @@ export default {
   getInfo,
   getEmployeeByAccount,
   getStudentByAccount,
-  deleteAccount,checkEmailIsExistsExceptId
+  deleteAccount,
+  checkEmailIsExistsExceptId,
+  changePassword,
 };

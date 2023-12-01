@@ -36,7 +36,7 @@ const importAccounts = async () => {
       isActive: true,
       accountEmployee: {
         fullName: "Admin ",
-        cccd: "123123123",
+        cccd: "123123123906",
       },
     },
     {
@@ -46,7 +46,7 @@ const importAccounts = async () => {
       isActive: true,
       accountEmployee: {
         fullName: "Employee ",
-        cccd: "123123123",
+        cccd: "123123123789",
       },
     },
     {
