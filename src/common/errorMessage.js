@@ -21,6 +21,11 @@ const ErrorMessage = {
   COMPEITION_ROUND_MUST_BE_GREATER:
     "The round update must be greater current row",
   SCORE_IS_INVALID: "Score is invalid",
+  OBJECT_CANNOT_ADD: (name) => `${name} is already added before`,
+  OBJECT_CANNOT_DELETE_GIVEN_OTHER: (name1, name2) =>
+    `${name1} cannot be deleted because ${name2} is already existing in it`,
+  OBJECT_CANNOT_DELETE_ADD_OTHER: (name1, name2) =>
+    `${name1} cannot be deleted because ${name1} is already existing in ${name2} `,
 };
 
 export default ErrorMessage;

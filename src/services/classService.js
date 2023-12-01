@@ -251,12 +251,15 @@ const deleteClass = async (id) => {
     await competitionClassService.getAllCompetitionByClass(id);
 
   if (students.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Students"));
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_CANNOT_DELETE_GIVEN_OTHER("This Class", "students")
+    );
   }
   if (competitions.data.length > 0) {
     throw new HttpException(
       400,
-      ErrorMessage.OBJECT_IS_EXISTING("Competitions")
+      ErrorMessage.OBJECT_CANNOT_DELETE_ADD_OTHER("This class", "competition")
     );
   }
   const deleteClass = await db.Class.destroy({

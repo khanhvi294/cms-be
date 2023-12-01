@@ -229,7 +229,10 @@ export const deleteRound = async (id) => {
   }
   const judges = await judgeService.getAllJudgeByRound(id);
   if (judges.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.CUSTOM("Round"));
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_CANNOT_DELETE_ADD_OTHER("round", "judges")
+    );
   }
 
   const scores = await scoreService.getAllScoreByRound(id);
