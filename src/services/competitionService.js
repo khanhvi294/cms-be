@@ -12,6 +12,12 @@ export const createCompetition = async (employeeId, data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
+  if (new Date() >= new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Time start must be greater than today")
+    );
+  }
   if (new Date(data.timeStart) > new Date(data.timeEnd)) {
     throw new HttpException(
       422,
