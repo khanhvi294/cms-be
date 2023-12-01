@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "roundResultStudent",
       });
+      RoundResult.hasMany(models.Score, {
+        foreignKey: "roundResultId",
+        as: "roundResultScore",
+      });
     }
   }
   RoundResult.init(

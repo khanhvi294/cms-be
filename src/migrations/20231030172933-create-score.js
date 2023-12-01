@@ -19,11 +19,11 @@ module.exports = {
         onUpdate: "cascade",
         onDelete: "cascade",
       },
-      studentId: {
+      roundResultId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Students",
+          model: "RoundResults",
           key: "id",
         },
         onUpdate: "cascade",
@@ -39,16 +39,16 @@ module.exports = {
       //   onUpdate: "cascade",
       //   onDelete: "cascade",
       // },
-      roundId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Rounds",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
+      // roundId: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: false,
+      //   references: {
+      //     model: "Rounds",
+      //     key: "id",
+      //   },
+      //   onUpdate: "cascade",
+      //   onDelete: "cascade",
+      // },
       score: {
         type: Sequelize.FLOAT,
       },
