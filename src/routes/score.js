@@ -5,6 +5,6 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post("/round", verifyTeacher, scoreController.createScoreOnRound);
+// router.post("/round", verifyTeacher, scoreController.createScoreOnRound);
 
 export default router;

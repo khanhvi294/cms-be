@@ -1,47 +1,69 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
+import scoreService from "./scoreService";
 
-const findOrCreateRoundResult = async (data) => {
-  if (!data.studentId || data.roundId) {
+const createRoundResult = async (data) => {};
+
+const findRoundResult = async (id) => {
+  if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const [roundResult, created] = await db.RoundResult.findOrCreate({
-    where: { studentId: data.studentId, roundId: data.roundId },
-    defaults: {
-      studentId: data.studentId,
-      roundId: data.roundId,
-      score: 0,
-      numOfJudges: 0,
-    },
-  });
-
-  return roundResult;
-};
-
-export const updateRoundResult = async (data, isNew = true, transaction) => {
-  if (!data.studentId || !data.roundId || !data.score) {
-    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
-  }
-
-  const roundResult = await findOrCreateRoundResult(data);
-  const result = await db.RoundResult.update(
-    {
-      score: roundResult.score + data.score,
-      numOfJudges: isNew ? numOfJudges + 1 : numOfJudges,
-    },
-    {
-      where: { id: roundResult.id },
-      transaction:  transaction
-    }
-  ).then(async () => {
-    return await findOrCreateRoundResult(data);
-  });
+  const result = await db.RoundResult.findOne({ id: id });
   return result;
 };
 
+const getRoundResult = async (id) => {
+  const result = await findRoundResult(id);
+  if (!result) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Student's result")
+    );
+  }
+  return result;
+};
+
+export const updateRoundResult = async (data, isNew = true) => {
+  /**
+   *  data {
+   *    id
+   *    judgeId,
+   *    studentId
+   *    score
+   *    roundId
+   * }
+   */
+
+  if (
+    !data.id ||
+    !data.judgeId ||
+    !data.studentId ||
+    !data.roundId ||
+    !data.score
+  ) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  // check does round result is existing;
+  // update score -> create new score for this bgk
+  await Promise.all([getRoundResult(data.id)]);
+
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      // create score
+      // update to round result
+    });
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+  }
+};
+
 export default {
-  findOrCreateRoundResult,
+  createRoundResult,
   updateRoundResult,
+  findRoundResult,
+  getRoundResult,
 };

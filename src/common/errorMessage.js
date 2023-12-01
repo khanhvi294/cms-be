@@ -20,6 +20,7 @@ const ErrorMessage = {
   COMPETITION_CANNOT_UPDATE: "This competition cannot be updated",
   COMPEITION_ROUND_MUST_BE_GREATER:
     "The round update must be greater current row",
+  SCORE_IS_INVALID: "Score is invalid",
 };
 
 export default ErrorMessage;
