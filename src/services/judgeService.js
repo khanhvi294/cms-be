@@ -93,6 +93,7 @@ export const findJudgeByEmployeeIdAndRoundId = async (data) => {
   return judge;
 };
 
+// ---------------------------------------------------------------- ham nay k can validate, ko xai
 export const createJudge = async (data) => {
   const checkJudge = await findJudgeByEmployeeIdAndRoundId(data);
   if (checkJudge) {
@@ -127,12 +128,22 @@ export const createJudge = async (data) => {
   return judge;
 };
 
+// ---------------------------------------------------------------- validate
+
 const createJudgeByEmployee = async (data, t) => {
   const checkJudge = await findJudgeByEmployeeIdAndRoundId(data);
   if (checkJudge) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
   }
+  const round = await roundService.getRoundById(data.roundId);
 
+  //round bdau roi k dduocj them
+  if (new Date(round.timeStart) <= new Date()) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Round is started, can't add judge")
+    );
+  }
   const employee = await employeeService.getEmployeeByIdIncludesAccount(
     data.employeeId
   );
@@ -154,6 +165,7 @@ const createJudgeByEmployee = async (data, t) => {
   return judge;
 };
 
+// ---------------------------------------------------------------- validate
 export const createJudgesForRound = async (data) => {
   /**
    * ex: data = {
