@@ -1,6 +1,7 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
+import { resFindAll } from "../utils/const";
 import scoreService from "./scoreService";
 
 const createRoundResult = async (data) => {};
@@ -61,9 +62,32 @@ export const updateRoundResult = async (data, isNew = true) => {
   }
 };
 
+const getRoundResultByRound = async (roundId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.RoundResult.findAll({
+    where: { roundId },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ["studentId"] },
+    include: [
+      {
+        model: db.Students,
+        as: "roundResultStudent",
+        attributes: ["fullName", "id"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+  return resFindAll(data);
+};
+
 export default {
   createRoundResult,
   updateRoundResult,
   findRoundResult,
   getRoundResult,
+  getRoundResultByRound,
 };
