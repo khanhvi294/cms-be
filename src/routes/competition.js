@@ -5,6 +5,12 @@ import { Router } from "express";
 
 const router = Router();
 
+router.post("/class/add", verifyEmployee, competitionController.addClassJoin);
+// router.post(
+//   "/class/remove",
+//   verifyEmployee,
+//   competitionController.removeClassJoin
+// );
 router.patch("/", verifyEmployee, competitionController.updateCompetition);
 router.post("/", verifyEmployee, competitionController.createCompetition);
 router.get("/", competitionController.getAllCompetition);

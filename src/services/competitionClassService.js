@@ -6,13 +6,10 @@ import classService from "./classService";
 import competitionService from "./competitionService";
 
 const createCompetitionClass = async (data, t) => {
-  const result = await db.CompetitionClass.create(
-    {
-      competitionId: data.competitionId,
-      classId: data.classId,
-    },
-    { transaction: t }
-  );
+  const result = await db.CompetitionClass.create({
+    competitionId: data.competitionId,
+    classId: data.classId,
+  });
   return result;
 };
 
@@ -80,7 +77,7 @@ const getClassChooseUpdate = async (competitionId) => {
   return getUnselectedClasses(classChoose, classAlreadyChoose.data);
 };
 
-const deleteClassCompetition = async (competitionId, classId) => {
+const deleteClassCompetition = async (competitionId, classId, t) => {
   if (!classId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }

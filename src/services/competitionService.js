@@ -224,6 +224,83 @@ const updateCompetition = async (data) => {
 
 const deleteCompetition = async (id) => {};
 
+const addClassJoin = async (data) => {
+  /**
+   * data {
+   *  id,
+   *  competitionClass: []
+   * }
+   */
+
+  if (!data?.competitionClass || !data?.competitionClass?.length) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  await getCompetitionById(data.id);
+
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      const competitionClassPromise = await data.competitionClass.map(
+        async (item) => {
+          await classService.getClassById(item);
+          return competitionClassService.createCompetitionClass(
+            {
+              competitionId: data.id,
+              classId: item,
+            },
+            t
+          );
+        }
+      );
+
+      return await Promise.all([competitionClassPromise]);
+    });
+    return result;
+  } catch (err) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+  }
+};
+
+const removeClassJoin = async (data) => {
+  /**
+   * data {
+   *  id,
+   *  competitionClass: []
+   * }
+   */
+
+  console.log("dataaa ", data);
+  if (!data?.competitionClass || !data?.competitionClass?.length) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  await getCompetitionById(data.id);
+
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      const competitionClassPromise = await data.competitionClass.map(
+        async (item) => {
+          await classService.getClassById(item);
+          return competitionClassService.deleteClassCompetition(
+            {
+              competitionId: data.id,
+              classId: item,
+            },
+            t
+          );
+        }
+      );
+
+      return await Promise.all([competitionClassPromise]);
+    });
+    return result;
+  } catch (err) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error);
+  }
+};
+
 export default {
   createCompetition,
   getAllCompetition,
@@ -234,4 +311,6 @@ export default {
   getCompetitionIncludeRounds,
   getAllCompetitionIncludeEmployee,
   deleteCompetition,
+  addClassJoin,
+  removeClassJoin,
 };

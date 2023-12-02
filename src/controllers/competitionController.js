@@ -18,6 +18,23 @@ const getAllCompetition = async (req, res, next) => {
     next(error);
   }
 };
+const addClassJoin = async (req, res, next) => {
+  try {
+    const result = await competitionService.addClassJoin(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const removeClassJoin = async (req, res, next) => {
+  try {
+    const result = await competitionService.removeClassJoin(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getCompetitionById = async (req, res, next) => {
   try {
@@ -155,4 +172,6 @@ export default {
   deleteClassCompetition,
   getClassCanJoinUpdate,
   updateCompetition,
+  addClassJoin,
+  removeClassJoin,
 };
