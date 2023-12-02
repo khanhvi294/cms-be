@@ -12,12 +12,21 @@ const employeeValidate = {
           "string.empty": "Email is required",
         }),
       }),
-      fullName: Joi.string().required().min(3).max(50).messages({
-        "any.required": "FullName is required",
-        "string.empty": "FullName is required",
-        "string.min": "FullName min is 3",
-        "string.max": "FullName max is 50",
-      }),
+      fullName: Joi.string()
+        .required()
+        .pattern(
+          /^[\sa-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹếẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/
+        )
+        .trim(true)
+        .min(3)
+        .max(50)
+        .messages({
+          "any.required": "FullName is required",
+          "string.empty": "FullName is required",
+          "string.min": "FullName min is 3",
+          "string.max": "FullName max is 50",
+          "string.pattern.base": "FullName is only alphanumeric characters",
+        }),
       cccd: Joi.string()
         .length(12)
         .required()

@@ -279,7 +279,10 @@ const deleteEmployee = async (id) => {
 
   console.log(competitions);
   if (judges.data.length > 0) {
-    throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Judge"));
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_CANNOT_DELETE_ADD_OTHER("employee", "judge")
+    );
   }
 
   const employee = await db.Employee.destroy({

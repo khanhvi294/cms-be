@@ -249,7 +249,10 @@ const deleteClass = async (id) => {
   const students = await studentClassService.getAllStudentByClass(id);
   const competitions =
     await competitionClassService.getAllCompetitionByClass(id);
-
+  const dateCheck = new Date(haveClass.timeStart);
+  if (dateCheck <= new Date()) {
+    throw new HttpException(400, "Class is started,can't delete");
+  }
   if (students.data.length > 0) {
     throw new HttpException(
       400,
