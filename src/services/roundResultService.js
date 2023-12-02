@@ -4,6 +4,101 @@ import db from "../models";
 import { resFindAll } from "../utils/const";
 import scoreService from "./scoreService";
 
+const tmpCreateRounds = async (data) => {
+  /**
+   *  data {
+   *    roundId,
+   *    competitionId
+   * }
+   */
+
+  if (!data.roundId || !data.competitionId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const competition = await db.Competition.findOne({
+    where: { id: data.competitionId },
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Register,
+        as: "competitionRegister",
+        attributes: ["id", "studentId"],
+      },
+    ],
+  });
+
+  if (!competition) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Competition")
+    );
+  }
+
+  return await createRoundResultMultiStudents({
+    roundId: data.roundId,
+    studentIds: competition.competitionRegister.map((item) => item.studentId),
+  });
+};
+
+const createRoundResultMultiStudents = async (data) => {
+  /**
+   *  data {
+   *    roundId: 1,
+   *    studentIds: [1,2,3,4,5]
+   * }
+   */
+  if (!data.studentIds || !data.roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const competitionRound = await db.Round.findOne({
+      where: { id: data.roundId },
+      nest: true,
+      raw: false,
+      include: [
+        {
+          model: db.Competition,
+          as: "competitionRound",
+          attributes: ["id"],
+          include: [
+            {
+              model: db.Register,
+              as: "competitionRegister",
+              attributes: ["id", "studentId"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!competitionRound?.competitionRound?.competitionRegister) {
+      throw new HttpException(400, ErrorMessage.DATA_IS_INVALID);
+    }
+
+    const result = await db.sequelize.transaction(async (t) => {
+      // competitionRound?.competitionRound?.competitionRegister.map((item) => {
+      // })
+
+      const roundResultPromise = data.studentIds.map((studentId) => {
+        return createRoundResult({
+          studentId: studentId,
+          roundId: data.roundId,
+        });
+      });
+
+      return await Promise.all(roundResultPromise);
+    });
+
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error.message);
+  }
+};
+
 const createRoundResult = async (data, t) => {
   if (!data.studentId || !data.roundId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -74,7 +169,8 @@ export const updateRoundResult = async (data, isNew = true) => {
    *    id
    *    judgeId,
    *    score
-   *    roundId
+   *    roundId,
+   *    studentId,
    * }
    */
 
@@ -153,4 +249,6 @@ export default {
   updateScore,
   checkStudentPassRound,
   confirmStudentPassRound,
+  createRoundResultMultiStudents,
+  tmpCreateRounds,
 };

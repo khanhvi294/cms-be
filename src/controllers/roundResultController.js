@@ -37,8 +37,18 @@ const getRoundResultByRound = async (req, res, next) => {
   }
 };
 
+const tmpCreateRounds = async (req, res, next) => {
+  try {
+    const result = await roundResultService.tmpCreateRounds(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getCurrentRound,
   updateRoundResult,
   getRoundResultByRound,
+  tmpCreateRounds,
 };

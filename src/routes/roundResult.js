@@ -13,4 +13,6 @@ router.get(
   roundResultController.getRoundResultByRound
 );
 
+router.post("/tmp", roundResultController.tmpCreateRounds);
+
 export default router;
