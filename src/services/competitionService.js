@@ -242,8 +242,8 @@ const addClassJoin = async (data) => {
   }
 
   try {
-    const result = await db.sequelize.transaction(async (t) => {
-      const competitionClassPromise = await data.competitionClass.map(
+    const result = await sequelize.transaction(async (t) => {
+      const competitionClassPromise = data.competitionClass.map(
         async (item) => {
           await classService.getClassById(item);
           return competitionClassService.createCompetitionClass(
@@ -256,10 +256,10 @@ const addClassJoin = async (data) => {
         }
       );
 
-      return await Promise.all([competitionClassPromise]);
+      return await Promise.all(competitionClassPromise);
     });
     return result;
-  } catch (err) {
+  } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error);
   }
@@ -298,10 +298,10 @@ const removeClassJoin = async (data) => {
         }
       );
 
-      return await Promise.all([competitionClassPromise]);
+      return await Promise.all(competitionClassPromise);
     });
     return result;
-  } catch (err) {
+  } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error);
   }

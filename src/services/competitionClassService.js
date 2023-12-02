@@ -6,10 +6,13 @@ import classService from "./classService";
 import competitionService from "./competitionService";
 
 const createCompetitionClass = async (data, t) => {
-  const result = await db.CompetitionClass.create({
-    competitionId: data.competitionId,
-    classId: data.classId,
-  });
+  const result = await db.CompetitionClass.create(
+    {
+      competitionId: data.competitionId,
+      classId: data.classId,
+    },
+    { transaction: t }
+  );
   return result;
 };
 
