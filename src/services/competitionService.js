@@ -236,7 +236,10 @@ const addClassJoin = async (data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  await getCompetitionById(data.id);
+  const competitionn = await getCompetitionById(data.id);
+  if (competitionn.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(422, ErrorMessage.COMPETITION_IS_STARTED);
+  }
 
   try {
     const result = await db.sequelize.transaction(async (t) => {
@@ -275,7 +278,10 @@ const removeClassJoin = async (data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  await getCompetitionById(data.id);
+  const competitionn = await getCompetitionById(data.id);
+  if (competitionn.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(422, ErrorMessage.COMPETITION_IS_STARTED);
+  }
 
   try {
     const result = await db.sequelize.transaction(async (t) => {
