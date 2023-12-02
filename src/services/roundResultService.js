@@ -133,10 +133,24 @@ const getRoundResultByRound = async (roundId) => {
   return resFindAll(data);
 };
 
+const updateScore = async (data) => {};
+
+const checkStudentPassRound = async (data) => {
+  /**
+   * data {
+   *
+   * }
+   */
+};
+const confirmStudentPassRound = async (data) => {};
+
 export default {
   createRoundResult,
   updateRoundResult,
   findRoundResult,
   getRoundResult,
   getRoundResultByRound,
+  updateScore,
+  checkStudentPassRound,
+  confirmStudentPassRound,
 };
