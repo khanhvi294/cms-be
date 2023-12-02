@@ -26,6 +26,7 @@ const ErrorMessage = {
     `${name1} cannot be deleted because ${name2} is already existing in it`,
   OBJECT_CANNOT_DELETE_ADD_OTHER: (name1, name2) =>
     `${name1} cannot be deleted because ${name1} is already existing in ${name2} `,
+  COMPETITION_IS_STARTED: "Cannot add, remove class of competition began",
 };
 
 export default ErrorMessage;
