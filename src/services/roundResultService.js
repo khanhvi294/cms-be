@@ -234,10 +234,34 @@ const updateScore = async (data) => {};
 const checkStudentPassRound = async (data) => {
   /**
    * data {
-   *
+   *    markPoint,
+   *    roundId
    * }
    */
+
+  if (!data.markPoint || !data.roundId) {
+    throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const roundResults = await getAllRoundResultByRoundId(data.roundId);
+  if (!roundResults.length) {
+    return [];
+  }
+
+  const resultPass = roundResults.filter(
+    (item) => item.score >= data.markPoint
+  );
+  return resultPass;
 };
+
+const getAllRoundResultByRoundId = async (roundId) => {
+  const data = await db.RoundResult.findAll({
+    where: { roundId: roundId },
+  });
+
+  return data;
+};
+
 const confirmStudentPassRound = async (data) => {};
 
 export default {
@@ -251,4 +275,5 @@ export default {
   confirmStudentPassRound,
   createRoundResultMultiStudents,
   tmpCreateRounds,
+  getAllRoundResultByRoundId,
 };

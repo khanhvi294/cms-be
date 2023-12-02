@@ -6,6 +6,11 @@ import { Router } from "express";
 
 const router = Router();
 router.patch("/", verifyTeacher, roundResultController.updateRoundResult);
+router.post(
+  "/check",
+  verifyEmployee,
+  roundResultController.checkStudentPassRound
+);
 
 router.get(
   "/round/:roundId",

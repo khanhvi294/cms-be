@@ -46,9 +46,19 @@ const tmpCreateRounds = async (req, res, next) => {
   }
 };
 
+const checkStudentPassRound = async (req, res, next) => {
+  try {
+    const result = await roundResultService.checkStudentPassRound(req.body);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getCurrentRound,
   updateRoundResult,
   getRoundResultByRound,
   tmpCreateRounds,
+  checkStudentPassRound,
 };
