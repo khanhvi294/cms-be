@@ -178,7 +178,8 @@ export const updateStatusCompetition = async (id, statusId) => {
 };
 
 const updateCompetition = async (data) => {
-  if (new Date(haveRound.timeStart) <= new Date()) {
+  const competition = await getCompetitionById(data.id);
+  if (new Date(competition.timeStart) <= new Date()) {
     throw new HttpException(
       400,
       ErrorMessage.CUSTOM("Competition is already started,can't update")
@@ -198,7 +199,6 @@ const updateCompetition = async (data) => {
     );
   }
 
-  const competition = await getCompetitionById(data.id);
   if (competition.status !== STATUS_COMPETITION.CREATED) {
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }

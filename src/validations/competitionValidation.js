@@ -34,12 +34,12 @@ const competitionValidation = {
         })
       ),
       timeStart: Joi.date().required().min("now").messages({
-        "date.min": "timeStart must be greater now",
+        "date.min": "timeStart must be greater today",
         "any.required": "timeStart is required",
         "date.base": "timeStart must be a date",
       }),
       timeEnd: Joi.date().required().messages({
-        "date.min": "timeEnd must be greater now",
+        "date.min": "timeEnd must be greater today",
         "any.required": "timeEnd is required",
         "date.base": "timeEnd must be a date",
       }),

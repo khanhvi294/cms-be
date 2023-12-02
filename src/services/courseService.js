@@ -19,12 +19,14 @@ const findCourseById = async (id) => {
 };
 
 const checkNameUpdate = async (course) => {
+  console.log(course);
   const existingCourse = await db.Course.findOne({
     where: {
       name: course.name,
-      id: { $ne: +course.id },
+      id: { [Op.ne]: course.id },
     },
   });
+  console.log("hiii", existingCourse);
   return existingCourse;
 };
 
@@ -80,7 +82,7 @@ const updateCourse = async (id, course) => {
   if (!(await checkCourseTime(course.trainingTime))) {
     throw new HttpException(400, ErrorMessage.DATA_IS_INVALID("Time"));
   }
-  if (!!(await checkNameUpdate(course))) {
+  if (!!(await checkNameUpdate({ ...course, id }))) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Name"));
   }
   const upCourse = await db.Course.update(course, {

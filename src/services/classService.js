@@ -193,7 +193,6 @@ export const addMultipleStudent = async (data) => {
   const classRoom = await findClassById(data.classId);
   const sevenDay = new Date(classRoom.timeStart);
   sevenDay.setDate(sevenDay.getDate() + 7);
-
   if (new Date() >= sevenDay) {
     throw new HttpException(
       422,
