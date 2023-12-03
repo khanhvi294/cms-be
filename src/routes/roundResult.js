@@ -19,5 +19,8 @@ router.get(
 );
 
 router.post("/tmp", roundResultController.tmpCreateRounds);
+router.get("/cur/:id", roundResultController.getCurrentRound);
+router.get("/first/:id", roundResultController.getFirstRound);
+router.get("/next/:id", roundResultController.getNextRound);
 
 export default router;

@@ -214,7 +214,7 @@ const getRoundResultByRound = async (roundId) => {
 
   const data = await db.RoundResult.findAll({
     where: { roundId },
-    raw: true,
+    raw: false,
     nest: true,
     attributes: { exclude: ["studentId"] },
     include: [
@@ -262,7 +262,14 @@ const getAllRoundResultByRoundId = async (roundId) => {
   return data;
 };
 
-const confirmStudentPassRound = async (data) => {};
+const confirmStudentPassRound = async (data) => {
+  /**
+   *  roundId: 2
+   *  studentIds: [1,2,3,4]
+   */
+  // check list student
+  // create new round result for student
+};
 
 export default {
   createRoundResult,

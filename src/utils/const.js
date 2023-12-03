@@ -40,3 +40,59 @@ export const resFindAll = (data) => {
     total: data.length,
   };
 };
+
+export function findMinDate(arr) {
+  /**
+   *  {
+   *    time
+   *    roundId
+   *  }
+   */
+  if (arr.length === 0) {
+    // Handle empty array case
+    return undefined; // or you can throw an error or handle it according to your needs
+  }
+
+  if (arr.length === 1) {
+    return arr[0];
+  }
+
+  let minValue = arr[0].time;
+  let pos = 0;
+
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i].time < minValue) {
+      minValue = arr[i].time;
+      pos = i;
+    }
+  }
+
+  return arr[pos];
+}
+
+export function findMinDateCondition(arr, condition) {
+  /**
+   *  {
+   *    time
+   *    roundId
+   *  }
+   */
+  if (arr.length === 0) {
+    // Handle empty array case
+    return undefined; // or you can throw an error or handle it according to your needs
+  }
+
+  if (arr.length === 1) {
+    return arr[0];
+  }
+
+  const arrCon = arr.filter((item) => item.time > condition.time);
+  if (arrCon.length == 0) {
+    return condition;
+  }
+
+  if (arrCon.length === 1) {
+    return arrCon[0];
+  }
+  return findMinDate(arrCon);
+}

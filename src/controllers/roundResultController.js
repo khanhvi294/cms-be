@@ -10,7 +10,28 @@ import roundResultService from "../services/roundResultService";
 
 const getCurrentRound = async (req, res, next) => {
   try {
-    const result = await roundService.getCurrentRound(req.body.id);
+    const result = await roundService.getCurrentRound(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getFirstRound = async (req, res, next) => {
+  try {
+    const result = await roundService.getFirstRound(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getNextRound = async (req, res, next) => {
+  try {
+    const result = await roundService.getNextRound(
+      req.params.id,
+      req.query.roundId
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -61,4 +82,6 @@ export default {
   getRoundResultByRound,
   tmpCreateRounds,
   checkStudentPassRound,
+  getFirstRound,
+  getNextRound,
 };
