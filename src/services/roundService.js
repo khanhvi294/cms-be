@@ -274,6 +274,9 @@ const getFirstRound = async (competitionId) => {
   });
 
   const minRound = findMinDate(arrDate);
+  if (!minRound) {
+    return null;
+  }
   const minRoundFind = competition.competitionRound.find(
     (item) => item.id == minRound.roundId
   );
@@ -309,11 +312,35 @@ const getNextRound = async (competitionId, curRoundId) => {
   });
 
   const minRound = findMinDateCondition(arrDate, conditionRound);
+  if (!minRound) {
+    return null;
+  }
   const minRoundFind = competition.competitionRound.find(
     (item) => item.id == minRound.roundId
   );
 
   return minRoundFind;
+};
+
+export const getCompetitionByRoundId = async (roundId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const round = await db.Round.findOne({
+    where: { id: roundId },
+    nest: true,
+    raw: false,
+
+    include: [
+      {
+        model: db.Competition,
+        as: "competitionRound",
+        attributes: ["id"],
+      },
+    ],
+  });
+  return round?.competitionRound;
 };
 
 export default {
@@ -327,4 +354,5 @@ export default {
   getRoundById,
   getRoundsByExamForm,
   getCurrentRound,
+  getCompetitionByRoundId,
 };

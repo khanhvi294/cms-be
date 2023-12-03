@@ -12,6 +12,12 @@ router.post(
   roundResultController.checkStudentPassRound
 );
 
+router.post(
+  "/confirm",
+  verifyEmployee,
+  roundResultController.confirmStudentPassRound
+);
+
 router.get(
   "/round/:roundId",
   verifyTeacher,

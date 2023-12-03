@@ -1,7 +1,8 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { resFindAll } from "../utils/const";
+import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import roundService from "./roundService";
 import scoreService from "./scoreService";
 
 const tmpCreateRounds = async (data) => {
@@ -178,6 +179,13 @@ export const updateRoundResult = async (data, isNew = true) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
+  const competition = await competitionService.getCompetitionByRoundId(
+    data.roundId
+  );
+  if (competition.status !== STATUS_COMPETITION.STARTED) {
+    throw new HttpException(400, ErrorMessage.CANNOT_UPDATE_SCORE);
+  }
+
   // check does round result is existing;
   // update score -> create new score for this bgk
   await Promise.all([getRoundResult(data.id)]);
@@ -231,6 +239,7 @@ const getRoundResultByRound = async (roundId) => {
 
 const updateScore = async (data) => {};
 
+// chua check timeStart
 const checkStudentPassRound = async (data) => {
   /**
    * data {
@@ -269,6 +278,51 @@ const confirmStudentPassRound = async (data) => {
    */
   // check list student
   // create new round result for student
+  if (!data.roundId || !data.studentIds) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      const roundResultsPromise = db.RoundResult.findAll({
+        where: { roundId: data.roundId },
+      });
+      const competitionPromise = roundService.getCompetitionByRoundId(
+        data.roundId
+      );
+
+      const [roundResult, competition] = await Promise.all([
+        roundResultsPromise,
+        competitionPromise,
+      ]);
+
+      const studentPass = data.studentIds.map((item) => {
+        const id = roundResult.find((result) => result.studentId == item);
+        if (!id) {
+          throw new HttpException(
+            400,
+            ErrorMessage.OBJECT_IS_NOT_EXISTING("Student")
+          );
+        }
+        return id;
+      });
+
+      const nextRound = await roundService.getNextRound(
+        competition.id,
+        data.roundId
+      );
+      if (!nextRound) {
+        // change status of competition
+        return "End";
+      }
+
+      return studentPass;
+    });
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error.message);
+  }
 };
 
 export default {

@@ -50,7 +50,7 @@ export function findMinDate(arr) {
    */
   if (arr.length === 0) {
     // Handle empty array case
-    return undefined; // or you can throw an error or handle it according to your needs
+    return null; // or you can throw an error or handle it according to your needs
   }
 
   if (arr.length === 1) {
@@ -88,7 +88,7 @@ export function findMinDateCondition(arr, condition) {
 
   const arrCon = arr.filter((item) => item.time > condition.time);
   if (arrCon.length == 0) {
-    return condition;
+    return null;
   }
 
   if (arrCon.length === 1) {
