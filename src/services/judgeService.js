@@ -90,6 +90,10 @@ export const findJudgeByEmployeeIdAndRoundId = async (data) => {
   const judge = await db.Judge.findOne({
     where: { roundId: data.roundId, employeeId: data.employeeId },
   });
+
+  if(!judge){
+    throw new HttpException(422, ErrorMessage.OBJECT_IS_NOT_EXISTING("Judege"))
+  }
   return judge;
 };
 
@@ -224,6 +228,22 @@ export const deleteJudgeInRound = async (teacherId, roundId) => {
   return data;
 };
 
+// const findJudgeByEmployeeIdAndRoundId = async (employeeId, roundId) => {
+//   if(!employeeId || !roundId) {
+//     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+//   }
+
+//   const judge = await db.Judge.findOne({
+//     employeeId:  employeeId,
+//     roundId: roundId
+//   })
+
+  
+
+//   return judge
+
+// }
+
 export default {
   getAllJudgeByRound,
   createJudge,
@@ -232,5 +252,5 @@ export default {
   findJudgeById,
   getJudgeById,
   getAllJudgeIncludeEmployee,
-  getAllRoundByJudge,
+  getAllRoundByJudge,findJudgeByEmployeeIdAndRoundId
 };

@@ -7,6 +7,7 @@ import roundService from "../services/roundService";
 import { validateData } from "../utils/validateData";
 import roundValidation from "../validations/roundValidation";
 import roundResultService from "../services/roundResultService";
+import authService from "../services/authService";
 
 const getCurrentRound = async (req, res, next) => {
   try {
@@ -40,7 +41,8 @@ const getNextRound = async (req, res, next) => {
 
 const updateRoundResult = async (req, res, next) => {
   try {
-    const result = await roundResultService.updateRoundResult(req.body, true);
+    const employee = await authService.getEmployeeByAccount(req?.user.id);
+    const result = await roundResultService.updateRoundResult(employee?.accountEmployee.id, req.body, true);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
