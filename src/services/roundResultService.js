@@ -134,13 +134,14 @@ const checkRoundResultExists = async (data) => {
   return false;
 };
 
-const findRoundResult = async (id) => {
+const findRoundResult = async (id,t) => {
   if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
   const result = await db.RoundResult.findOne({
     where: { id: id },
+     transaction: t,
 
     nest: true,
     raw: false,
@@ -171,7 +172,6 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
    *    id
    *    score
    *    roundId,
-   *    studentId,
    * }
    */
 
@@ -179,9 +179,9 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const judge = await judgeService.findJudgeByEmployeeIdAndRoundId(employeeId, data.roundId)
+  const judge = await judgeService.findJudgeByEmployeeIdAndRoundId({employeeId: employeeId, roundId: data.roundId})
 
-  const competition = await competitionService.getCompetitionByRoundId(
+  const competition = await roundService.getCompetitionByRoundId(
     data.roundId
   );
   if (competition.status !== STATUS_COMPETITION.STARTED) {
@@ -192,11 +192,41 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
   // update score -> create new score for this bgk
   await Promise.all([getRoundResult(data.id)]);
 
+  // update score -> 
+  if(!isNew){
+    try {
+      const result = await db.sequelize.transaction(async (t) => {
+        // update score ->
+        const oldScore = await scoreService.updateScoreForOneStudent(
+        { roundResultId: data.id, judgeId: judge.id, score: data.score },
+        t
+        )
+
+        // update to round result 
+        const roundResultUpdate = await db.RoundResult.increment(
+          {
+            score: (data.score - oldScore),
+          },
+          { where: { id: data.id }, transaction: t }
+        ).then(async () => {
+          return await findRoundResult(data.id, t);
+        });
+        return roundResultUpdate;
+      });
+     return result;
+
+    } catch (error) {
+      console.log("ERROR:: ", error);
+      throw new HttpException(400, error.message);
+    }
+  }
+
+  // create score
   try {
     const result = await db.sequelize.transaction(async (t) => {
       // create score
       await scoreService.createScoreForOneStudent(
-        { roundResultId: data.id, judgeId: judge.judgeId, score: data.score },
+        { roundResultId: data.id, judgeId: judge.id, score: data.score },
         t
       );
       // update to round result
@@ -239,7 +269,7 @@ const getRoundResultByRound = async (roundId) => {
   return resFindAll(data);
 };
 
-const updateScore = async (data) => {};
+// const updateScore = async (data) => {};
 
 // chua check timeStart
 const checkStudentPassRound = async (data) => {
@@ -341,7 +371,7 @@ export default {
   findRoundResult,
   getRoundResult,
   getRoundResultByRound,
-  updateScore,
+  // updateScore,
   checkStudentPassRound,
   confirmStudentPassRound,
   createRoundResultMultiStudents,

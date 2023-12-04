@@ -42,7 +42,7 @@ const getNextRound = async (req, res, next) => {
 const updateRoundResult = async (req, res, next) => {
   try {
     const employee = await authService.getEmployeeByAccount(req?.user.id);
-    const result = await roundResultService.updateRoundResult(employee?.accountEmployee.id, req.body, true);
+    const result = await roundResultService.updateRoundResult(employee?.accountEmployee.id, req.body, req.body.isNew);
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
