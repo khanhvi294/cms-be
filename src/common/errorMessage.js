@@ -28,6 +28,8 @@ const ErrorMessage = {
     `${name1} cannot be deleted because ${name1} is already existing in ${name2} `,
   COMPETITION_IS_STARTED: "Cannot add, remove class of competition began",
   CANNOT_UPDATE_SCORE: "Can't update score of competition'",
+  CANNOT_CHECK_PASS_LAST_ROUND: "Can't check student pass of last round",
+  PASSWORD_IS_INCORRECT: "Password is incorrect",
 };
 
 export default ErrorMessage;

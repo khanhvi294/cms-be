@@ -225,7 +225,7 @@ export const updateStudent = async (studentId, data) => {
 
   try {
     // Start a new transaction
-    await db.sequelize.transaction(async (t) => {
+   const student = await db.sequelize.transaction(async (t) => {
       // First, update the Student
       await db.Students.update(
         { ...data },
@@ -258,8 +258,10 @@ export const updateStudent = async (studentId, data) => {
       }
 
       // Finally, return the updated Student
+      return student;
     });
-    return await findStudentById(studentId);
+    return await authService.getStudentByAccount(student.accountStudent.id);
+
   } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error?.message || error);

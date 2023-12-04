@@ -135,13 +135,14 @@ const checkRoundResultExists = async (data) => {
   return false;
 };
 
-const findRoundResult = async (id) => {
+const findRoundResult = async (id, t) => {
   if (!id) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
   const result = await db.RoundResult.findOne({
     where: { id: id },
+    transaction: t,
 
     nest: true,
     raw: false,
@@ -172,7 +173,6 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
    *    id
    *    score
    *    roundId,
-   *    studentId,
    * }
    */
 
@@ -194,8 +194,35 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
   // update score -> create new score for this bgk
   await Promise.all([getRoundResult(data.id)]);
 
-  // console.log("competition status", data, judge.id);
+  // update score ->
+  if (!isNew) {
+    try {
+      const result = await db.sequelize.transaction(async (t) => {
+        // update score ->
+        const oldScore = await scoreService.updateScoreForOneStudent(
+          { roundResultId: data.id, judgeId: judge.id, score: data.score },
+          t
+        );
 
+        // update to round result
+        const roundResultUpdate = await db.RoundResult.increment(
+          {
+            score: data.score - oldScore,
+          },
+          { where: { id: data.id }, transaction: t }
+        ).then(async () => {
+          return await findRoundResult(data.id, t);
+        });
+        return roundResultUpdate;
+      });
+      return result;
+    } catch (error) {
+      console.log("ERROR:: ", error);
+      throw new HttpException(400, error.message);
+    }
+  }
+
+  // create score
   try {
     const result = await db.sequelize.transaction(async (t) => {
       // create score
@@ -272,7 +299,7 @@ export const getRoundResultIncludeScoreByRound = async (roundId) => {
   return resFindAll(data);
 };
 
-const updateScore = async (data) => {};
+// const updateScore = async (data) => {};
 
 // chua check timeStart
 const checkStudentPassRound = async (data) => {
@@ -285,6 +312,14 @@ const checkStudentPassRound = async (data) => {
 
   if (!data.markPoint || !data.roundId) {
     throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  // check coi phai vong cuoi cung ko
+  const nextRound = await roundService.getNextRoundWithoutComeptitionId(
+    data.roundId
+  );
+  if (!nextRound) {
+    throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND);
   }
 
   const roundResults = await getAllRoundResultByRoundId(data.roundId);
@@ -347,11 +382,13 @@ const confirmStudentPassRound = async (data) => {
         data.roundId
       );
       if (!nextRound) {
-        // change status of competition
-        return "End";
+        throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND);
       }
 
-      return studentPass;
+      return await createRoundResultMultiStudents({
+        roundId: nextRound.id,
+        studentIds: studentPass.map((item) => item.studentId),
+      });
     });
     return result;
   } catch (error) {
@@ -366,7 +403,7 @@ export default {
   findRoundResult,
   getRoundResult,
   getRoundResultByRound,
-  updateScore,
+  // updateScore,
   checkStudentPassRound,
   confirmStudentPassRound,
   createRoundResultMultiStudents,

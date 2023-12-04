@@ -28,6 +28,30 @@ const createScoreForOneStudent = async (data, t) => {
   return score;
 };
 
+const updateScoreForOneStudent = async (data, t) => {
+  if (!data.roundResultId || !data.judgeId || !data.score) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  await judgeService.getJudgeById(data.judgeId);
+
+  const oldScore = await db.Score.findOne({
+    where: { roundResultId: data.roundResultId, judgeId: data.judgeId },
+  });
+
+  await db.Score.update(
+    {
+      score: data.score,
+    },
+    {
+      where: { roundResultId: data.roundResultId, judgeId: data.judgeId },
+      transaction: t,
+    }
+  );
+
+  return oldScore?.score;
+};
+
 const checkScoreIsExists = async (data) => {
   if (!data.roundResultId || !data.judgeId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
@@ -69,6 +93,7 @@ const getScoreByRoundResult = async (roundResultId) => {
 
 export default {
   createScoreForOneStudent,
-  checkScoreIsExists,
   getScoreByRoundResult,
+  checkScoreIsExists,
+  updateScoreForOneStudent,
 };

@@ -160,17 +160,16 @@ const deleteAccount = async (id) => {
 export const changePassword = async (data, accountId) => {
   const account = await findAccountById(accountId);
   const password = await passwordUtil.generateHashPassword(data.password);
-  console.log(data.password);
-  const isCheck = await passwordUtil.comparePassword(
-    password,
-    account.password
+  const isPasswordMatch = await passwordUtil.comparePassword(
+    account.password,
+    password
   );
-  console.log("aaaaaaaaaaaaaaaaaaaaaa", password, account.password);
-  if (!isCheck) {
-    throw new HttpException(404, "Password doesn't match ");
+  if (!isPasswordMatch) {
+    throw new HttpException(404, ErrorMessage.PASSWORD_IS_INCORRECT);
   }
+  const hashPassword = await passwordUtil.generateHashPassword(data.newPassword);
 
-  const upPass = await db.Account.update(data.newPassword, {
+  const upPass = await db.Account.update(hashPassword, {
     where: { id: accountId },
   });
   return upPass;

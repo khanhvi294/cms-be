@@ -45,7 +45,7 @@ const updateRoundResult = async (req, res, next) => {
     const result = await roundResultService.updateRoundResult(
       employee?.accountEmployee.id,
       req.body,
-      true
+      req.body.isNew
     );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {

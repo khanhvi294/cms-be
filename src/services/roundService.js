@@ -285,7 +285,6 @@ const getFirstRound = async (competitionId) => {
 };
 
 const getNextRound = async (competitionId, curRoundId) => {
-  console.log("curRoud ", curRoundId);
   const competition =
     await competitionService.getCompetitionIncludeRounds(competitionId);
   if (!competition.competitionRound) {
@@ -322,6 +321,12 @@ const getNextRound = async (competitionId, curRoundId) => {
 
   return minRoundFind;
 };
+
+export const getNextRoundWithoutComeptitionId = async (roundId) => {
+  // chua tot nhung dang gấp
+  const competition = await getCompetitionByRoundId(roundId);
+  return await getNextRound(competition.id, roundId);
+}
 
 export const getCompetitionByRoundId = async (roundId) => {
   if (!roundId) {
@@ -377,5 +382,5 @@ export default {
   getRoundsByExamForm,
   getCurrentRound,
   getRoundById,
-  getCompetitionByRoundId,
+  getCompetitionByRoundId,getNextRoundWithoutComeptitionId
 };
