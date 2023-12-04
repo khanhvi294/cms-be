@@ -1,6 +1,11 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import {
+  STATUS_COMPETITION,
+  findMinDate,
+  findMinDateCondition,
+  resFindAll,
+} from "../utils/const";
 import examFormsService from "./examFormsService";
 import competitionService from "./competitionService";
 import ErrorMessage from "../common/errorMessage";
@@ -254,8 +259,94 @@ const getCurrentRound = async (id) => {
   return competition;
 };
 
+const getFirstRound = async (competitionId) => {
+  const competition =
+    await competitionService.getCompetitionIncludeRounds(competitionId);
+  if (!competition.competitionRound) {
+    return null;
+  }
+
+  const arrDate = competition.competitionRound.map((item) => {
+    return {
+      roundId: item.id,
+      time: new Date(item.timeStart),
+    };
+  });
+
+  const minRound = findMinDate(arrDate);
+  if (!minRound) {
+    return null;
+  }
+  const minRoundFind = competition.competitionRound.find(
+    (item) => item.id == minRound.roundId
+  );
+  return minRoundFind;
+};
+
+const getNextRound = async (competitionId, curRoundId) => {
+  console.log("curRoud ", curRoundId);
+  const competition =
+    await competitionService.getCompetitionIncludeRounds(competitionId);
+  if (!competition.competitionRound) {
+    return null;
+  }
+
+  const curRound = competition.competitionRound.find(
+    (item) => item.id == curRoundId
+  );
+
+  if (!curRound) {
+    return null;
+  }
+
+  const conditionRound = {
+    roundId: curRound.id,
+    time: new Date(curRound.timeStart),
+  };
+
+  const arrDate = competition.competitionRound.map((item) => {
+    return {
+      roundId: item.id,
+      time: new Date(item.timeStart),
+    };
+  });
+
+  const minRound = findMinDateCondition(arrDate, conditionRound);
+  if (!minRound) {
+    return null;
+  }
+  const minRoundFind = competition.competitionRound.find(
+    (item) => item.id == minRound.roundId
+  );
+
+  return minRoundFind;
+};
+
+export const getCompetitionByRoundId = async (roundId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const round = await db.Round.findOne({
+    where: { id: roundId },
+    nest: true,
+    raw: false,
+
+    include: [
+      {
+        model: db.Competition,
+        as: "competitionRound",
+        attributes: ["id"],
+      },
+    ],
+  });
+  return round?.competitionRound;
+};
+
 export default {
   getAllRounds,
+  getFirstRound,
+  getNextRound,
   createRound,
   getRoundsByCompetition,
   updateRound,
@@ -264,4 +355,5 @@ export default {
   getRoundsByExamForm,
   getCurrentRound,
   getRoundById,
+  getCompetitionByRoundId,
 };

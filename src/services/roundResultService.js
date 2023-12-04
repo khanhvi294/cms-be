@@ -1,8 +1,104 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { resFindAll } from "../utils/const";
+import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import roundService from "./roundService";
 import scoreService from "./scoreService";
+
+const tmpCreateRounds = async (data) => {
+  /**
+   *  data {
+   *    roundId,
+   *    competitionId
+   * }
+   */
+
+  if (!data.roundId || !data.competitionId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const competition = await db.Competition.findOne({
+    where: { id: data.competitionId },
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Register,
+        as: "competitionRegister",
+        attributes: ["id", "studentId"],
+      },
+    ],
+  });
+
+  if (!competition) {
+    throw new HttpException(
+      400,
+      ErrorMessage.OBJECT_IS_NOT_EXISTING("Competition")
+    );
+  }
+
+  return await createRoundResultMultiStudents({
+    roundId: data.roundId,
+    studentIds: competition.competitionRegister.map((item) => item.studentId),
+  });
+};
+
+const createRoundResultMultiStudents = async (data) => {
+  /**
+   *  data {
+   *    roundId: 1,
+   *    studentIds: [1,2,3,4,5]
+   * }
+   */
+  if (!data.studentIds || !data.roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const competitionRound = await db.Round.findOne({
+      where: { id: data.roundId },
+      nest: true,
+      raw: false,
+      include: [
+        {
+          model: db.Competition,
+          as: "competitionRound",
+          attributes: ["id"],
+          include: [
+            {
+              model: db.Register,
+              as: "competitionRegister",
+              attributes: ["id", "studentId"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!competitionRound?.competitionRound?.competitionRegister) {
+      throw new HttpException(400, ErrorMessage.DATA_IS_INVALID);
+    }
+
+    const result = await db.sequelize.transaction(async (t) => {
+      // competitionRound?.competitionRound?.competitionRegister.map((item) => {
+      // })
+
+      const roundResultPromise = data.studentIds.map((studentId) => {
+        return createRoundResult({
+          studentId: studentId,
+          roundId: data.roundId,
+        });
+      });
+
+      return await Promise.all(roundResultPromise);
+    });
+
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error.message);
+  }
+};
 
 const createRoundResult = async (data, t) => {
   if (!data.studentId || !data.roundId) {
@@ -74,12 +170,20 @@ export const updateRoundResult = async (data, isNew = true) => {
    *    id
    *    judgeId,
    *    score
-   *    roundId
+   *    roundId,
+   *    studentId,
    * }
    */
 
   if (!data.id || !data.judgeId || !data.roundId || !data.score) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const competition = await competitionService.getCompetitionByRoundId(
+    data.roundId
+  );
+  if (competition.status !== STATUS_COMPETITION.STARTED) {
+    throw new HttpException(400, ErrorMessage.CANNOT_UPDATE_SCORE);
   }
 
   // check does round result is existing;
@@ -118,8 +222,8 @@ const getRoundResultByRound = async (roundId) => {
 
   const data = await db.RoundResult.findAll({
     where: { roundId },
-    nest: true,
     raw: false,
+    nest: true,
     attributes: { exclude: ["studentId"] },
     include: [
       {
@@ -135,14 +239,91 @@ const getRoundResultByRound = async (roundId) => {
 
 const updateScore = async (data) => {};
 
+// chua check timeStart
 const checkStudentPassRound = async (data) => {
   /**
    * data {
-   *
+   *    markPoint,
+   *    roundId
    * }
    */
+
+  if (!data.markPoint || !data.roundId) {
+    throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const roundResults = await getAllRoundResultByRoundId(data.roundId);
+  if (!roundResults.length) {
+    return [];
+  }
+
+  const resultPass = roundResults.filter(
+    (item) => item.score >= data.markPoint
+  );
+  return resultPass;
 };
-const confirmStudentPassRound = async (data) => {};
+
+const getAllRoundResultByRoundId = async (roundId) => {
+  const data = await db.RoundResult.findAll({
+    where: { roundId: roundId },
+  });
+
+  return data;
+};
+
+const confirmStudentPassRound = async (data) => {
+  /**
+   *  roundId: 2
+   *  studentIds: [1,2,3,4]
+   */
+  // check list student
+  // create new round result for student
+  if (!data.roundId || !data.studentIds) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      const roundResultsPromise = db.RoundResult.findAll({
+        where: { roundId: data.roundId },
+      });
+      const competitionPromise = roundService.getCompetitionByRoundId(
+        data.roundId
+      );
+
+      const [roundResult, competition] = await Promise.all([
+        roundResultsPromise,
+        competitionPromise,
+      ]);
+
+      const studentPass = data.studentIds.map((item) => {
+        const id = roundResult.find((result) => result.studentId == item);
+        if (!id) {
+          throw new HttpException(
+            400,
+            ErrorMessage.OBJECT_IS_NOT_EXISTING("Student")
+          );
+        }
+        return id;
+      });
+
+      const nextRound = await roundService.getNextRound(
+        competition.id,
+        data.roundId
+      );
+      if (!nextRound) {
+        // change status of competition
+        return "End";
+      }
+
+      return studentPass;
+    });
+    return result;
+  } catch (error) {
+    console.log("ERROR:: ", error);
+    throw new HttpException(400, error.message);
+  }
+};
 
 export default {
   createRoundResult,
@@ -153,4 +334,7 @@ export default {
   updateScore,
   checkStudentPassRound,
   confirmStudentPassRound,
+  createRoundResultMultiStudents,
+  tmpCreateRounds,
+  getAllRoundResultByRoundId,
 };
