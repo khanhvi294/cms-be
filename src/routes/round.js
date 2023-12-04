@@ -15,4 +15,9 @@ router.post("/", verifyEmployee, roundController.createRound);
 router.patch("/", verifyEmployee, roundController.updateRound);
 
 router.delete("/:id", verifyEmployee, roundController.deleteRound);
+router.get(
+  "/already/competition/:competitionId",
+  verifyEmployee,
+  roundController.getRoundAlreadyStartByCompetition
+);
 export default router;

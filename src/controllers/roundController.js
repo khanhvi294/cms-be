@@ -79,6 +79,17 @@ const getRoundById = async (req, res, next) => {
   }
 };
 
+const getRoundAlreadyStartByCompetition = async (req, res, next) => {
+  try {
+    const result = await roundService.getRoundAlreadyStartByCompetition(
+      req.params.competitionId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getRoundById,
   getAllRounds,
@@ -86,4 +97,5 @@ export default {
   getRoundsByCompetition,
   deleteRound,
   updateRound,
+  getRoundAlreadyStartByCompetition,
 };

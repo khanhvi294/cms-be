@@ -11,6 +11,7 @@ import competitionService from "./competitionService";
 import ErrorMessage from "../common/errorMessage";
 import judgeService from "./judgeService";
 import scoreService from "./scoreService";
+import { Op } from "sequelize";
 
 export const findExamFormByName = async (name) => {
   if (!name) {
@@ -343,12 +344,34 @@ export const getCompetitionByRoundId = async (roundId) => {
   return round?.competitionRound;
 };
 
+export const getRoundAlreadyStartByCompetition = async (competitionId) => {
+  if (!competitionId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const currentDate = new Date();
+
+  const data = await db.Round.findAll({
+    where: {
+      competitionId: competitionId,
+      timeStart: {
+        [Op.lte]: currentDate, // Filter rounds with timeStart less than or equal to the current date
+      },
+    },
+
+    order: [["createdAt", "DESC"]],
+  });
+
+  return resFindAll(data);
+};
+
 export default {
   getAllRounds,
   getFirstRound,
   getNextRound,
   createRound,
   getRoundsByCompetition,
+  getRoundAlreadyStartByCompetition,
   updateRound,
   deleteRound,
   getRoundById,
