@@ -1,6 +1,6 @@
 import courseController from "../controllers/courseController";
 import roundResultController from "../controllers/roundResultController";
-import { verifyEmployee, verifyTeacher } from "./verify";
+import { verifyEmployee, verifyEmployeeTeacher, verifyTeacher } from "./verify";
 
 import { Router } from "express";
 
@@ -20,7 +20,7 @@ router.post(
 
 router.get(
   "/round/:roundId",
-  verifyTeacher,
+  verifyEmployeeTeacher,
   roundResultController.getRoundResultByRound
 );
 
@@ -28,5 +28,9 @@ router.post("/tmp", roundResultController.tmpCreateRounds);
 router.get("/cur/:id", roundResultController.getCurrentRound);
 router.get("/first/:id", roundResultController.getFirstRound);
 router.get("/next/:id", roundResultController.getNextRound);
+router.get(
+  "/score/round/:roundId",
+  roundResultController.getRoundResultIncludeScoreByRound
+);
 
 export default router;

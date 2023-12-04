@@ -337,7 +337,6 @@ export const getCompetitionByRoundId = async (roundId) => {
       {
         model: db.Competition,
         as: "competitionRound",
-        attributes: ["id"],
       },
     ],
   });

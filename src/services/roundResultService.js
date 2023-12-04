@@ -2,6 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import competitionService from "./competitionService";
 import judgeService from "./judgeService";
 import roundService from "./roundService";
 import scoreService from "./scoreService";
@@ -175,16 +176,17 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
    * }
    */
 
-  if (!data.id  || !data.roundId || !data.score) {
+  if (!data.id || !data.roundId || !data.score) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const judge = await judgeService.findJudgeByEmployeeIdAndRoundId(employeeId, data.roundId)
+  const judge = await judgeService.findJudgeByEmployeeIdAndRoundId({
+    employeeId: employeeId,
+    roundId: data.roundId,
+  });
 
-  const competition = await competitionService.getCompetitionByRoundId(
-    data.roundId
-  );
-  if (competition.status !== STATUS_COMPETITION.STARTED) {
+  const competition = await roundService.getCompetitionByRoundId(data.roundId);
+  if (competition.status != STATUS_COMPETITION.STARTED) {
     throw new HttpException(400, ErrorMessage.CANNOT_UPDATE_SCORE);
   }
 
@@ -192,11 +194,13 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
   // update score -> create new score for this bgk
   await Promise.all([getRoundResult(data.id)]);
 
+  // console.log("competition status", data, judge.id);
+
   try {
     const result = await db.sequelize.transaction(async (t) => {
       // create score
       await scoreService.createScoreForOneStudent(
-        { roundResultId: data.id, judgeId: judge.judgeId, score: data.score },
+        { roundResultId: data.id, judgeId: judge.id, score: data.score },
         t
       );
       // update to round result
@@ -234,6 +238,35 @@ const getRoundResultByRound = async (roundId) => {
         attributes: ["fullName", "id"],
       },
     ],
+    order: [["createdAt", "DESC"]],
+  });
+  return resFindAll(data);
+};
+
+export const getRoundResultIncludeScoreByRound = async (roundId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const data = await db.RoundResult.findAll({
+    where: { roundId },
+    raw: false,
+    nest: true,
+    attributes: { exclude: ["studentId"] },
+    include: [
+      {
+        model: db.Students,
+        as: "roundResultStudent",
+        attributes: ["fullName", "id"],
+      },
+    ],
+    include: [
+      {
+        model: db.Score,
+        as: "roundResultScore",
+      },
+    ],
+
     order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
@@ -339,4 +372,5 @@ export default {
   createRoundResultMultiStudents,
   tmpCreateRounds,
   getAllRoundResultByRoundId,
+  getRoundResultIncludeScoreByRound,
 };

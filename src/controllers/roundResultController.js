@@ -42,7 +42,11 @@ const getNextRound = async (req, res, next) => {
 const updateRoundResult = async (req, res, next) => {
   try {
     const employee = await authService.getEmployeeByAccount(req?.user.id);
-    const result = await roundResultService.updateRoundResult(employee?.accountEmployee.id, req.body, true);
+    const result = await roundResultService.updateRoundResult(
+      employee?.accountEmployee.id,
+      req.body,
+      true
+    );
     successResponse(STATUS_CODE.OK, result, res);
   } catch (error) {
     next(error);
@@ -87,6 +91,17 @@ const confirmStudentPassRound = async (req, res, next) => {
   }
 };
 
+const getRoundResultIncludeScoreByRound = async (req, res, next) => {
+  try {
+    const result = await roundResultService.getRoundResultIncludeScoreByRound(
+      req.params.roundId
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getCurrentRound,
   updateRoundResult,
@@ -96,4 +111,5 @@ export default {
   confirmStudentPassRound,
   getFirstRound,
   getNextRound,
+  getRoundResultIncludeScoreByRound,
 };

@@ -47,7 +47,28 @@ const checkScoreIsExists = async (data) => {
   return false;
 };
 
+const getScoreByRoundResult = async (roundResultId) => {
+  if (!roundResultId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+
+  const scores = await db.Score.findAll({
+    where: { roundResultId },
+    // nest: true,
+    // raw: false,
+
+    // include: [
+    //   {
+    //     model: db.Competition,
+    //     as: "competitionRound",
+    //   },
+    // ],
+  });
+  return resFindAll(scores);
+};
+
 export default {
   createScoreForOneStudent,
   checkScoreIsExists,
+  getScoreByRoundResult,
 };
