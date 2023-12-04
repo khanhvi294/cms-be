@@ -254,6 +254,12 @@ const checkStudentPassRound = async (data) => {
     throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
   }
 
+  // check coi phai vong cuoi cung ko
+  const nextRound = await roundService.getNextRoundWithoutComeptitionId(data.roundId);
+  if(!nextRound) {
+    throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND)
+  }
+
   const roundResults = await getAllRoundResultByRoundId(data.roundId);
   if (!roundResults.length) {
     return [];
@@ -314,11 +320,13 @@ const confirmStudentPassRound = async (data) => {
         data.roundId
       );
       if (!nextRound) {
-        // change status of competition
-        return "End";
+        throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND)
       }
 
-      return studentPass;
+      return await createRoundResultMultiStudents({
+        roundId: nextRound.id,
+        studentIds: studentPass.map(item => item.studentId),
+      });
     });
     return result;
   } catch (error) {
