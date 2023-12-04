@@ -85,6 +85,15 @@ const updateCourse = async (id, course) => {
   if (!!(await checkNameUpdate({ ...course, id }))) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_EXISTING("Name"));
   }
+  const classes = await classService.getClassByCourseId(id);
+  if (classes.length > 0) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Can't update course because it's already have class  "
+      )
+    );
+  }
   const upCourse = await db.Course.update(course, {
     where: { id: id },
   }).then(async (data) => {

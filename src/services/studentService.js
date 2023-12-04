@@ -280,7 +280,7 @@ const deleteStudent = async (id) => {
   if (classStudent?.data.length > 0) {
     throw new HttpException(
       400,
-      ErrorMessage.CUSTOM("Student already add to class. Can remove it")
+      ErrorMessage.CUSTOM("Student already add to class. Can't remove it")
     );
   }
 

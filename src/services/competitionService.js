@@ -65,14 +65,8 @@ export const createCompetition = async (employeeId, data) => {
     }
 
     return result;
-    // If the execution reaches this line, the transaction has been committed successfully
-    // `result` is whatever was returned from the transaction callback (the `user`, in this case)
   } catch (error) {
-    console.log("ERROR:: ", error);
     throw new HttpException(400, error);
-
-    // If the execution reaches this line, an error occurred.
-    // The transaction has already been rolled back automatically by Sequelize!
   }
 };
 
@@ -225,13 +219,6 @@ const updateCompetition = async (data) => {
 const deleteCompetition = async (id) => {};
 
 const addClassJoin = async (data) => {
-  /**
-   * data {
-   *  id,
-   *  competitionClass: []
-   * }
-   */
-
   if (!data?.competitionClass || !data?.competitionClass?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }

@@ -70,7 +70,17 @@ const updateRound = async (req, res, next) => {
   }
 };
 
+const getRoundById = async (req, res, next) => {
+  try {
+    const result = await roundService.getRoundById(req.params.id);
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
+  getRoundById,
   getAllRounds,
   createRound,
   getRoundsByCompetition,

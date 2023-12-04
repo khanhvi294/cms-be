@@ -118,8 +118,8 @@ const getRoundResultByRound = async (roundId) => {
 
   const data = await db.RoundResult.findAll({
     where: { roundId },
-    raw: true,
     nest: true,
+    raw: false,
     attributes: { exclude: ["studentId"] },
     include: [
       {
