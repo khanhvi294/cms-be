@@ -219,7 +219,7 @@ const updateEmployee = async (employeeId, data) => {
   await Promise.all(checkPromise);
 
   try {
-    await db.sequelize.transaction(async (t) => {
+    const employee= await db.sequelize.transaction(async (t) => {
       await db.Employee.update(
         { ...data },
         { where: { id: employeeId }, transaction: t }
@@ -249,9 +249,12 @@ const updateEmployee = async (employeeId, data) => {
           { where: { id: employee.accountEmployee.id }, transaction: t }
         );
       }
-    });
 
-    return await findEmployeeById(employeeId);
+      return employee;
+    });
+    return await authService.getEmployeeByAccount(employee.accountEmployee.id);
+
+
   } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error?.message || error);
