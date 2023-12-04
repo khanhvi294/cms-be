@@ -2,6 +2,7 @@ import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
 import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import judgeService from "./judgeService";
 import roundService from "./roundService";
 import scoreService from "./scoreService";
 
@@ -164,20 +165,21 @@ const getRoundResult = async (id) => {
   return result;
 };
 
-export const updateRoundResult = async (data, isNew = true) => {
+export const updateRoundResult = async (employeeId, data, isNew = true) => {
   /**
    *  data {
    *    id
-   *    judgeId,
    *    score
    *    roundId,
    *    studentId,
    * }
    */
 
-  if (!data.id || !data.judgeId || !data.roundId || !data.score) {
+  if (!data.id  || !data.roundId || !data.score) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
+
+  const judge = await judgeService.findJudgeByEmployeeIdAndRoundId(employeeId, data.roundId)
 
   const competition = await competitionService.getCompetitionByRoundId(
     data.roundId
@@ -194,7 +196,7 @@ export const updateRoundResult = async (data, isNew = true) => {
     const result = await db.sequelize.transaction(async (t) => {
       // create score
       await scoreService.createScoreForOneStudent(
-        { roundResultId: data.id, judgeId: data.judgeId, score: data.score },
+        { roundResultId: data.id, judgeId: judge.judgeId, score: data.score },
         t
       );
       // update to round result
