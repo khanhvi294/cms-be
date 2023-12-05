@@ -78,15 +78,24 @@ const getScoreByRoundResult = async (roundResultId) => {
 
   const scores = await db.Score.findAll({
     where: { roundResultId },
-    // nest: true,
-    // raw: false,
+    nest: true,
+    raw: false,
 
-    // include: [
-    //   {
-    //     model: db.Competition,
-    //     as: "competitionRound",
-    //   },
-    // ],
+    include: [
+      {
+        model: db.Judge,
+        as: "scoreJudge",
+        nest: true,
+        raw: false,
+
+        include: [
+          {
+            model: db.Employee,
+            as: "employeeJudge",
+          },
+        ],
+      },
+    ],
   });
   return resFindAll(scores);
 };
