@@ -141,6 +141,7 @@ export const createStudent = async (data) => {
 
 export const getCompetitionsForStudent = async (studentId) => {
   // Tìm học viên với studentId tương ứng
+  console.log(studentId);
   const student = await db.Students.findOne({
     nest: true,
     raw: false,
@@ -176,7 +177,7 @@ export const getCompetitionsForStudent = async (studentId) => {
       },
     ],
   });
-
+  console.log("ddddddd", student);
   if (!student) {
     throw new HttpException(
       400,
@@ -225,7 +226,7 @@ export const updateStudent = async (studentId, data) => {
 
   try {
     // Start a new transaction
-   const student = await db.sequelize.transaction(async (t) => {
+    const student = await db.sequelize.transaction(async (t) => {
       // First, update the Student
       await db.Students.update(
         { ...data },
@@ -261,7 +262,6 @@ export const updateStudent = async (studentId, data) => {
       return student;
     });
     return await authService.getStudentByAccount(student.accountStudent.id);
-
   } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error?.message || error);

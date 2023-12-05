@@ -64,6 +64,20 @@ const getRoundResultByRound = async (req, res, next) => {
   }
 };
 
+const getRoundResultByRoundForTeacher = async (req, res, next) => {
+  try {
+    const employee = await authService.getEmployeeByAccount(req?.user.id);
+
+    const result = await roundResultService.getRoundResultByRoundForTeacher(
+      req.params.roundId,
+      employee?.accountEmployee.id
+    );
+    successResponse(STATUS_CODE.OK, result, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const tmpCreateRounds = async (req, res, next) => {
   try {
     const result = await roundResultService.tmpCreateRounds(req.body);
@@ -112,4 +126,5 @@ export default {
   getFirstRound,
   getNextRound,
   getRoundResultIncludeScoreByRound,
+  getRoundResultByRoundForTeacher,
 };

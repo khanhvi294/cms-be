@@ -23,6 +23,11 @@ router.get(
   verifyEmployeeTeacher,
   roundResultController.getRoundResultByRound
 );
+router.get(
+  "/teacher/round/:roundId",
+  verifyEmployeeTeacher,
+  roundResultController.getRoundResultByRoundForTeacher
+);
 
 router.post("/tmp", roundResultController.tmpCreateRounds);
 router.get("/cur/:id", roundResultController.getCurrentRound);

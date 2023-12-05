@@ -91,9 +91,9 @@ export const findJudgeByEmployeeIdAndRoundId = async (data) => {
     where: { roundId: data.roundId, employeeId: data.employeeId },
   });
 
-  if(!judge){
-    throw new HttpException(422, ErrorMessage.OBJECT_IS_NOT_EXISTING("Judege"))
-  }
+  // if(!judge){
+  //   throw new HttpException(422, ErrorMessage.OBJECT_IS_NOT_EXISTING("Judege"))
+  // }
   return judge;
 };
 
@@ -238,8 +238,6 @@ export const deleteJudgeInRound = async (teacherId, roundId) => {
 //     roundId: roundId
 //   })
 
-  
-
 //   return judge
 
 // }
@@ -252,5 +250,6 @@ export default {
   findJudgeById,
   getJudgeById,
   getAllJudgeIncludeEmployee,
-  getAllRoundByJudge,findJudgeByEmployeeIdAndRoundId
+  getAllRoundByJudge,
+  findJudgeByEmployeeIdAndRoundId,
 };

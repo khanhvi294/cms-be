@@ -113,7 +113,7 @@ const createRoundResult = async (data, t) => {
     {
       studentId: data.studentId,
       roundId: data.roundId,
-      score: 0,
+      score: null,
     },
     { transaction: t }
   );
@@ -187,7 +187,12 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
 
   const competition = await roundService.getCompetitionByRoundId(data.roundId);
   if (competition.status != STATUS_COMPETITION.STARTED) {
-    throw new HttpException(400, ErrorMessage.CANNOT_UPDATE_SCORE);
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Can't input score because competition is not started"
+      )
+    );
   }
 
   // check does round result is existing;
@@ -268,6 +273,46 @@ const getRoundResultByRound = async (roundId) => {
     order: [["createdAt", "DESC"]],
   });
   return resFindAll(data);
+};
+
+const getRoundResultByRoundForTeacher = async (roundId, teacherId) => {
+  if (!roundId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  if (!teacherId) {
+    throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
+  }
+  const roundResults = await db.RoundResult.findAll({
+    where: { roundId },
+    raw: false,
+    nest: true,
+    include: [
+      {
+        model: db.Students,
+        as: "roundResultStudent",
+        attributes: ["id", "fullName"],
+      },
+      {
+        model: db.Score,
+        as: "roundResultScore",
+        attributes: ["score"],
+        raw: false,
+        nest: true,
+        include: [
+          {
+            model: db.Judge,
+            as: "scoreJudge",
+            attributes: [], // Chỉ lấy employeeId
+            where: {
+              employeeId: teacherId, // Lọc theo employeeId trong bảng Judge
+              roundId, // Lọc theo roundId trong bảng Judge
+            },
+          },
+        ],
+      },
+    ],
+  });
+  return resFindAll(roundResults);
 };
 
 export const getRoundResultIncludeScoreByRound = async (roundId) => {
@@ -403,6 +448,7 @@ export default {
   findRoundResult,
   getRoundResult,
   getRoundResultByRound,
+  getRoundResultByRoundForTeacher,
   // updateScore,
   checkStudentPassRound,
   confirmStudentPassRound,

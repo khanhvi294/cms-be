@@ -173,17 +173,17 @@ export const updateStatusCompetition = async (id, statusId) => {
 
 const updateCompetition = async (data) => {
   const competition = await getCompetitionById(data.id);
-  if (new Date(competition.timeStart) <= new Date()) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Competition is already started,can't update")
-    );
-  }
+  // if (new Date(competition.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Competition is already started,can't update")
+  //   );
+  // }
 
   if (new Date() >= new Date(data.timeStart)) {
     throw new HttpException(
       400,
-      ErrorMessage.CUSTOM("Time start round must be greater than today")
+      ErrorMessage.CUSTOM("Time start competition must be greater than today")
     );
   }
   if (new Date(data.timeStart) > new Date(data.timeEnd)) {

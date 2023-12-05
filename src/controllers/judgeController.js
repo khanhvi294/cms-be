@@ -40,6 +40,7 @@ export const createJudgesForRound = async (req, res, next) => {
    * }
    */
   try {
+    console.log("aaaaa", req.body);
     const result = await judgeService.createJudgesForRound(req.body);
     successResponse(STATUS_CODE.CREATED, result, res);
   } catch (error) {
