@@ -11,6 +11,7 @@ import judgeRoutes from "./judge";
 import registerRoutes from "./register";
 import scoreRoutes from "./score";
 import roundResultRoutes from "./roundResult";
+import testRoutes from "./test";
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ const initWebRoutes = (app) => {
   router.use("/registers", registerRoutes);
   router.use("/scores", scoreRoutes);
   router.use("/roundresults", roundResultRoutes);
+  router.use("/test", testRoutes);
 
   return app.use("/api", router);
 };

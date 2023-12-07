@@ -71,6 +71,8 @@ export const registerCompetition = async (data) => {
     );
   }
 
+  // check toi thieu 2 ngay
+
   if (registerComFind) {
     throw new HttpException(
       400,

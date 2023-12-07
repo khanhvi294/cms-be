@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const ROLES = {
   TEACHER: 2,
   STUDENT: 0,
@@ -23,6 +25,8 @@ export const STATUS_COMPETIION_MESSAGE ={
   [STATUS_COMPETITION.CANCEL]: 'canceled',
 
 }
+
+export const DISTANCE_DATE_CHANGE_STATUS = 2;
 
 export const checkCompetitionStatus = (statusId) => {
   return Object.values(STATUS_COMPETITION).includes(statusId);
@@ -103,4 +107,14 @@ export function findMinDateCondition(arr, condition) {
     return arrCon[0];
   }
   return findMinDate(arrCon);
+}
+
+
+export const calculateDistanceFromDate = (from, to) => {
+  let now = moment(from); //todays date
+  let end = moment(to); // another date
+  const days = end.diff(now, 'days');
+  // let duration = moment.duration(now.diff(end, 'days'));
+  // let days = duration.asDays();
+  return days;
 }

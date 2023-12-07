@@ -4,6 +4,7 @@ import connection from "./config/connectDB.js";
 import handleError from "./middlewares/error.js";
 import cors from "cors";
 import seedsData from "./seeders";
+import taskSchedule from "./cron/job.js";
 require("dotenv").config(); // giup chayj dc dong process.env
 
 let app = express();
@@ -21,6 +22,9 @@ app.get("/", (req, res) => {
 });
 
 app.use(handleError);
+
+// cron job
+taskSchedule();
 
 seedsData();
 
