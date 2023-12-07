@@ -1,6 +1,7 @@
 import HttpException from "../errors/httpException";
 import db from "../models";
 import {
+  STATUS_COMPETIION_MESSAGE,
   STATUS_COMPETITION,
   findMinDate,
   findMinDateCondition,
@@ -40,7 +41,7 @@ export const getRoundsByCompetition = async (competitionId) => {
   }
   const data = await db.Round.findAll({
     where: { competitionId: competitionId },
-    raw: true,
+    raw: false,
     nest: true,
     attributes: { exclude: ["examFormId"] },
     include: [
@@ -81,10 +82,9 @@ export const createRound = async (data) => {
 
   // check status competition cannot be canceled or ended
   if (
-    competition.status === STATUS_COMPETITION.CANCEL ||
-    competition.status === STATUS_COMPETITION.ENDED
+    competition.status !== STATUS_COMPETITION.CREATED
   ) {
-    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_ADD_ROUND);
+    throw new HttpException(400, ErrorMessage.CUSTOM(`The competition is ${STATUS_COMPETIION_MESSAGE[competition.status]}, so you cannot add new round`));
   }
 
   // check if competition is max round
@@ -174,10 +174,9 @@ export const updateRound = async (round) => {
 
   // check status competition cannot be canceled or ended
   if (
-    competition.status === STATUS_COMPETITION.CANCEL ||
-    competition.status === STATUS_COMPETITION.ENDED
+    competition.status !== STATUS_COMPETITION.CREATED
   ) {
-    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE_ROUND);
+    throw new HttpException(400, ErrorMessage.CUSTOM(`The competition is ${STATUS_COMPETIION_MESSAGE[competition.status]}, so you cannot update round`));
   }
 
   if (new Date(haveRound.timeStart) <= new Date()) {
@@ -224,6 +223,8 @@ export const updateRound = async (round) => {
 
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
+
+
   if (new Date(haveRound.timeStart) <= new Date()) {
     throw new HttpException(
       400,
@@ -233,6 +234,18 @@ export const deleteRound = async (id) => {
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
+
+  const competition = await getCompetitionByRoundId(id);
+  if(!competition) {
+    throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Competition"));
+  }
+
+  if (
+    competition.status !== STATUS_COMPETITION.CREATED
+  ) {
+    throw new HttpException(400, ErrorMessage.CUSTOM(`The competition is ${STATUS_COMPETIION_MESSAGE[competition.status]}, so you cannot delete round`));
+  }
+
   const judges = await judgeService.getAllJudgeByRound(id);
   if (judges.data.length > 0) {
     throw new HttpException(

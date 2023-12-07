@@ -16,6 +16,14 @@ export const STATUS_COMPETITION = {
   CANCEL: 3,
 };
 
+export const STATUS_COMPETIION_MESSAGE ={
+  [STATUS_COMPETITION.CREATED]: 'created',
+  [STATUS_COMPETITION.STARTED]: 'started',
+  [STATUS_COMPETITION.ENDED]: 'ended',
+  [STATUS_COMPETITION.CANCEL]: 'canceled',
+
+}
+
 export const checkCompetitionStatus = (statusId) => {
   return Object.values(STATUS_COMPETITION).includes(statusId);
 };
