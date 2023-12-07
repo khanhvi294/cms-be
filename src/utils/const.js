@@ -27,6 +27,7 @@ export const STATUS_COMPETIION_MESSAGE ={
 }
 
 export const DISTANCE_DATE_CHANGE_STATUS = 2;
+export const CONDITION_DATE_CREATE_COMPETITION = 7;
 
 export const checkCompetitionStatus = (statusId) => {
   return Object.values(STATUS_COMPETITION).includes(statusId);

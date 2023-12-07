@@ -1,7 +1,7 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
 import db from "../models";
-import { STATUS_COMPETITION, resFindAll } from "../utils/const";
+import { CONDITION_DATE_CREATE_COMPETITION, STATUS_COMPETITION, calculateDistanceFromDate, resFindAll } from "../utils/const";
 import classService from "./classService";
 import competitionClassService from "./competitionClassService";
 import { sequelize } from "../config/connectDB";
@@ -22,6 +22,14 @@ export const createCompetition = async (employeeId, data) => {
     throw new HttpException(
       422,
       ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
+    );
+  }
+
+  const cond = calculateDistanceFromDate(new Date(), data.timeStart);
+  if(cond < CONDITION_DATE_CREATE_COMPETITION){
+    throw new HttpException(
+      422,
+      ErrorMessage.CUSTOM(`the time start must be equal or greater 7 days from ${new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}`)
     );
   }
 
@@ -66,7 +74,7 @@ export const createCompetition = async (employeeId, data) => {
 
     return result;
   } catch (error) {
-    throw new HttpException(400, error);
+    throw new HttpException(400, error?.message);
   }
 };
 
