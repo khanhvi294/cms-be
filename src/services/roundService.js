@@ -66,6 +66,52 @@ export const getRoundsByExamForm = async (examFormId) => {
   return resFindAll(data);
 };
 
+export const checkTimeStartRoundOfCompetition = async (arrRounds, round) => {
+  if(!round){
+    return false;
+  }
+
+  if(!arrRounds || !arrRounds.length){
+    return true;
+  }
+
+  if(arrRounds.length == 1 && arrRounds[0].id == round.id ){
+    return true;
+  }
+
+  /// update
+  if(arrRounds.length){
+    let position = arrRounds.findIndex(item => item.id === round.id);
+    if(position === -1){
+      throw new HttpException(400, ErrorMessage.CUSTOM("Round not found"));
+    }
+    
+    //0
+    if(position === 0){
+      if(new Date(round.timeStart) >= new Date(arrRounds[1].timeStart)){
+        throw new HttpException(400, ErrorMessage.CUSTOM(`Time start this round must be before time of round with id: ${arrRounds[1].id} with time ${(arrRounds[1].timeStart)}`))
+      }
+    }
+    // length -1
+    else if(position === (arrRounds.length -1)){
+      if(new Date(round.timeStart) <= new Date(arrRounds[position-1].timeStart)){
+        throw new HttpException(400, ErrorMessage.CUSTOM(`Time start this round must be after time of round with id: ${arrRounds[position-1].id} with time ${(arrRounds[position-1].timeStart)}`))
+      }
+    }
+    // 0 < old < leng -1
+    else {
+          if(new Date(round.timeStart) >= new Date(arrRounds[position+1].timeStart)){
+            throw new HttpException(400, ErrorMessage.CUSTOM(`Time start this round must be before time of round with id: ${arrRounds[position+1].id} with time ${(arrRounds[position+1].timeStart)}`))
+          }
+          if(new Date(round.timeStart) <= new Date(arrRounds[position-1].timeStart)){
+            throw new HttpException(400, ErrorMessage.CUSTOM(`Time start this round must be after time of round with id: ${arrRounds[position-1].id} with time ${(arrRounds[position-1].timeStart)}`))
+          }
+    }
+  }
+
+  return true;
+}
+
 export const createRound = async (data) => {
   // find competition
   const competitionPromises = competitionService.getCompetitionIncludeRounds(
@@ -122,6 +168,15 @@ export const createRound = async (data) => {
       400,
       ErrorMessage.CUSTOM("Time start round must be greater than today")
     );
+  }
+
+  if(competition?.competitionRound.length){
+    if(new Date(data.timeStart) <= new Date(competition.competitionRound[competition.competitionRound.length -1].timeStart)){
+      throw new HttpException(
+        400,
+        ErrorMessage.CUSTOM(`Time start round must be greater than round id: ${competition.competitionRound[competition.competitionRound.length -1].id} with time: ${(competition.competitionRound[competition.competitionRound.length -1].timeStart)}`)
+      );
+    }
   }
 
   // round tu dong nhap
@@ -210,6 +265,8 @@ export const updateRound = async (round) => {
       ErrorMessage.CUSTOM("Time start round must be greater than today")
     );
   }
+
+  await checkTimeStartRoundOfCompetition(competition?.competitionRound || [], round);
 
   const result = await db.Round.update(
     { ...round },
