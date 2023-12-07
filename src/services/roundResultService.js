@@ -167,7 +167,7 @@ const getRoundResult = async (id) => {
   return result;
 };
 
-export const updateRoundResult = async (employeeId, data, isNew = true) => {
+export const updateRoundResult = async (employeeId, data) => {
   /**
    *  data {
    *    id
@@ -185,6 +185,10 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
     roundId: data.roundId,
   });
 
+  if(!judge) {
+    throw new HttpException(400, ErrorMessage.CUSTOM("You doesnot have permission to update score"))
+  }
+
   const competition = await roundService.getCompetitionByRoundId(data.roundId);
   if (competition.status != STATUS_COMPETITION.STARTED) {
     throw new HttpException(
@@ -195,9 +199,19 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
     );
   }
 
+  let isNew = true;
+  const hasScore = await db.Score.findOne({ 
+    where: {judgeId: judge.id, roundResultId: data.id}
+  })
+
+  if(hasScore) {
+    isNew = false;
+  }
+
   // check does round result is existing;
   // update score -> create new score for this bgk
-  await Promise.all([getRoundResult(data.id)]);
+  // const await Promise.all([getRoundResult(data.id)]);
+  const roundResultStudent = await getRoundResult(data.id);
 
   // update score ->
   if (!isNew) {
@@ -235,18 +249,29 @@ export const updateRoundResult = async (employeeId, data, isNew = true) => {
         { roundResultId: data.id, judgeId: judge.id, score: data.score },
         t
       );
+      let roundResultUpdate = undefined;
       // update to round result
-      const roundResultUpdate = await db.RoundResult.increment(
-        {
-          score: data.score,
-        },
-        { where: { id: data.id }, transaction: t }
-      ).then(async () => {
-        return await findRoundResult(data.id);
-      });
-      return roundResultUpdate;
+        if(!roundResultStudent.score){
+          roundResultUpdate = await db.RoundResult.update(
+            {
+              score: data.score,
+            },
+            { where: { id: data.id }, transaction: t }
+          )
+        }else {
+          roundResultUpdate = await db.RoundResult.increment(
+            {
+              score: data.score,
+            },
+            { where: { id: data.id }, transaction: t }
+          )
+        }
+
+        if(roundResultStudent){
+          await Promise.all([roundResultStudent])
+        }
     });
-    return result;
+    return await findRoundResult(data.id);
   } catch (error) {
     console.log("ERROR:: ", error);
     throw new HttpException(400, error.message);
