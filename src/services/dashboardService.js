@@ -162,7 +162,17 @@ const filterEmployeeByDate = async (from = '2023-01-01', to = new Date(), role =
 
 const filterClassByDate = async (from = '2023-01-01', to = new Date()) => {
   return await filterModelByDate("Class", from, to, {},{
-    
+    nest: true,
+    raw: false,
+    include: [{
+      model: db.Course,
+      as: "courseClass",
+      attributes: [
+        "id",
+        "name",
+      ],
+      
+    }],
   })
 }
 
