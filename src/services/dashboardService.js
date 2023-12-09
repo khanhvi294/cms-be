@@ -140,10 +140,53 @@ const filterStudentByDate = async (from = '2023-01-01', to = new Date()) => {
   })
 }
 
+const filterEmployeeByDate = async (from = '2023-01-01', to = new Date(), role = ROLES.EMPLOYEE) => {
+  return await filterModelByDate("Employee", from, to, {},{
+    nest: true,
+    raw: false,
+    include: [{
+      model: db.Account,
+      as: "accountEmployee",
+      attributes: [
+        "id",
+        "email",
+      ],
+      where: {
+        role: role
+      }
+    }],
+    attributes: { exclude: ["accountId", ] },
+
+  })
+}
+
+const filterClassByDate = async (from = '2023-01-01', to = new Date()) => {
+  return await filterModelByDate("Class", from, to, {},{
+    
+  })
+}
+
+const filterCourseByDate = async (from = '2023-01-01', to = new Date()) => {
+  return await filterModelByDate("Course", from, to, {},{
+    
+  })
+}
+
+const filterCompetitionByDate = async (from = '2023-01-01', to = new Date()) => {
+  return await filterModelByDate("Competition", from, to, {},{
+    
+  })
+}
+
+
 export default {
     getOverviewModel,
     getOerviewAll,filterModelByDate,
-    filterStudentByDate
+    filterStudentByDate,
+    filterEmployeeByDate,
+    filterClassByDate,
+    filterCompetitionByDate,
+    filterCourseByDate
 }
 
 

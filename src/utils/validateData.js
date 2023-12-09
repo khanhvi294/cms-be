@@ -20,6 +20,14 @@ export const validateData = async (func, data) => {
   return false;
 };
 
+export const checkStartAndEnd =(from,to) => {
+  const dateFrom = new Date(from);
+  const dateTo = new Date(to);
+  if (dateFrom.getTime() > dateTo.getTime()) {
+    throw new HttpException(422, 'Date start must be less than or equal to date end');
+  }
+}
+
 export const formatInfoProfile = (data) => {
   const dataReturn = { ...data };
 
