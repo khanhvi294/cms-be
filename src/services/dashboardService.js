@@ -110,20 +110,40 @@ export const filterModelByDate = async (model="Students",from = '2023-01-01', to
 
     const result = await db[model].findAll({
         where: {
+          createdAt: {
             [Op.gte]: from,
             [Op.lte]: to,
-            ...condition
         },
-         order: [["createdAt", "DESC"]],
+        ...condition
+        },
+        order: [["createdAt", "DESC"]],
         ...options
     })
 
     return resFindAll(result)
 }
 
+const filterStudentByDate = async (from = '2023-01-01', to = new Date()) => {
+  return await filterModelByDate("Students", from, to, {},{
+    nest: true,
+    raw: false,
+    include: [{
+      model: db.Account,
+      as: "accountStudent",
+      attributes: [
+        "id",
+        "email",
+      ],
+    }],
+    attributes: { exclude: ["accountId", ] },
+
+  })
+}
+
 export default {
     getOverviewModel,
-    getOerviewAll,filterModelByDate
+    getOerviewAll,filterModelByDate,
+    filterStudentByDate
 }
 
 

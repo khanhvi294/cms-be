@@ -1,7 +1,10 @@
 import dashboardService from "../services/dashboardService";
+import { validateData } from "../utils/validateData";
+import dashboardValidation from "../validations/dashboardValidation";
 import {
     successResponse,
     STATUS_CODE,
+    errorValidateResponse,
   } from "./baseController";
 
 const getOverviewStudent = async (req, res, next) => {
@@ -22,8 +25,22 @@ const getOverviewStudent = async (req, res, next) => {
     }
   };
 
+  const filterStudentByDate = async (req, res, next) => {
+    try {
+      const err = await validateData(dashboardValidation.filter, req.query);
+      if (err) {
+        return errorValidateResponse(422, err, res);
+      }
+      const result = await dashboardService.filterStudentByDate(req.query.from, req.query.to);
+      successResponse(STATUS_CODE.OK, result, res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
   export default {
     getOverviewStudent,
-    getOverviewAll
+    getOverviewAll,
+    filterStudentByDate
   };
