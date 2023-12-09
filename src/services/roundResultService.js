@@ -310,6 +310,29 @@ const getRoundResultByRound = async (roundId) => {
 				as: 'roundResultStudent',
 				attributes: ['fullName', 'id'],
 			},
+			{
+				model: db.Score,
+				as: 'roundResultScore',
+				attributes: ['score'],
+				raw: false,
+				nest: true,
+				include: [
+					{
+						model: db.Judge,
+						as: 'scoreJudge',
+						attributes: ['employeeId', 'id'],
+						raw: false,
+						nest: true,
+						include: [
+							{
+								model: db.Employee,
+								as: 'employeeJudge',
+								attributes: ['fullName'],
+							},
+						],
+					},
+				],
+			},
 		],
 		order: [['createdAt', 'DESC']],
 	});
@@ -446,7 +469,7 @@ const checkStudentPassRound = async (data) => {
 	}
 
 	// check coi phai vong cuoi cung ko
-	const nextRound = await roundService.getNextRoundWithoutComeptitionId(
+	const nextRound = await roundService.getNextRoundWithoutCompetitionId(
 		data.roundId,
 	);
 	if (!nextRound) {
