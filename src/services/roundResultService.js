@@ -461,12 +461,22 @@ const checkStudentPassRound = async (data) => {
 	const resultPass = roundResults.filter(
 		(item) => item.score >= data.markPoint,
 	);
+
 	return resultPass;
 };
 
 const getAllRoundResultByRoundId = async (roundId) => {
 	const data = await db.RoundResult.findAll({
 		where: { roundId: roundId },
+		nest: true,
+		raw: false,
+		include: [
+			{
+				model: db.Students,
+				as: 'roundResultStudent',
+				attributes: ['fullName', 'id'],
+			},
+		],
 	});
 
 	return data;
@@ -515,10 +525,11 @@ const confirmStudentPassRound = async (data) => {
 				data.roundId,
 			);
 			if (!nextRound) {
-				throw new HttpException(
-					400,
-					ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND,
-				);
+				return {
+					isLastRound: true,
+					roundId: data.roundId,
+					message: 'This is last round',
+				};
 			}
 
 			return await createRoundResultMultiStudents({
