@@ -12,6 +12,7 @@ import registerRoutes from "./register";
 import scoreRoutes from "./score";
 import roundResultRoutes from "./roundResult";
 import testRoutes from "./test";
+import dashboardRoutes from './dashboard'
 
 const router = express.Router();
 
@@ -32,6 +33,7 @@ const initWebRoutes = (app) => {
   router.use("/scores", scoreRoutes);
   router.use("/roundresults", roundResultRoutes);
   router.use("/test", testRoutes);
+  router.use("/dashboard", dashboardRoutes);
 
   return app.use("/api", router);
 };
