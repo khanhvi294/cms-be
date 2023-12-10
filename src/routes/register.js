@@ -1,25 +1,25 @@
-import registerComController from "../controllers/registerComController";
-import { verifyEmployee, verifyStudent } from "./verify";
+import { verifyEmployee, verifyRole, verifyStudent } from './verify';
 
-import { Router } from "express";
+import { Router } from 'express';
+import registerComController from '../controllers/registerComController';
 
 const router = Router();
 
 router.get(
-  "/all/student",
-  verifyStudent,
-  registerComController.getAllCompetitionByStudentId
+	'/all/student',
+	verifyStudent,
+	registerComController.getAllCompetitionByStudentId,
 );
-router.post("/", verifyStudent, registerComController.registerCompetition);
+router.post('/', verifyStudent, registerComController.registerCompetition);
 router.delete(
-  "/:competitionId",
-  verifyStudent,
-  registerComController.unRegisterCompetition
+	'/:competitionId',
+	verifyStudent,
+	registerComController.unRegisterCompetition,
 );
 router.get(
-  "/competition/:competitionId",
-  verifyEmployee,
-  registerComController.getRegisterByCompetition
+	'/competition/:competitionId',
+	verifyRole,
+	registerComController.getRegisterByCompetition,
 );
 
 export default router;

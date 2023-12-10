@@ -51,6 +51,32 @@ export const getRoundsByCompetition = async (competitionId) => {
 				as: 'examFormRound',
 				attributes: ['name', 'id'],
 			},
+			{
+				model: db.Judge,
+				as: 'roundJudge',
+				nest: true,
+				raw: false,
+				include: [
+					{
+						model: db.Employee,
+						as: 'employeeJudge',
+						attributes: ['id', 'fullName'],
+					},
+				],
+			},
+			{
+				model: db.RoundResult,
+				as: 'roundResultRound',
+				nest: true,
+				raw: false,
+				include: [
+					{
+						model: db.Students,
+						as: 'roundResultStudent',
+						attributes: ['id', 'fullName'],
+					},
+				],
+			},
 		],
 		order: [['createdAt', 'DESC']],
 	});

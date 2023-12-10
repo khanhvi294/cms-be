@@ -1,10 +1,23 @@
 import ErrorMessage from "../common/errorMessage";
 import HttpException from "../errors/httpException";
-import db from "../models";
-import { ROLES } from "../utils/const";
-import jwtUtil from "../utils/jwt";
-import passwordUtil from "../utils/password";
 import { Op } from "sequelize";
+import { ROLES } from "../utils/const";
+import db from "../models";
+import jwtUtil from "../utils/jwt";
+import { mailService } from "./mailService";
+import passwordUtil from "../utils/password";
+
+// lazy for update db column for reset code, so we use this
+const resetCodes = {};
+// ex: resetCodes[email] = {code: '123456', expiredAt: 1234567890}
+// ts ver
+// type ResetCode = {
+//   code: string,
+//   expiredAt: number,
+// }
+// type ResetCodes = {
+//   [key: string]: ResetCode,
+// }
 
 export const authAccount = async (email, password) => {
   let account = await db.Account.findOne({ where: { email } });
@@ -192,4 +205,6 @@ export default {
   deleteAccount,
   checkEmailIsExistsExceptId,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };
