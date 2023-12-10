@@ -9,14 +9,14 @@ import { Op } from "sequelize";
 export const authAccount = async (email, password) => {
   let account = await db.Account.findOne({ where: { email } });
   if (!account) {
-    throw new HttpException(404, ErrorMessage.LOGIN_FAILED);
+    throw new HttpException(400, ErrorMessage.LOGIN_FAILED);
   }
   const isPasswordMatch = await passwordUtil.comparePassword(
     account.password,
     password
   );
   if (!isPasswordMatch) {
-    throw new HttpException(404, ErrorMessage.LOGIN_FAILED);
+    throw new HttpException(400, ErrorMessage.LOGIN_FAILED);
   }
   if (!account.isActive) {
     throw new HttpException(
@@ -29,7 +29,7 @@ export const authAccount = async (email, password) => {
 
 export const checkEmailIsExistsExceptId = async (email, id) => {
   if (!email || !id) {
-    throw new HttpException(404, ErrorMessage.MISSING_PARAMETER);
+    throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
   }
 
   const account = await db.Account.findOne({
@@ -129,7 +129,7 @@ export const findAccountById = async (id) => {
 export const getAccountByEmail = async (email) => {
   const account = await findAccountByEmail(email);
   if (!account) {
-    throw new HttpException(404, "Account not found");
+    throw new HttpException(400, "Account not found");
   }
 };
 
@@ -159,19 +159,26 @@ const deleteAccount = async (id) => {
 
 export const changePassword = async (data, accountId) => {
   const account = await findAccountById(accountId);
-  const password = await passwordUtil.generateHashPassword(data.password);
   const isPasswordMatch = await passwordUtil.comparePassword(
     account.password,
-    password
+    data.password
   );
   if (!isPasswordMatch) {
-    throw new HttpException(404, ErrorMessage.PASSWORD_IS_INCORRECT);
+    throw new HttpException(400, ErrorMessage.PASSWORD_IS_INCORRECT);
   }
-  const hashPassword = await passwordUtil.generateHashPassword(data.newPassword);
+  const hashPassword = await passwordUtil.generateHashPassword(
+    data.newPassword
+  );
 
-  const upPass = await db.Account.update(hashPassword, {
-    where: { id: accountId },
-  });
+  const upPass = await db.Account.update(
+    {
+      password: hashPassword,
+    },
+    {
+      where: { id: accountId },
+    }
+  );
+
   return upPass;
 };
 

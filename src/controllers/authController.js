@@ -32,6 +32,7 @@ const getInfo = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
   try {
+    console.log("object", req.body);
     const user = await authService.changePassword(req.body, req.user.id);
     successResponse(STATUS_CODE.OK, user, res);
   } catch (error) {
