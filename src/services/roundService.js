@@ -519,6 +519,34 @@ export const getRoundAlreadyStartByCompetition = async (competitionId) => {
 	return resFindAll(data);
 };
 
+export const approveRound = async (roundId) => {
+	const round = await getRoundById(roundId);
+
+	let timeEnd = new Date();
+	const nextRound = await getNextRoundWithoutCompetitionId(roundId);
+	if (nextRound) {
+		timeEnd = new Date(nextRound.timeStart);
+	} else {
+		const competition = await getCompetitionByRoundId(roundId);
+		timeEnd = new Date(competition.timeEnd);
+	}
+	const isEnd = new Date().getTime() > timeEnd.getTime();
+	if (!isEnd) {
+		throw new HttpException(
+			400,
+			ErrorMessage.CUSTOM('Round is not ended yet'),
+		);
+	}
+	const updateRound = await db.Round.update(
+		{ approved: true },
+		{ where: { id: roundId } },
+	).then(async () => {
+		return await getRoundById(roundId);
+	});
+
+	return updateRound;
+};
+
 export default {
 	getAllRounds,
 	getFirstRound,
@@ -534,4 +562,5 @@ export default {
 	getRoundById,
 	getCompetitionByRoundId,
 	getNextRoundWithoutCompetitionId,
+	approveRound,
 };

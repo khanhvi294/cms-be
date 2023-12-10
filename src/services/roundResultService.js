@@ -198,6 +198,16 @@ export const updateRoundResult = async (employeeId, data) => {
 	const competition = await roundService.getCompetitionByRoundId(
 		data.roundId,
 	);
+	const round = await roundService.getRoundById(data.roundId);
+	if (round?.approved) {
+		throw new HttpException(
+			400,
+			ErrorMessage.CUSTOM(
+				'Can not update score because round is approved',
+			),
+		);
+	}
+
 	if (competition.status != STATUS_COMPETITION.STARTED) {
 		throw new HttpException(
 			400,
@@ -529,12 +539,21 @@ const confirmStudentPassRound = async (data) => {
 				roundResultsPromise,
 				competitionPromise,
 			]);
+			console.log(
+				'🚀 ~ file: roundResultService.js:529 ~ result ~ competition:',
+				competition,
+			),
+				console.log(
+					'🚀 ~ file: roundResultService.js:532 ~ result ~ roundResult:',
+					roundResult,
+				);
 
 			const studentPass = data.studentIds.map((item) => {
 				const id = roundResult.find(
 					(result) => result.studentId == item,
 				);
 				if (!id) {
+					console.log('id:: ', id);
 					throw new HttpException(
 						400,
 						ErrorMessage.OBJECT_IS_NOT_EXISTING('Student'),
@@ -543,11 +562,14 @@ const confirmStudentPassRound = async (data) => {
 				return id;
 			});
 
+			await roundService.approveRound(data.roundId);
+
 			const nextRound = await roundService.getNextRound(
 				competition.id,
 				data.roundId,
 			);
-			if (!nextRound) {
+
+			if (!nextRound || nextRound.id == data.roundId) {
 				return {
 					isLastRound: true,
 					roundId: data.roundId,
