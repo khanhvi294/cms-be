@@ -64,6 +64,19 @@ export const getRoundsByCompetition = async (competitionId) => {
 					},
 				],
 			},
+			{
+				model: db.RoundResult,
+				as: 'roundResultRound',
+				nest: true,
+				raw: false,
+				include: [
+					{
+						model: db.Students,
+						as: 'roundResultStudent',
+						attributes: ['id', 'fullName'],
+					},
+				],
+			},
 		],
 		order: [['createdAt', 'DESC']],
 	});
