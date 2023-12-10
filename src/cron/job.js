@@ -6,50 +6,56 @@ import competitionService from "../services/competitionService";
 import roundResultService from "../services/roundResultService";
 
 const checkAndChangeStatusCompetition = async () => {
-  const competitions = await db.Competition.findAll({
-    where: {status: STATUS_COMPETITION.CREATED},
-    nest: true,
-    raw: false,
-    include: [
-      {
-        model: db.Round,
-        as: "competitionRound",
-        separate:true, 
-        order: [
-          ['timeStart', 'ASC']
-        ],
-       
-      },
-    ],
-
-  });
-  if(!competitions?.length) {
-    return;
-  }
-
-  const competitionsChange = competitions.filter(competition => (calculateDistanceFromDate(new Date(), competition.timeStart) <= 2) && competition.competitionRound.length);
-
-  if(competitionsChange.length){
-     try {
-      await db.sequelize.transaction(async (t) => {
-
-          const trans = [];
-
-        competitionsChange.forEach((item) => {
-          trans.push(competitionService.updateStatusCompetition(item.id, STATUS_COMPETITION.STARTED, t))
-          trans.push(roundResultService.tmpCreateRounds({
-            roundId: item?.competitionRound[0].id,
-            competitionId: item.id,
-          }))
+  try{
+    const competitions = await db.Competition.findAll({
+      where: {status: STATUS_COMPETITION.CREATED},
+      nest: true,
+      raw: false,
+      include: [
+        {
+          model: db.Round,
+          as: "competitionRound",
+          separate:true, 
+          order: [
+            ['timeStart', 'ASC']
+          ],
+         
+        },
+      ],
+  
+    });
+    if(!competitions?.length) {
+      return;
+    }
+  
+    const competitionsChange = competitions.filter(competition => (calculateDistanceFromDate(new Date(), competition.timeStart) <= 2) && competition.competitionRound.length);
+  
+    if(competitionsChange.length){
+       try {
+        await db.sequelize.transaction(async (t) => {
+  
+            const trans = [];
+  
+          competitionsChange.forEach((item) => {
+            trans.push(competitionService.updateStatusCompetition(item.id, STATUS_COMPETITION.STARTED, t))
+            trans.push(roundResultService.tmpCreateRounds({
+              roundId: item?.competitionRound[0].id,
+              competitionId: item.id,
+            }))
+          })
+  
+          await Promise.all(competitionsChange);
+  
         })
-
-        await Promise.all(competitionsChange);
-
-      })
-     } catch (error) {
-      console.log("error:: ", error);
-     }
+       } catch (error) {
+        console.log("error:: ", error);
+       }
+    }
   }
+  catch(err){
+    console.log("error jobs:: ", err);
+  }
+  
 
 }
 
@@ -62,7 +68,7 @@ const scheduleCron = async () => {
 
 export const task = cron.schedule("0 0 0 * * *", scheduleCron); // run every midnight
 // export const task = cron.schedule("*/2 * * * * *", scheduleCron); // run every 2 seconds
-// export const task = cron.schedule("*/2 * * * * ", scheduleCron); // run every minutes
+// export const task = cron.schedule("*/2 * * * * ", scheduleCron); // run every 2 minutes
 
 const taskSchedule = () => {
   console.log("Cron job already Started !!!");
