@@ -195,6 +195,27 @@ export const changePassword = async (data, accountId) => {
   return upPass;
 };
 
+export const forgotPassword = async (email) => {};
+export const resetPassword = async (data) => {
+  const { code, password, email } = data;
+  if (!resetCodes[email]) {
+    throw new HttpException(404, "Invalid or expired reset code");
+  }
+  if (resetCodes[email].code !== parseInt(code)) {
+    throw new HttpException(400, "Reset code is incorrect");
+  }
+  if (Date.now() > resetCodes[email].expiredAt) {
+    throw new HttpException(400, "Reset code is expired");
+  }
+  const hashPassword = await passwordUtil.generateHashPassword(password);
+  const account = await findAccountByEmail(email);
+  await db.Account.update(
+    { password: hashPassword },
+    { where: { id: account.id } }
+  );
+  return true;
+};
+
 export default {
   login,
   findAccount,
