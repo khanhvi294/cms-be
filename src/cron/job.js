@@ -17,7 +17,7 @@ const checkAndChangeStatusCompetitionCancel = async () => {
           as: "competitionRegister",
           separate:true, 
           order: [
-            ['timeStart', 'ASC']
+            ['createdAt', 'ASC']
           ],
          
         },
@@ -67,7 +67,7 @@ const checkAndChangeStatusCompetitionEnded = async () => {
           as: "competitionRound",
           separate:true, 
           order: [
-            ['timeStart', 'ASC']
+            ['createdAt', 'ASC']
           ],
          
         },
