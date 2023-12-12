@@ -18,7 +18,7 @@ const ErrorMessage = {
 	EMAIL_IS_EXISTING: 'Email is existing',
 	MIN_CANNOT_GREATER_THAN_MAX:
 		'Min of quantity  must be greater than max of quantity',
-	COMPETITION_CANNOT_UPDATE: 'This competition cannot be updated',
+	COMPETITION_CANNOT_UPDATE: 'The status of competition is different upcoming',
 	COMPETITION_CANNOT_UPDATE_CLASS: 'Cannot update class of this competition',
 	COMPEITION_ROUND_MUST_BE_GREATER:
 		'The round update must be greater current row',
