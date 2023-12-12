@@ -49,7 +49,7 @@ export const getAllRoundByJudge = async (judgeId) => {
   if (!judgeId) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
-  console.log(judgeId);
+
   const data = await db.Judge.findAll({
     where: { employeeId: judgeId },
     raw: true,

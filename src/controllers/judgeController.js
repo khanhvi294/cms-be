@@ -23,6 +23,7 @@ const getAllJudgeByRound = async (req, res, next) => {
 const getAllRoundByJudge = async (req, res, next) => {
   try {
     const employee = await authService.getEmployeeByAccount(req.user.id);
+    console.log(employee);
     const result = await judgeService.getAllRoundByJudge(
       employee?.accountEmployee.id
     );

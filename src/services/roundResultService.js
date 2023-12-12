@@ -203,7 +203,7 @@ export const updateRoundResult = async (employeeId, data) => {
   const competition = await roundService.getCompetitionByRoundId(data.roundId);
   const round = await roundService.getRoundById(data.roundId);
 
-  if(new Date() < new Date(round.timeStart)) {
+  if (new Date() < new Date(round.timeStart)) {
     throw new HttpException(
       400,
       ErrorMessage.CUSTOM("Can not update score because round is not started")
@@ -488,12 +488,12 @@ const checkStudentPassRound = async (data) => {
   }
 
   // check coi phai vong cuoi cung ko
-  const nextRound = await roundService.getNextRoundWithoutCompetitionId(
-    data.roundId
-  );
-  if (!nextRound) {
-    throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND);
-  }
+  // const nextRound = await roundService.getNextRoundWithoutCompetitionId(
+  //   data.roundId
+  // );
+  // if (!nextRound) {
+  //   throw new HttpException(400, ErrorMessage.CANNOT_CHECK_PASS_LAST_ROUND);
+  // }
 
   const roundResults = await getAllRoundResultByRoundId(data.roundId);
   if (!roundResults.length) {

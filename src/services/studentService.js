@@ -141,7 +141,7 @@ export const createStudent = async (data) => {
 
 export const getCompetitionsForStudent = async (studentId) => {
   // Tìm học viên với studentId tương ứng
-  console.log(studentId);
+
   const student = await db.Students.findOne({
     nest: true,
     raw: false,
@@ -177,7 +177,7 @@ export const getCompetitionsForStudent = async (studentId) => {
       },
     ],
   });
-  console.log("ddddddd", student);
+
   if (!student) {
     throw new HttpException(
       400,
@@ -197,8 +197,76 @@ export const getCompetitionsForStudent = async (studentId) => {
   const uniqueCompetitions = Array.from(
     new Set(flattenedCompetitions.map((c) => c.id))
   ).map((id) => flattenedCompetitions.find((c) => c.id === id));
-  return uniqueCompetitions;
+
+  // Sắp xếp mảng theo thời gian tạo giảm dần
+  const sortedCompetitions = uniqueCompetitions.sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  return sortedCompetitions;
 };
+
+// export const getCompetitionsForStudent = async (studentId) => {
+//   // Tìm học viên với studentId tương ứng
+//   console.log(studentId);
+//   const student = await db.Students.findOne({
+//     nest: true,
+//     raw: false,
+//     where: { id: studentId },
+//     include: [
+//       {
+//         model: db.StudentClass,
+//         as: "ClassStudentStudent",
+//         nest: true,
+//         raw: false,
+//         include: [
+//           {
+//             model: db.Class,
+//             as: "ClassStudentClass",
+//             nest: true,
+//             raw: false,
+//             include: [
+//               {
+//                 model: db.CompetitionClass,
+//                 as: "ClassCompetitionClass",
+//                 nest: true,
+//                 raw: false,
+//                 include: [
+//                   {
+//                     model: db.Competition,
+//                     as: "competitionCompetitionClass",
+//                   },
+//                 ],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     ],
+
+//   });
+//   console.log("ddddddd", student);
+//   if (!student) {
+//     throw new HttpException(
+//       400,
+//       ErrorMessage.OBJECT_IS_NOT_EXISTING("Student")
+//     );
+//   }
+
+//   // Trích xuất danh sách các cuộc thi từ cấu trúc lồng nhau
+//   const competitions = student.ClassStudentStudent.map((studentClass) => {
+//     return studentClass.ClassStudentClass.ClassCompetitionClass.map(
+//       (competitionClass) => competitionClass.competitionCompetitionClass
+//     );
+//   });
+
+//   // Hợp nhất mảng
+//   const flattenedCompetitions = [].concat(...competitions);
+//   const uniqueCompetitions = Array.from(
+//     new Set(flattenedCompetitions.map((c) => c.id))
+//   ).map((id) => flattenedCompetitions.find((c) => c.id === id));
+//   return uniqueCompetitions;
+// };
 
 // export const updateStudent = async (studentId, data) => {
 //   const getStudentByIdPromise = getStudentById(studentId);
