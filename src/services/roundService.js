@@ -532,7 +532,10 @@ export const approveRound = async (roundId) => {
     );
   }
 
-  if (new Date(round.timeStart) > new Date()) {
+  if (
+    new Date(round.timeStart).setHours(0, 0, 0, 0) >
+    new Date().setHours(0, 0, 0, 0)
+  ) {
     throw new HttpException(400, ErrorMessage.CUSTOM("Round is not started"));
   }
   const updateRound = await db.Round.update(
