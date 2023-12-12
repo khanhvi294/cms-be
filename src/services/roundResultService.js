@@ -535,6 +535,10 @@ const confirmStudentPassRound = async (data) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
+  if (!data.studentIds.length) {
+    throw new HttpException(400, "Student list is empty");
+  }
+
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const roundResultsPromise = db.RoundResult.findAll({
