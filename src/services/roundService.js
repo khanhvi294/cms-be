@@ -523,14 +523,7 @@ export const approveRound = async (roundId) => {
       ErrorMessage.CUSTOM("Can't confirm because competition is not started")
     );
   }
-  //   const nextRound = await getNextRoundWithoutCompetitionId(roundId);
-  //   if (nextRound) {
-  //     timeEnd = new Date(nextRound.timeStart);
-  //   } else {
-  //     timeEnd = new Date(competition.timeEnd);
-  //   }
 
-  // const isEnd = new Date().getDate() >= timeEnd.getDate();
   if (new Date(round.timeStart) > new Date()) {
     throw new HttpException(400, ErrorMessage.CUSTOM("Round is not started"));
   }

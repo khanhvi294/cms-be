@@ -26,8 +26,10 @@ const checkAndChangeStatusCompetitionCancel = async () => {
 
     const competitionsChange = competitions.filter(
       (competition) =>
-        !competition?.competitionRegister ||
-        competition?.competitionRegister?.length < competition?.minimumQuantity
+        calculateDistanceFromDate(new Date(), competition.timeStart) <= 2 &&
+        (!competition?.competitionRegister ||
+          competition?.competitionRegister?.length <
+            competition?.minimumQuantity)
     );
 
     if (competitionsChange.length) {
