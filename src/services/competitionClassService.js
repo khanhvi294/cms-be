@@ -92,7 +92,7 @@ const deleteClassCompetition = async (competitionId, classId, t) => {
   if (new Date(competition.timeStart) <= new Date()) {
     throw new HttpException(
       422,
-      ErrorMessage.CUSTOM("Competition has started, can't removed class")
+      ErrorMessage.COMPETITION_CANNOT_UPDATE_CLASS
     );
   }
   const data = await db.CompetitionClass.destroy({
