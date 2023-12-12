@@ -67,13 +67,23 @@ export const getAllRoundByJudge = async (judgeId) => {
             model: db.ExamForm,
             as: "examFormRound",
           },
+          {
+            model: db.Competition, // Include the Competition model
+            as: "competitionRound",
+            where: {
+              status: {
+                [db.Sequelize.Op.not]: 3, // Exclude competitions with status 4
+              },
+            },
+            required: true,
+          },
         ],
       },
     ],
     order: [["createdAt", "DESC"]],
   });
-
-  return resFindAll(data);
+  const filteredData = data.filter((entry) => entry.roundJudge?.id !== null);
+  return resFindAll(filteredData);
 };
 
 export const getAllJudgeIncludeEmployee = async (employeeId) => {

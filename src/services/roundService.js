@@ -281,6 +281,14 @@ export const getRoundById = async (id) => {
     where: {
       id: id,
     },
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Competition,
+        as: "competitionRound",
+      },
+    ],
   });
 
   if (!data) {

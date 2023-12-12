@@ -177,7 +177,7 @@ const scheduleCron = async () => {
 
 export const task = cron.schedule("0 0 0 * * *", scheduleCron); // run every midnight
 // export const task = cron.schedule("*/2 * * * * *", scheduleCron); // run every 2 seconds
-//export const task = cron.schedule("*/2 * * * * ", scheduleCron); // run every 2 minutes
+//export const task = cron.schedule("*/1 * * * * ", scheduleCron); // run every 2 minutes
 
 const taskSchedule = () => {
   console.log("Cron job already Started !!!");
