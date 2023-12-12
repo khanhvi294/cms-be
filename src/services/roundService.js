@@ -544,7 +544,7 @@ export const approveRound = async (roundId) => {
 		const competition = await getCompetitionByRoundId(roundId);
 		timeEnd = new Date(competition.timeEnd);
 	}
-	const isEnd = new Date().getTime() > timeEnd.getTime();
+	const isEnd = new Date().getTime() >= timeEnd.getTime();
 	if (!isEnd) {
 		throw new HttpException(
 			400,
