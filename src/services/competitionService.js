@@ -201,6 +201,10 @@ const updateCompetition = async (data) => {
   //   );
   // }
 
+  if (competition.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
+  }
+
   if (new Date() >= new Date(data.timeStart)) {
     throw new HttpException(
       400,
@@ -214,9 +218,7 @@ const updateCompetition = async (data) => {
     );
   }
 
-  if (competition.status !== STATUS_COMPETITION.CREATED) {
-    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
-  }
+ 
 
   const competitionDataUpdate = {
     name: data.name,
