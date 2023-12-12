@@ -1,4 +1,4 @@
-import { STATUS_COMPETITION, resFindAll } from '../utils/const';
+import { STATUS_COMPETITION, calculateDistanceFromDate, resFindAll } from '../utils/const';
 
 import ErrorMessage from '../common/errorMessage';
 import HttpException from '../errors/httpException';
@@ -73,7 +73,7 @@ export const registerCompetition = async (data) => {
 	// check cuoc thi da bat dau chua
 	if (
 		competition.status !== STATUS_COMPETITION.CREATED ||
-		new Date(competition.timeStart) <= new Date()
+		calculateDistanceFromDate(new Date(), competition.timeStart) <= 2
 	) {
 		throw new HttpException(
 			400,
