@@ -248,7 +248,7 @@ const addClassJoin = async (data) => {
 
   const competitionn = await getCompetitionById(data.id);
   if (competitionn.status !== STATUS_COMPETITION.CREATED) {
-    throw new HttpException(422, ErrorMessage.COMPETITION_CANNOT_UPDATE_CLASS);
+    throw new HttpException(422, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
   try {
@@ -290,7 +290,7 @@ const removeClassJoin = async (data) => {
 
   const competitionn = await getCompetitionById(data.id);
   if (competitionn.status !== STATUS_COMPETITION.CREATED) {
-    throw new HttpException(422, ErrorMessage.COMPETITION_CANNOT_UPDATE_CLASS);
+    throw new HttpException(422, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
   try {
