@@ -17,7 +17,7 @@ const getOverviewModel = async (model = "Students", condition={}, options ={}) =
         db[model].count({
           where: {
             createdAt: {
-                [Op.gt]: queryCurrentMonth
+                [Op.gte]: queryCurrentMonth
             },
             ...condition
           },
@@ -26,7 +26,7 @@ const getOverviewModel = async (model = "Students", condition={}, options ={}) =
         db[model].count({
           where: {
             createdAt: {
-              [Op.gt]: queryCurrentWeek
+              [Op.gte]: queryCurrentWeek
             }
           },
           ...options
@@ -34,7 +34,7 @@ const getOverviewModel = async (model = "Students", condition={}, options ={}) =
         db[model].count({
           where: {
             createdAt: {
-              [Op.gt]: queryCurrentDay
+              [Op.gte]: queryCurrentDay
             },
           ...condition
 
