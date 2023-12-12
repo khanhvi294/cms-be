@@ -187,14 +187,7 @@ export const createRound = async (data) => {
 
   // check status competition cannot be canceled or ended
   if (competition.status !== STATUS_COMPETITION.CREATED) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM(
-        `The competition is ${
-          STATUS_COMPETIION_MESSAGE[competition.status]
-        }, so you cannot add new round`
-      )
-    );
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
   // check if competition is max round
@@ -227,12 +220,12 @@ export const createRound = async (data) => {
     );
   }
 
-  // if (new Date() >= new Date(data.timeStart)) {
-  // 	throw new HttpException(
-  // 		400,
-  // 		ErrorMessage.CUSTOM('Time start round must be greater than today'),
-  // 	);
-  // }
+  if (new Date() >= new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Time start round must be greater than today")
+    );
+  }
 
   if (competition?.competitionRound.length) {
     if (
@@ -310,14 +303,7 @@ export const updateRound = async (round) => {
 
   // check status competition cannot be canceled or ended
   if (competition.status !== STATUS_COMPETITION.CREATED) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM(
-        `The competition is ${
-          STATUS_COMPETIION_MESSAGE[competition.status]
-        }, so you cannot update round`
-      )
-    );
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
   if (new Date(haveRound.timeStart) <= new Date()) {
@@ -370,22 +356,12 @@ export const updateRound = async (round) => {
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
 
-  if (competition.status !== STATUS_COMPETITION.CREATED) {
+  if (new Date(haveRound.timeStart) <= new Date()) {
     throw new HttpException(
       400,
-      ErrorMessage.CUSTOM(
-        `The competition is ${
-          STATUS_COMPETIION_MESSAGE[competition.status]
-        }, so you cannot delete round`
-      )
+      ErrorMessage.CUSTOM("Round is already started,can't delete")
     );
   }
-  //   if (new Date(haveRound.timeStart) <= new Date()) {
-  //     throw new HttpException(
-  //       400,
-  //       ErrorMessage.CUSTOM("Round is already started,can't delete")
-  //     );
-  //   }
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
@@ -396,6 +372,10 @@ export const deleteRound = async (id) => {
       400,
       ErrorMessage.OBJECT_IS_NOT_EXISTING("Competition")
     );
+  }
+
+  if (competition.status !== STATUS_COMPETITION.CREATED) {
+    throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
   const judges = await judgeService.getAllJudgeByRound(id);
