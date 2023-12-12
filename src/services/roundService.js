@@ -195,11 +195,7 @@ export const createRound = async (data) => {
 	if (competition.status !== STATUS_COMPETITION.CREATED) {
 		throw new HttpException(
 			400,
-			ErrorMessage.CUSTOM(
-				`The competition is ${
-					STATUS_COMPETIION_MESSAGE[competition.status]
-				}, so you cannot add new round`,
-			),
+			ErrorMessage.COMPETITION_CANNOT_UPDATE
 		);
 	}
 
@@ -318,11 +314,7 @@ export const updateRound = async (round) => {
 	if (competition.status !== STATUS_COMPETITION.CREATED) {
 		throw new HttpException(
 			400,
-			ErrorMessage.CUSTOM(
-				`The competition is ${
-					STATUS_COMPETIION_MESSAGE[competition.status]
-				}, so you cannot update round`,
-			),
+			ErrorMessage.COMPETITION_CANNOT_UPDATE
 		);
 	}
 
@@ -400,11 +392,7 @@ export const deleteRound = async (id) => {
 	if (competition.status !== STATUS_COMPETITION.CREATED) {
 		throw new HttpException(
 			400,
-			ErrorMessage.CUSTOM(
-				`The competition is ${
-					STATUS_COMPETIION_MESSAGE[competition.status]
-				}, so you cannot delete round`,
-			),
+			ErrorMessage.COMPETITION_CANNOT_UPDATE
 		);
 	}
 
