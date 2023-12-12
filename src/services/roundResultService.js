@@ -202,6 +202,14 @@ export const updateRoundResult = async (employeeId, data) => {
 
   const competition = await roundService.getCompetitionByRoundId(data.roundId);
   const round = await roundService.getRoundById(data.roundId);
+
+  if(new Date() < new Date(round.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Can not update score because round is not started")
+    );
+  }
+
   if (round?.approved) {
     throw new HttpException(
       400,

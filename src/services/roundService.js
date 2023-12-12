@@ -516,18 +516,23 @@ export const getRoundAlreadyStartByCompetition = async (competitionId) => {
 
 export const approveRound = async (roundId) => {
   const round = await getRoundById(roundId);
-
-  let timeEnd = new Date();
-  const nextRound = await getNextRoundWithoutCompetitionId(roundId);
-  if (nextRound) {
-    timeEnd = new Date(nextRound.timeStart);
-  } else {
-    const competition = await getCompetitionByRoundId(roundId);
-    timeEnd = new Date(competition.timeEnd);
+  const competition = await getCompetitionByRoundId(roundId);
+  if (competition.status !== STATUS_COMPETITION.STARTED) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM("Can't confirm because competition is not started")
+    );
   }
-  const isEnd = new Date().getTime() > timeEnd.getTime();
-  if (!isEnd) {
-    throw new HttpException(400, ErrorMessage.CUSTOM("Round is not ended yet"));
+  //   const nextRound = await getNextRoundWithoutCompetitionId(roundId);
+  //   if (nextRound) {
+  //     timeEnd = new Date(nextRound.timeStart);
+  //   } else {
+  //     timeEnd = new Date(competition.timeEnd);
+  //   }
+
+  // const isEnd = new Date().getDate() >= timeEnd.getDate();
+  if (new Date(round.timeStart) > new Date()) {
+    throw new HttpException(400, ErrorMessage.CUSTOM("Round is not started"));
   }
   const updateRound = await db.Round.update(
     { approved: true },
