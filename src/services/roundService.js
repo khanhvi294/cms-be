@@ -522,7 +522,7 @@ export const getRoundAlreadyStartByCompetition = async (competitionId) => {
   return resFindAll(data);
 };
 
-export const approveRound = async (roundId) => {
+export const approveRound = async (roundId, t) => {
   const round = await getRoundById(roundId);
   const competition = await getCompetitionByRoundId(roundId);
   if (competition.status !== STATUS_COMPETITION.STARTED) {
@@ -540,7 +540,7 @@ export const approveRound = async (roundId) => {
   }
   const updateRound = await db.Round.update(
     { approved: true },
-    { where: { id: roundId } }
+    { where: { id: roundId }, transaction: t }
   ).then(async () => {
     return await getRoundById(roundId);
   });

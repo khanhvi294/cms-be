@@ -581,7 +581,7 @@ const confirmStudentPassRound = async (data) => {
         { where: { id: data.roundId }, transaction: t }
       );
 
-      await roundService.approveRound(data.roundId);
+      await roundService.approveRound(data.roundId, t);
 
       const nextRound = await roundService.getNextRound(
         competition.id,
