@@ -579,12 +579,7 @@ const confirmStudentPassRound = async (data) => {
           {
             scorePoint: data.scorePoint,
           },
-          {
-            where: {
-              id: data.roundId,
-            },
-            transaction: t,
-          }
+          { where: { id: data.roundId }, transaction: t }
         );
       }
 
