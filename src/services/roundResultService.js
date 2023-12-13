@@ -574,14 +574,12 @@ const confirmStudentPassRound = async (data) => {
         return id;
       });
 
-      if (data?.scorePoint) {
-        await db.Round.update(
-          {
-            scorePoint: data.scorePoint,
-          },
-          { where: { id: data.roundId }, transaction: t }
-        );
-      }
+      await db.Round.update(
+        {
+          scorePoint: data?.scorePoint || null,
+        },
+        { where: { id: data.roundId }, transaction: t }
+      );
 
       await roundService.approveRound(data.roundId);
 
