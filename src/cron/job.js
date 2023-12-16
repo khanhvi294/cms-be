@@ -5,60 +5,6 @@ import { STATUS_COMPETITION, calculateDistanceFromDate } from "../utils/const";
 import competitionService from "../services/competitionService";
 import roundResultService from "../services/roundResultService";
 
-const checkAndChangeStatusCompetitionCancel = async () => {
-  try {
-    const competitions = await db.Competition.findAll({
-      where: { status: STATUS_COMPETITION.CREATED },
-      nest: true,
-      raw: false,
-      include: [
-        {
-          model: db.Register,
-          as: "competitionRegister",
-          separate: true,
-          order: [["createdAt", "ASC"]],
-        },
-      ],
-    });
-    if (!competitions?.length) {
-      return;
-    }
-
-    const competitionsChange = competitions.filter(
-      (competition) =>
-        calculateDistanceFromDate(new Date(), competition.timeStart) <= 2 &&
-        (!competition?.competitionRegister ||
-          competition?.competitionRegister?.length <
-            competition?.minimumQuantity)
-    );
-
-    if (competitionsChange.length) {
-      try {
-        await db.sequelize.transaction(async (t) => {
-          const trans = [];
-
-          // competition chua du so luong sinh vien
-          competitionsChange.forEach((item) => {
-            trans.push(
-              competitionService.updateStatusCompetition(
-                item.id,
-                STATUS_COMPETITION.CANCEL,
-                t
-              )
-            );
-          });
-
-          await Promise.all(competitionsChange);
-        });
-      } catch (error) {
-        console.log("error:: ", error);
-      }
-    }
-  } catch (err) {
-    console.log("error jobs:: ", err);
-  }
-};
-
 const checkAndChangeStatusCompetitionEnded = async () => {
   try {
     const competitions = await db.Competition.findAll({
@@ -98,7 +44,7 @@ const checkAndChangeStatusCompetitionEnded = async () => {
             );
           });
 
-          await Promise.all(competitionsChange);
+          await Promise.all(trans);
         });
       } catch (error) {
         console.log("error:: ", error);
@@ -122,6 +68,12 @@ const checkAndChangeStatusCompetitionStarted = async () => {
           separate: true,
           order: [["timeStart", "ASC"]],
         },
+        {
+          model: db.Register,
+          as: "competitionRegister",
+          separate: true,
+          order: [["createdAt", "ASC"]],
+        },
       ],
     });
     if (!competitions?.length) {
@@ -134,29 +86,49 @@ const checkAndChangeStatusCompetitionStarted = async () => {
         competition.competitionRound.length
     );
 
+    
     if (competitionsChange.length) {
       try {
         await db.sequelize.transaction(async (t) => {
           const trans = [];
+          const transCancel = [];
+
+         
 
           // competition du so luong sinh vien
           competitionsChange.forEach((item) => {
-            trans.push(
-              competitionService.updateStatusCompetition(
-                item.id,
-                STATUS_COMPETITION.STARTED,
-                t
-              )
-            );
-            trans.push(
-              roundResultService.tmpCreateRounds({
-                roundId: item?.competitionRound[0].id,
-                competitionId: item.id,
-              })
-            );
+
+            if(!item?.competitionRegister ||
+              item?.competitionRegister?.length <
+                item?.minimumQuantity) {
+                  console.log("item compe job: ", item.id, " cancel");
+                  transCancel.push( competitionService.updateStatusCompetition(
+                    item.id,
+                    STATUS_COMPETITION.CANCEL,
+                    t
+                  )) 
+            }else {
+              console.log("item compe job: ", item.id, " started");
+
+              trans.push(
+                competitionService.updateStatusCompetition(
+                  item.id,
+                  STATUS_COMPETITION.STARTED,
+                  t
+                )
+              );
+              trans.push(
+                roundResultService.tmpCreateRounds({
+                  roundId: item?.competitionRound[0].id,
+                  competitionId: item.id,
+                })
+              );
+            }
+
+           
           });
 
-          await Promise.all(competitionsChange);
+          await Promise.all([...trans, ...transCancel]);
         });
       } catch (error) {
         console.log("error:: ", error);
@@ -171,13 +143,12 @@ const scheduleCron = async () => {
   const currentTime = moment();
   console.log("cron job runnnn: ", currentTime.format("YYYY-MM-DD HH:mm:ss"));
   checkAndChangeStatusCompetitionStarted();
-  checkAndChangeStatusCompetitionCancel();
   checkAndChangeStatusCompetitionEnded();
 };
 
 export const task = cron.schedule("0 0 0 * * *", scheduleCron); // run every midnight
 // export const task = cron.schedule("*/2 * * * * *", scheduleCron); // run every 2 seconds
-//export const task = cron.schedule("*/2 * * * * ", scheduleCron); // run every 2 minutes
+// export const task = cron.schedule("*/2 * * * * ", scheduleCron); // run every 2 minutes
 
 const taskSchedule = () => {
   console.log("Cron job already Started !!!");
@@ -186,3 +157,119 @@ const taskSchedule = () => {
 };
 
 export default taskSchedule;
+
+
+
+// const checkAndChangeStatusCompetitionCancel = async () => {
+//   try {
+//     const competitions = await db.Competition.findAll({
+//       where: { status: STATUS_COMPETITION.CREATED },
+//       nest: true,
+//       raw: false,
+//       include: [
+//         {
+//           model: db.Register,
+//           as: "competitionRegister",
+//           separate: true,
+//           order: [["createdAt", "ASC"]],
+//         },
+//       ],
+//     });
+//     if (!competitions?.length) {
+//       return;
+//     }
+
+//     const competitionsChange = competitions.filter(
+//       (competition) =>
+//         calculateDistanceFromDate(new Date(), competition.timeStart) <= 2 &&
+//         (!competition?.competitionRegister ||
+//           competition?.competitionRegister?.length <
+//             competition?.minimumQuantity)
+//     );
+
+//     if (competitionsChange.length) {
+//       try {
+//         await db.sequelize.transaction(async (t) => {
+//           const trans = [];
+
+//           // competition chua du so luong sinh vien
+//           competitionsChange.forEach((item) => {
+//             trans.push(
+//               competitionService.updateStatusCompetition(
+//                 item.id,
+//                 STATUS_COMPETITION.CANCEL,
+//                 t
+//               )
+//             );
+//           });
+
+//           await Promise.all(competitionsChange);
+//         });
+//       } catch (error) {
+//         console.log("error:: ", error);
+//       }
+//     }
+//   } catch (err) {
+//     console.log("error jobs:: ", err);
+//   }
+// };
+
+
+
+// const checkAndChangeStatusCompetitionStarted = async () => {
+//   try {
+//     const competitions = await db.Competition.findAll({
+//       where: { status: STATUS_COMPETITION.CREATED },
+//       nest: true,
+//       raw: false,
+//       include: [
+//         {
+//           model: db.Round,
+//           as: "competitionRound",
+//           separate: true,
+//           order: [["timeStart", "ASC"]],
+//         },
+//       ],
+//     });
+//     if (!competitions?.length) {
+//       return;
+//     }
+
+//     const competitionsChange = competitions.filter(
+//       (competition) =>
+//         calculateDistanceFromDate(new Date(), competition.timeStart) <= 2 &&
+//         competition.competitionRound.length
+//     );
+
+//     if (competitionsChange.length) {
+//       try {
+//         await db.sequelize.transaction(async (t) => {
+//           const trans = [];
+
+//           // competition du so luong sinh vien
+//           competitionsChange.forEach((item) => {
+//             trans.push(
+//               competitionService.updateStatusCompetition(
+//                 item.id,
+//                 STATUS_COMPETITION.STARTED,
+//                 t
+//               )
+//             );
+//             trans.push(
+//               roundResultService.tmpCreateRounds({
+//                 roundId: item?.competitionRound[0].id,
+//                 competitionId: item.id,
+//               })
+//             );
+//           });
+
+//           await Promise.all(competitionsChange);
+//         });
+//       } catch (error) {
+//         console.log("error:: ", error);
+//       }
+//     }
+//   } catch (err) {
+//     console.log("error jobs:: ", err);
+//   }
+// };

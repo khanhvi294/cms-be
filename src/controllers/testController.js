@@ -5,7 +5,7 @@ const testFunc = async (req, res, next) => {
     try {
     
         let result = {
-            "result": calculateDistanceFromDate(new Date(), "2023-12-11")
+            "result": calculateDistanceFromDate(new Date(), "2023-12-18")
         }
   
       successResponse(STATUS_CODE.OK, result, res);
