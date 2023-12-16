@@ -528,7 +528,7 @@ const confirmStudentPassRound = async (data) => {
   /**
    *  roundId: 2
    *  studentIds: [1,2,3,4]
-   * 
+   *
    */
   // check list student
   // create new round result for student
@@ -574,18 +574,14 @@ const confirmStudentPassRound = async (data) => {
         return id;
       });
 
-      if(data?.scorePoint){
-        await db.Round.update({
-          scorePoint: data.scorePoint
-        }, {
-          where: {
-            roundId: data.roundId
-          },
-          transaction: t
-        })
-      }
+      await db.Round.update(
+        {
+          scorePoint: data?.scorePoint || null,
+        },
+        { where: { id: data.roundId }, transaction: t }
+      );
 
-      await roundService.approveRound(data.roundId);
+      await roundService.approveRound(data.roundId, t);
 
       const nextRound = await roundService.getNextRound(
         competition.id,

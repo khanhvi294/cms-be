@@ -281,6 +281,14 @@ export const getRoundById = async (id) => {
     where: {
       id: id,
     },
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Competition,
+        as: "competitionRound",
+      },
+    ],
   });
 
   if (!data) {
@@ -514,7 +522,7 @@ export const getRoundAlreadyStartByCompetition = async (competitionId) => {
   return resFindAll(data);
 };
 
-export const approveRound = async (roundId) => {
+export const approveRound = async (roundId, t) => {
   const round = await getRoundById(roundId);
   const competition = await getCompetitionByRoundId(roundId);
   if (competition.status !== STATUS_COMPETITION.STARTED) {
@@ -524,12 +532,15 @@ export const approveRound = async (roundId) => {
     );
   }
 
-  if (new Date(round.timeStart) > new Date()) {
+  if (
+    new Date(round.timeStart).setHours(0, 0, 0, 0) >
+    new Date().setHours(0, 0, 0, 0)
+  ) {
     throw new HttpException(400, ErrorMessage.CUSTOM("Round is not started"));
   }
   const updateRound = await db.Round.update(
     { approved: true },
-    { where: { id: roundId } }
+    { where: { id: roundId }, transaction: t }
   ).then(async () => {
     return await getRoundById(roundId);
   });
