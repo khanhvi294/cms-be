@@ -24,7 +24,10 @@ export const createCompetition = async (employeeId, data) => {
   // 		ErrorMessage.CUSTOM('Time start must be greater than today'),
   // 	);
   // }
-  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+  if (
+    new Date(data.timeStart).setHours(0, 0, 0, 0) >
+    new Date(data.timeEnd).setHours(0, 0, 0, 0)
+  ) {
     throw new HttpException(
       422,
       ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
@@ -192,6 +195,26 @@ export const updateStatusCompetition = async (id, statusId) => {
   throw new HttpException(400, ErrorMessage.INTERNAL_ERROR);
 };
 
+export const updateStatusCompetition2 = async (id, statusId) => {
+  const competition = await getCompetitionById(id);
+  if (!checkCompetitionStatus(statusId)) {
+    throw new HttpException(422, ErrorMessage.DATA_IS_INVALID("Status"));
+  }
+
+  const dataUpdate = await db.Competition.update(
+    {
+      status: statusId,
+    },
+    { where: { id } }
+  );
+
+  if (dataUpdate[0] === 1) {
+    return await getCompetitionById(id);
+  }
+
+  throw new HttpException(400, ErrorMessage.INTERNAL_ERROR);
+};
+
 const updateCompetition = async (data) => {
   const competition = await getCompetitionById(data.id);
   // if (new Date(competition.timeStart) <= new Date()) {
@@ -205,20 +228,24 @@ const updateCompetition = async (data) => {
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
-  if (new Date() >= new Date(data.timeStart)) {
+  if (
+    new Date().setHours(0, 0, 0, 0) >=
+    new Date(data.timeStart).setHours(0, 0, 0, 0)
+  ) {
     throw new HttpException(
       400,
       ErrorMessage.CUSTOM("Time start competition must be greater than today")
     );
   }
-  if (new Date(data.timeStart) > new Date(data.timeEnd)) {
+  if (
+    new Date(data.timeStart).setHours(0, 0, 0, 0) >
+    new Date(data.timeEnd).setHours(0, 0, 0, 0)
+  ) {
     throw new HttpException(
       422,
       ErrorMessage.TIME_START_MUST_BE_LESS_THAN_TIME_END
     );
   }
-
- 
 
   const competitionDataUpdate = {
     name: data.name,
