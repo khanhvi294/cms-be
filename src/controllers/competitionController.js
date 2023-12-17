@@ -10,6 +10,7 @@ import competitionClassService from '../services/competitionClassService';
 import competitionService from '../services/competitionService';
 import competitionValidation from '../validations/competitionValidation';
 import { validateData } from '../utils/validateData';
+import { STATUS_COMPETITION } from '../utils/const';
 
 const getAllCompetition = async (req, res, next) => {
 	try {
@@ -150,6 +151,20 @@ const updateStatusCompetition = async (req, res, next) => {
 			req.params.id,
 			req.body.statusId,
 		);
+
+		const statusId = +req.body.statusId;
+		switch(statusId){
+			case STATUS_COMPETITION.STARTED:
+				console.log("compe started");
+				await competitionService.checkConditionStartedCompetition(req.params.id)
+				break;
+			
+			case STATUS_COMPETITION.ENDED:
+				break;
+			default:
+				break;
+		}
+
 		successResponse(STATUS_CODE.OK, result, res);
 	} catch (error) {
 		next(error);
