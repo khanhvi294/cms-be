@@ -108,15 +108,23 @@ const createRoundResult = async (data, t) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  await checkRoundResultExists(data);
+  const check =await checkRoundResultExists(data);
+  if(check){
+    return null;
+  }
 
-  const roundResult = await db.RoundResult.create(
+  const roundResult = await db.RoundResult.findOrCreate(
     {
-      studentId: data.studentId,
-      roundId: data.roundId,
-      score: null,
-    },
-    { transaction: t }
+      where: { studentId: data.studentId, roundId: data.roundId},
+      defaults:  {
+        studentId: data.studentId,
+        roundId: data.roundId,
+        score: null,
+      },
+     transaction: t 
+
+    }
+   
   );
 
   return roundResult;
@@ -126,12 +134,12 @@ const checkRoundResultExists = async (data) => {
   const check = await db.RoundResult.findOne({
     where: { roundId: data.roundId, studentId: data.studentId },
   });
-  if (check) {
-    throw new HttpException(
-      400,
-      ErrorMessage.OBJECT_IS_EXISTING("Student's result")
-    );
-  }
+  // if (check) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.OBJECT_IS_EXISTING("Student's result")
+  //   );
+  // }
 
   return false;
 };
@@ -203,12 +211,12 @@ export const updateRoundResult = async (employeeId, data) => {
   const competition = await roundService.getCompetitionByRoundId(data.roundId);
   const round = await roundService.getRoundById(data.roundId);
 
-  if (new Date() < new Date(round.timeStart)) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Can not update score because round is not started")
-    );
-  }
+  // if (new Date() < new Date(round.timeStart)) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Can not update score because round is not started")
+  //   );
+  // }
 
   if (round?.approved) {
     throw new HttpException(

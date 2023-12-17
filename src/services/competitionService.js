@@ -12,6 +12,7 @@ import classService from "./classService";
 import competitionClassService from "./competitionClassService";
 import db from "../models";
 import { sequelize } from "../config/connectDB";
+import roundResultService from "./roundResultService";
 
 export const createCompetition = async (employeeId, data) => {
   if (!data?.competitionClass || !data?.competitionClass?.length) {
@@ -355,6 +356,47 @@ const getCompetitionResultByIdAndStudentId = async (
   return data;
 };
 
+const checkConditionStartedCompetition = async (id) => {
+  if(!id) throw new HttpException(400, ErrorMessage.MISSING_PARAMETER)
+
+  const competition = await db.Competition.findOne({
+    where: { id: id, status: STATUS_COMPETITION.STARTED},
+    nest: true,
+    raw: false,
+    include: [
+      {
+        model: db.Round,
+        as: "competitionRound",
+        separate: true,
+        order: [["timeStart", "ASC"]],
+      },
+      {
+        model: db.Register,
+        as: "competitionRegister",
+        separate: true,
+        order: [["createdAt", "ASC"]],
+      },
+    ],
+  });
+
+
+  if(!competition.competitionRound || !competition.competitionRegister) {
+    return;
+  }
+
+  if(competition?.competitionRegister.length < competition.minimumQuantity){
+    await updateStatusCompetition(id, STATUS_COMPETITION.CANCEL);
+    throw new HttpException(400, ErrorMessage.CUSTOM("The competition is cancel because not enough minimum registers"));
+  }
+
+  return await roundResultService.tmpCreateRounds({
+    roundId: competition?.competitionRound[0].id,
+    competitionId: id,
+  })
+}
+
+
+
 export default {
   createCompetition,
   getAllCompetition,
@@ -368,4 +410,5 @@ export default {
   addClassJoin,
   removeClassJoin,
   getCompetitionResultByIdAndStudentId,
+  checkConditionStartedCompetition
 };
