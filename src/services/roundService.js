@@ -220,12 +220,12 @@ export const createRound = async (data) => {
     );
   }
 
-  if (new Date() >= new Date(data.timeStart)) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Time start round must be greater than today")
-    );
-  }
+  // if (new Date() >= new Date(data.timeStart)) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Time start round must be greater than today")
+  //   );
+  // }
 
   if (competition?.competitionRound.length) {
     if (
@@ -262,8 +262,6 @@ export const createRound = async (data) => {
     name: data.name,
     competitionId: data.competitionId,
     roundNumber: competition?.competitionRound.length + 1,
-    // roundNumber: data.roundNumber,
-    // numPoint: data.numPoint,
     timeStart: data.timeStart,
   };
 

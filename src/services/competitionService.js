@@ -35,18 +35,18 @@ export const createCompetition = async (employeeId, data) => {
     );
   }
 
-  const cond = calculateDistanceFromDate(new Date(), data.timeStart);
-  if (cond < CONDITION_DATE_CREATE_COMPETITION) {
-    throw new HttpException(
-      422,
-      ErrorMessage.CUSTOM(
-        `the time start must be equal or greater 7 days from ${new Date().toLocaleDateString(
-          "vi-VN",
-          { day: "2-digit", month: "2-digit", year: "numeric" }
-        )}`
-      )
-    );
-  }
+  // const cond = calculateDistanceFromDate(new Date(), data.timeStart);
+  // if (cond < CONDITION_DATE_CREATE_COMPETITION) {
+  //   throw new HttpException(
+  //     422,
+  //     ErrorMessage.CUSTOM(
+  //       `the time start must be equal or greater 7 days from ${new Date().toLocaleDateString(
+  //         "vi-VN",
+  //         { day: "2-digit", month: "2-digit", year: "numeric" }
+  //       )}`
+  //     )
+  //   );
+  // }
 
   try {
     const result = await sequelize.transaction(async (t) => {
@@ -384,10 +384,10 @@ const getCompetitionResultByIdAndStudentId = async (
 };
 
 const checkConditionStartedCompetition = async (id) => {
-  if(!id) throw new HttpException(400, ErrorMessage.MISSING_PARAMETER)
+  if (!id) throw new HttpException(400, ErrorMessage.MISSING_PARAMETER);
 
   const competition = await db.Competition.findOne({
-    where: { id: id, status: STATUS_COMPETITION.STARTED},
+    where: { id: id, status: STATUS_COMPETITION.STARTED },
     nest: true,
     raw: false,
     include: [
@@ -406,23 +406,25 @@ const checkConditionStartedCompetition = async (id) => {
     ],
   });
 
-
-  if(!competition.competitionRound || !competition.competitionRegister) {
+  if (!competition.competitionRound || !competition.competitionRegister) {
     return;
   }
 
-  if(competition?.competitionRegister.length < competition.minimumQuantity){
+  if (competition?.competitionRegister.length < competition.minimumQuantity) {
     await updateStatusCompetition(id, STATUS_COMPETITION.CANCEL);
-    throw new HttpException(400, ErrorMessage.CUSTOM("The competition is cancel because not enough minimum registers"));
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "The competition is cancel because not enough minimum registers"
+      )
+    );
   }
 
   return await roundResultService.tmpCreateRounds({
     roundId: competition?.competitionRound[0].id,
     competitionId: id,
-  })
-}
-
-
+  });
+};
 
 export default {
   createCompetition,
@@ -437,5 +439,5 @@ export default {
   addClassJoin,
   removeClassJoin,
   getCompetitionResultByIdAndStudentId,
-  checkConditionStartedCompetition
+  checkConditionStartedCompetition,
 };
