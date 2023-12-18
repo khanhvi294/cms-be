@@ -354,12 +354,12 @@ export const updateRound = async (round) => {
 export const deleteRound = async (id) => {
   const haveRound = await findRoundById(id);
 
-  if (new Date(haveRound.timeStart) <= new Date()) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Round is already started,can't delete")
-    );
-  }
+  // if (new Date(haveRound.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Round is already started,can't delete")
+  //   );
+  // }
   if (!haveRound) {
     throw new HttpException(400, ErrorMessage.OBJECT_IS_NOT_EXISTING("Round"));
   }
@@ -372,7 +372,8 @@ export const deleteRound = async (id) => {
     );
   }
 
-  if (competition.status !== STATUS_COMPETITION.CREATED) {
+  if (competition.status != STATUS_COMPETITION.CREATED) {
+    console.log("status come: ", competition.status);
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 

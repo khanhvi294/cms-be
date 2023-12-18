@@ -108,24 +108,20 @@ const createRoundResult = async (data, t) => {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }
 
-  const check =await checkRoundResultExists(data);
-  if(check){
+  const check = await checkRoundResultExists(data);
+  if (check) {
     return null;
   }
 
-  const roundResult = await db.RoundResult.findOrCreate(
-    {
-      where: { studentId: data.studentId, roundId: data.roundId},
-      defaults:  {
-        studentId: data.studentId,
-        roundId: data.roundId,
-        score: null,
-      },
-     transaction: t 
-
-    }
-   
-  );
+  const roundResult = await db.RoundResult.findOrCreate({
+    where: { studentId: data.studentId, roundId: data.roundId },
+    defaults: {
+      studentId: data.studentId,
+      roundId: data.roundId,
+      score: null,
+    },
+    transaction: t,
+  });
 
   return roundResult;
 };
@@ -386,23 +382,68 @@ const getRoundResultByRoundForTeacher = async (roundId, teacherId) => {
       {
         model: db.Score,
         as: "roundResultScore",
-        attributes: ["score"],
-        raw: false,
-        nest: true,
+        // attributes: ["score", "id"],
         include: [
           {
             model: db.Judge,
             as: "scoreJudge",
-            attributes: [], // Chỉ lấy employeeId
+            attributes: ["employeeId", "roundId"], // Chỉ lấy employeeId
             where: {
-              employeeId: teacherId, // Lọc theo employeeId trong bảng Judge
+              // employeeId: teacherId, // Lọc theo employeeId trong bảng Judge
               roundId, // Lọc theo roundId trong bảng Judge
             },
+            raw: false,
+            nest: true,
+            include: [
+              {
+                model: db.Employee,
+                as: "employeeJudge",
+                attributes: ["id"],
+                include: [
+                  {
+                    model: db.Account,
+                    as: "accountEmployee",
+                    attributes: ["id"],
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
     ],
   });
+
+  // const scores = await db.Score.findAll({
+  //   raw: false,
+  //   nest: true,
+  //   include: [
+  //     {
+  //       model: db.RoundResult,
+  //       as: "roundResultScore",
+  //       // where: {
+  //       //   roundId,
+  //       // },
+  //       include: [
+  //         {
+  //           model: db.Students,
+  //           as: "roundResultStudent",
+  //           attributes: ["id", "fullName"],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       model: db.Judge,
+  //       as: "scoreJudge",
+  //       attributes: ["employeeId", "roundId"], // Chỉ lấy employeeId
+  //       // where: {
+  //       //   employeeId: teacherId, // Lọc theo employeeId trong bảng Judge
+  //       //   roundId, // Lọc theo roundId trong bảng Judge
+  //       // },
+  //     },
+  //   ],
+  // });
+
   return resFindAll(roundResults);
 };
 

@@ -311,7 +311,6 @@ const removeClassJoin = async (data) => {
    * }
    */
 
-  console.log("dataaa ", data);
   if (!data?.competitionClass || !data?.competitionClass?.length) {
     throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   }

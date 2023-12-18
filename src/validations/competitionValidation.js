@@ -33,7 +33,7 @@ const competitionValidation = {
           "number.integer": "classId must be integer",
         })
       ),
-      timeStart: Joi.date().required().min("now").messages({
+      timeStart: Joi.date().required().messages({
         "date.min": "timeStart must be greater today",
         "any.required": "timeStart is required",
         "date.base": "timeStart must be a date",
