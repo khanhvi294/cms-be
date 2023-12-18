@@ -152,12 +152,12 @@ const createJudgeByEmployee = async (data, t) => {
   const round = await roundService.getRoundById(data.roundId);
 
   //round bdau roi k dduocj them
-  if (new Date(round.timeStart) <= new Date()) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Round is started, can't add judge")
-    );
-  }
+  // if (new Date(round.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Round is started, can't add judge")
+  //   );
+  // }
   const employee = await employeeService.getEmployeeByIdIncludesAccount(
     data.employeeId
   );
@@ -226,12 +226,12 @@ export const deleteJudgeInRound = async (teacherId, roundId) => {
   }
   if (!teacherId) throw new HttpException(422, ErrorMessage.MISSING_PARAMETER);
   const round = await roundService.getRoundById(roundId);
-  if (new Date(round.timeStart) <= new Date()) {
-    throw new HttpException(
-      422,
-      ErrorMessage.CUSTOM("Round has started, can't removed judge")
-    );
-  }
+  // if (new Date(round.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     422,
+  //     ErrorMessage.CUSTOM("Round has started, can't removed judge")
+  //   );
+  // }
   const data = await db.Judge.destroy({
     where: { roundId: roundId, employeeId: teacherId },
   });

@@ -229,15 +229,15 @@ const updateCompetition = async (data) => {
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
-  if (
-    new Date().setHours(0, 0, 0, 0) >=
-    new Date(data.timeStart).setHours(0, 0, 0, 0)
-  ) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Time start competition must be greater than today")
-    );
-  }
+  // if (
+  //   new Date().setHours(0, 0, 0, 0) >=
+  //   new Date(data.timeStart).setHours(0, 0, 0, 0)
+  // ) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Time start competition must be greater than today")
+  //   );
+  // }
   if (
     new Date(data.timeStart).setHours(0, 0, 0, 0) >
     new Date(data.timeEnd).setHours(0, 0, 0, 0)

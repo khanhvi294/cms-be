@@ -202,20 +202,19 @@ export const createRound = async (data) => {
   }
 
   // check time start if less than time end competition
-  if (new Date(competition.timeEnd) < new Date(data.timeStart)) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM(
-        "Time start round must be less than time end of the competition"
-      )
-    );
-  }
-
   if (new Date(competition.timeStart) > new Date(data.timeStart)) {
     throw new HttpException(
       400,
       ErrorMessage.CUSTOM(
         "Time start round must be greater than time start of the competition"
+      )
+    );
+  }
+  if (new Date(competition.timeEnd) < new Date(data.timeStart)) {
+    throw new HttpException(
+      400,
+      ErrorMessage.CUSTOM(
+        "Time start round must be less than time end of the competition"
       )
     );
   }
@@ -312,21 +311,12 @@ export const updateRound = async (round) => {
     throw new HttpException(400, ErrorMessage.COMPETITION_CANNOT_UPDATE);
   }
 
-  if (new Date(haveRound.timeStart) <= new Date()) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Round is already started,can't update")
-    );
-  }
-
-  if (new Date(competition.timeEnd) < new Date(round.timeStart)) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM(
-        "Time start round must be less than time end of the competition"
-      )
-    );
-  }
+  // if (new Date(haveRound.timeStart) <= new Date()) {
+  //   throw new HttpException(
+  //     400,
+  //     ErrorMessage.CUSTOM("Round is already started,can't update")
+  //   );
+  // }
 
   if (new Date(competition.timeStart) > new Date(round.timeStart)) {
     throw new HttpException(
@@ -335,13 +325,15 @@ export const updateRound = async (round) => {
         "Time start round must be greater than time start of the competition"
       )
     );
-  }
 
-  if (new Date() >= new Date(round.timeStart)) {
-    throw new HttpException(
-      400,
-      ErrorMessage.CUSTOM("Time start round must be greater than today")
-    );
+    if (new Date(competition.timeEnd) < new Date(round.timeStart)) {
+      throw new HttpException(
+        400,
+        ErrorMessage.CUSTOM(
+          "Time start round must be less than time end of the competition"
+        )
+      );
+    }
   }
 
   await checkTimeStartRoundOfCompetition(
