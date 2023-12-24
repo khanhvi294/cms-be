@@ -1,9 +1,10 @@
 {
   "development": {
     "username": "root",
-    "database": "cms-db",
-    "password": "",
-    "host": "127.0.0.1",
+    "database": "railway",
+    "password": "3dbaeFggA3AH5DfG23Ead34cgaBGeHA1",
+    "host": "viaduct.proxy.rlwy.net",
+    "port": "10712",
     "dialect": "mysql",
     "logging": true,
     "query": {"raw": true},
