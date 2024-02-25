@@ -1,14 +1,20 @@
 {
   "development": {
-    "username": "root",
-    "database": "railway",
-    "password": "3dbaeFggA3AH5DfG23Ead34cgaBGeHA1",
-    "host": "viaduct.proxy.rlwy.net",
-    "port": "10712",
-    "dialect": "mysql",
+    "username": "cms_lpyy_user",
+    "database": "cms_lpyy",
+    "password": "oJc74pFFdBUTQE4Zo47rEO4rPSKAd1kt",
+    "host": "dpg-cndgov6g1b2c739mc54g-a.singapore-postgres.render.com",
+    "port": "5432",
+    "dialect": "postgres",
     "logging": true,
     "query": {"raw": true},
-    "timezone": "+07:00"
+    "timezone": "+07:00",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   },
   "test": {
     "username": "root",

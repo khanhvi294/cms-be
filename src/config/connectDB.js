@@ -6,10 +6,18 @@ const DB_PORT = process.env.DB_PORT || "3306";
 const DB_USER = process.env.DB_USER || "root";
 const DB_PASSWORD = process.env.DB_PASSWORD || null;
 
+console.log("DB info", DB_NAME, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD);
+
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
-  dialect: "mysql",
+  dialect: "postgres",
   port: DB_PORT,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 // export const sequelize = new Sequelize("cms-db", "root", null, {
